@@ -3,13 +3,16 @@
 :root {
     --body-color: rgba(54, 54, 54, 1);
     --sidebar-color: rgba(21, 21, 21, 1);
-    --box-color:rgba(54, 54, 54, 1);
+    --box-color:rgba(36, 36, 36, 1);
     --text-color:rgba(232, 244, 250, 1);
     --textdark-color: rgba(21, 21, 21, 1);
     --mainblue-color:rgba(64, 94, 255, 1);
     --mainorange-color:rgba(236, 165, 66, 1);
     --margin-size: 1.2rem;
-    --border-radius: .3rem;
+    --border-radius: 0.3rem;
+
+    --right-btn-move: 10.2rem;
+    --bottom-btn-move: 4.5rem;
 }
 
 *,

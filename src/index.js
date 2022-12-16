@@ -2,13 +2,14 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
 import "./style.css";
-import { AddBtnProvider } from "./context/indexContext";
+import { Provider } from "react-redux";
+import taskStore from "./reducers/taskReducer/taskReducer";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <AddBtnProvider>
+    <Provider store={taskStore}>
       <App />
-    </AddBtnProvider>
+    </Provider>
   </React.StrictMode>
 );

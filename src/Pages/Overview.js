@@ -19,6 +19,8 @@ const Wrapper = styled.div`
   gap: var(--margin-size);
   grid-template-columns: auto auto 25rem;
   position: relative;
+  grid-template-rows: 50%;
+  grid-template-columns: 15rem 17rem 15rem;
   grid-template-areas:
     "graph tasks calendar"
     "progress progress calendar";

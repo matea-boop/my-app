@@ -1,13 +1,85 @@
-import React, { useEffect } from "react";
-import { NavLink } from "react-router-dom";
+import React, { useState, useRef, useEffect } from "react";
 import styled from "styled-components";
-import { linksAddBtn } from "../constants/constants";
 import { HiPlusCircle } from "react-icons/hi";
 import { IconContext } from "react-icons";
 import { useAllContext } from "../context/indexContext";
+import TaskForm from "../reducers/taskReducer/TaskForm";
+import EventForm from "../components/forms-lists/EventForm";
+import HabitForm from "../components/forms-lists/HabitForm";
+import DeadlineForm from "../components/forms-lists/DeadlineForm";
 
-const AddButton = () => {
-  const { isBtnOpen, addBtnClose, addBtnOpen } = useAllContext();
+function AddButton() {
+  const { isBtnOpen, addBtnOpen, addBtnClose } = useAllContext();
+  const [modalOpen, setModalOpen] = useState(false);
+  const [getId, setGetId] = useState("");
+
+  const linksAddBtn = [
+    {
+      id: 1,
+      text: "Task",
+      url: "/AddTask",
+      element: (
+        <TaskForm
+          type="add"
+          modalOpen={modalOpen}
+          setModalOpen={setModalOpen}
+        />
+      ),
+    },
+    {
+      id: 2,
+      text: "Event",
+      url: "/AddEvent",
+      element: <EventForm />,
+    },
+    {
+      id: 3,
+      text: "Habit",
+      url: "/AddHabit",
+      element: <HabitForm />,
+    },
+    {
+      id: 4,
+      text: "Deadline",
+      url: "AddDeadline",
+      element: <DeadlineForm />,
+    },
+    {
+      id: 5,
+      text: "Notebook",
+      url: "/Notebook",
+      element: null,
+    },
+  ];
+
+  let toggleRef = useRef();
+
+  useEffect(() => {
+    let handler = (event) => {
+      if (!toggleRef.current.contains(event.target)) {
+        addBtnClose();
+      }
+    };
+
+    document.addEventListener("mousedown", handler);
+
+    return () => {
+      document.removeEventListener("mousedown", handler);
+    };
+  });
+
+  const btnClickOpen = () => {
+    setGetId("");
+    addBtnOpen();
+    setModalOpen(false);
+  };
+
+  const btnClickClose = () => {
+    setGetId("");
+    addBtnClose();
+    setModalOpen(false);
+  };
+
   return (
     <IconContext.Provider
       value={{
@@ -16,30 +88,50 @@ const AddButton = () => {
         bottom: "3.2rem",
       }}
     >
-      <Wrapper>
+      <Wrapper ref={toggleRef}>
         {!isBtnOpen ? (
-          <HiPlusCircle className="btn" onClick={addBtnOpen} />
+          <HiPlusCircle className="btn" onClick={btnClickOpen} />
         ) : (
-          <HiPlusCircle className="btn btn-rotate" onClick={addBtnClose} />
+          <HiPlusCircle className="btn act" onClick={btnClickClose} />
         )}
 
-        {isBtnOpen ? (
-          <ul className="btn-menu-active">
-            {linksAddBtn.map(({ id, text }) => {
-              return (
-                <NavLink onClick={addBtnClose}>
-                  <li key={id}>
-                    <span>{text}</span>
-                  </li>
-                </NavLink>
-              );
+        <ul className={!isBtnOpen ? "menu" : "menu m-active"}>
+          {linksAddBtn.map(({ id, text }) => {
+            return (
+              <li
+                key={id}
+                onClick={() => {
+                  setGetId(id);
+                  addBtnClose();
+                  setModalOpen(true);
+                }}
+                style={
+                  getId !== "" ? { opacity: "0", transition: " 0s" } : null
+                }
+              >
+                <span className="text">{text}</span>
+              </li>
+            );
+          })}
+        </ul>
+
+        {modalOpen ? (
+          <div>
+            {linksAddBtn.map(({ id, element }) => {
+              if (getId === id) {
+                return (
+                  <div key={id} className="element">
+                    {element}
+                  </div>
+                );
+              }
             })}
-          </ul>
+          </div>
         ) : null}
       </Wrapper>
     </IconContext.Provider>
   );
-};
+}
 
 const Wrapper = styled.div`
   z-index: 200;
@@ -48,52 +140,60 @@ const Wrapper = styled.div`
   right: 10.2rem;
   width: fit-content;
 
-  .btn-menu-active {
-    position: relative;
+  .edit {
+    pointer-events: none;
+  }
+  .menu {
+    position: absolute;
     display: flex;
     align-items: center;
     justify-content: center;
     bottom: 0;
     right: 0;
     overflow: hidden;
+    cursor: pointer;
     border-radius: var(--border-radius);
-    a {
-      position: relative;
-      background-color: var(--mainorange-color);
-      color: var(--textdark-color);
-      animation: fadeIn 1.5s;
-      opacity: 1;
-      padding: 1rem;
+  }
+  .menu li {
+    position: relative;
+    background-color: var(--mainorange-color);
+    color: var(--textdark-color);
+    left: 100%;
+    transition: 1s;
+    opacity: 1;
+    padding: 1rem;
 
-      &:hover {
-        color: black;
-        background-color: rgb(245, 182, 93);
-      }
-
-      &:first-child {
-        border-radius: var(--border-radius) 0 0 var(--border-radius);
-      }
+    &:first-child {
+      border-radius: var(--border-radius) 0 0 var(--border-radius);
     }
+  }
+  .text {
+    opacity: 0.5;
+    &:hover {
+      opacity: 1;
+    }
+  }
+
+  .element {
+    z-index: 10;
+    border-radius: var(--border-radius);
   }
 
   .btn {
+    cursor: pointer;
+    z-index: 300;
     position: fixed;
     bottom: 3.2rem;
     right: 3.2rem;
-    transition: all 0.4s;
+    transition: all 1s;
   }
 
-  .btn-rotate {
+  .act {
     transform: rotate(-45deg);
   }
 
-  @keyframes fadeIn {
-    from {
-      left: 100%;
-    }
-    to {
-      left: 0;
-    }
+  .m-active li {
+    left: 0;
   }
 `;
 

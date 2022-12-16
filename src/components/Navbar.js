@@ -1,5 +1,5 @@
 import React from "react";
-import { Link, NavLink } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import styled from "styled-components";
 import { IconContext } from "react-icons";
 
@@ -21,8 +21,8 @@ export const Navbar = () => {
           <ul>
             {menuItems.map(({ id, text, url, icon }) => {
               return (
-                <NavLink to={url}>
-                  <li key={id}>
+                <NavLink key={id} to={url}>
+                  <li>
                     {icon}
                     <span className="text">{text}</span>
                   </li>
@@ -84,5 +84,4 @@ const SidebarMenu = styled.div`
     opacity: 1;
   }
 `;
-
 export default Navbar;

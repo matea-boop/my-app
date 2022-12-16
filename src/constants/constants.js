@@ -44,26 +44,3 @@ export const menuItems = [
     url: "/Settings",
   },
 ];
-
-export const linksAddBtn = [
-  {
-    id: 1,
-    text: "Task",
-  },
-  {
-    id: 2,
-    text: "Event",
-  },
-  {
-    id: 3,
-    text: "Habit",
-  },
-  {
-    id: 4,
-    text: "Deadline",
-  },
-  {
-    id: 5,
-    text: "Notebook",
-  },
-];
