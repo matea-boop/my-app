@@ -66,9 +66,26 @@ export const taskSlice = createSlice({
         state.taskList = taskListArr;
       }
     },
+    editSubtask: (state, action) => {
+      let taskLista = window.localStorage.getItem("taskList");
+      if (taskLista) {
+        let taskListArr = JSON.parse(taskLista);
+        taskListArr.forEach((task) => {
+          if (task.subtasks) {
+            console.log(action.payload.id);
+            task.subtasks.forEach((subtask) => {
+              if (subtask.id === action.payload.id) {
+                subtask.subtaskStatus = action.payload.subtaskStatus;
+              }
+            });
+          }
+        });
+        window.localStorage.setItem("taskList", JSON.stringify(taskListArr));
+        state.taskList = taskListArr;
+      }
+    },
   },
 });
 
-//exporting our actions
-export const { addTask, deleteTask, editTask } = taskSlice.actions;
+export const { addTask, deleteTask, editTask, editSubtask } = taskSlice.actions;
 export default taskSlice.reducer;

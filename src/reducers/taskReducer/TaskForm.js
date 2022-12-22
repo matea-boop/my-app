@@ -4,11 +4,15 @@ import { useDispatch } from "react-redux";
 import { addTask, editTask } from "./TaskStorage";
 import { v4 as uuid } from "uuid";
 import { toast } from "react-hot-toast";
+import { HiOutlineXMark } from "react-icons/hi2";
+import { IconContext } from "react-icons";
 
 function TaskForm({ type, task, modalOpen, setModalOpen }) {
   const [title, setTitle] = useState("");
-  const [subtask, setSubtask] = useState("");
+  const [subtasks, setSubtasks] = useState([]);
+  const [currentSubtask, setCurrentSubtask] = useState("");
   const [status, setStatus] = useState("incomplete");
+  const [subtaskStatus, setSubtaskStatus] = useState("notDone");
   // const [date, setDate] = useState("");
   const dispatch = useDispatch();
 
@@ -35,8 +39,8 @@ function TaskForm({ type, task, modalOpen, setModalOpen }) {
           addTask({
             id: uuid(),
             title,
-            subtask,
-            status: status,
+            subtasks,
+            status,
             time: new Date().toLocaleDateString(),
           })
         );
@@ -64,77 +68,125 @@ function TaskForm({ type, task, modalOpen, setModalOpen }) {
     }
   };
 
+  const addSubtask = () => {
+    setSubtasks((arr) => [
+      ...arr,
+      {
+        id: uuid(),
+        subtaskTitle: currentSubtask,
+        subtaskStatus: subtaskStatus,
+      },
+    ]);
+    setCurrentSubtask("");
+  };
+
+  const deleteSubtask = (id) => {
+    setSubtasks(subtasks.filter((subtask) => subtask.id !== id));
+  };
+
   return (
-    <div style={{ borderRadius: "var(--border-radius)" }}>
-      {modalOpen ? (
-        <Wrapper>
-          <div className="form-container">
-            <form
-              className="task-form"
-              onSubmit={(e) => {
-                handleSubmit(e);
-              }}
-            >
-              <h1 className="header">
-                {type === "edit" ? "Edit task" : "Add task"}
-              </h1>
-              <label htmlFor="title">Title</label>
+    <IconContext.Provider
+      value={{
+        color: "var(--box-color)",
+        size: "1rem",
+      }}
+    >
+      <div style={{ borderRadius: "var(--border-radius)" }}>
+        {modalOpen ? (
+          <Wrapper>
+            <div className="form-container">
+              <form
+                className="task-form"
+                onSubmit={(e) => {
+                  handleSubmit(e);
+                }}
+              >
+                <h1 className="header">
+                  {type === "edit" ? "Edit task" : "Add task"}
+                </h1>
+                <label htmlFor="title">Title</label>
 
-              <input
-                type="text"
-                placeholder="Task title"
-                value={title}
-                id="title"
-                name="title"
-                onChange={(e) => setTitle(e.target.value)}
-              />
-
-              <label htmlFor="time">Date and Time</label>
-
-              <input
-                type="date"
-                placeholder="Date"
-                name="time"
-                className="task-input-date"
-              />
-              <input
-                type="time"
-                placeholder="Time"
-                name="time"
-                className="task-input-time"
-              />
-
-              <label htmlFor="subtasks">Subtasks</label>
-              <div className="add-subtask-container">
                 <input
                   type="text"
-                  placeholder="Add Subtask"
-                  value={subtask}
-                  name="subtasks"
-                  onChange={(e) => setSubtask(e.target.value)}
+                  placeholder="Task title"
+                  value={title}
+                  id="title"
+                  name="title"
+                  onChange={(e) => setTitle(e.target.value)}
                 />
-                <button className="btn-subtask-add">Add</button>
-              </div>
 
-              <div className="button-container">
-                <button type="submit" className="task-btn">
-                  {type === "edit" ? "Edit task" : "Add task"}
-                </button>
-                <button
-                  type="button"
-                  className="task-btn cancel"
-                  role="button"
-                  tabIndex={0}
-                  onClick={onClick}
-                >
-                  Cancel
-                </button>
-              </div>
-            </form>
-          </div>
-        </Wrapper>
-      ) : null}
-    </div>
+                <label htmlFor="time">Date and Time</label>
+
+                <input
+                  type="date"
+                  placeholder="Date"
+                  name="time"
+                  className="task-input-date"
+                />
+                <input
+                  type="time"
+                  placeholder="Time"
+                  name="time"
+                  className="task-input-time"
+                />
+
+                <label htmlFor="subtasks">Subtasks</label>
+                <div className="add-subtask-container">
+                  <input
+                    type="text"
+                    placeholder="Add Subtask"
+                    value={currentSubtask}
+                    name="subtasks"
+                    onChange={(e) => setCurrentSubtask(e.target.value)}
+                  />
+                  <button
+                    type="button"
+                    onClick={addSubtask}
+                    className="btn-subtask-add"
+                  >
+                    Add
+                  </button>
+                </div>
+
+                <div className="subtask">
+                  {subtasks.length > 0 ? (
+                    <ul>
+                      {subtasks.map(({ id, subtaskTitle }) => {
+                        return (
+                          <li className="links" key={id}>
+                            <div>{subtaskTitle}</div>
+
+                            <HiOutlineXMark
+                              onClick={(e) => deleteSubtask(e, id)}
+                              className="delete-subtask"
+                            />
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  ) : null}
+                </div>
+
+                <div className="button-container">
+                  <button type="submit" className="task-btn">
+                    {type === "edit" ? "Edit task" : "Add task"}
+                  </button>
+                  <button
+                    type="button"
+                    className="task-btn cancel"
+                    role="button"
+                    tabIndex={0}
+                    onClick={onClick}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            </div>
+          </Wrapper>
+        ) : null}
+      </div>
+    </IconContext.Provider>
   );
 }
 
@@ -217,7 +269,6 @@ const Wrapper = styled.div`
       opacity: 0.75;
     }
   }
-
   .add-subtask-container {
     display: flex;
     flex-direction: row;
@@ -237,6 +288,22 @@ const Wrapper = styled.div`
     margin-bottom: 2rem;
     margin-left: 0.5rem;
     padding: 0 1rem 0 1rem;
+  }
+  .subtask {
+  }
+  .links {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    background-color: var(--text-color);
+    border-radius: var(--border-radius);
+    margin-bottom: 0.5rem;
+    padding: 0.5rem 1rem 0.5rem 1rem;
+  }
+  .delete-subtask {
+    cursor: pointer;
   }
 `;
 

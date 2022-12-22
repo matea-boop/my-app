@@ -5,14 +5,18 @@ import { useDispatch } from "react-redux";
 import { deleteTask, editTask } from "../../reducers/taskReducer/TaskStorage";
 import TaskForm from "../../reducers/taskReducer/TaskForm";
 import Checkbox from "./taskCheckbox";
+import SubtaskCheckbox from "./subtaskCheckbox";
 import { toast } from "react-hot-toast";
+import { HiOutlineArrowCircleDown } from "react-icons/hi";
+import { useSelector } from "react-redux";
+import SubtaskListContent from "./subtaskContent";
 
 function TaskItem({ task }) {
   const [openMenu, setOpenMenu] = useState(false);
   const [checked, setChecked] = useState(false);
+  const [subtaskArrow, setSubtaskArrow] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const dispatch = useDispatch();
-
   let choiceRef = useRef();
 
   useEffect(() => {
@@ -21,9 +25,7 @@ function TaskItem({ task }) {
         setOpenMenu(false);
       }
     };
-
     document.addEventListener("mousedown", handler);
-
     return () => {
       document.removeEventListener("mousedown", handler);
     };
@@ -62,6 +64,10 @@ function TaskItem({ task }) {
     setOpenMenu(!openMenu);
   };
 
+  const arrowClick = () => {
+    setSubtaskArrow(!subtaskArrow);
+  };
+
   return (
     <Wrapper style={checked ? { opacity: "0.5" } : { opacity: "1" }}>
       <div className="task-details">
@@ -71,36 +77,49 @@ function TaskItem({ task }) {
           handleCheck={handleCheck}
         />
         <p className="task-title">{task.title}</p>
-      </div>
-      <div
-        ref={choiceRef}
-        className="icon-container"
-        style={checked ? { pointerEvents: "none" } : { pointerEvents: "auto" }}
-      >
-        <HiEllipsisVertical className="icon" onClick={onClick} />
-        {openMenu ? (
-          <div className="icon-choice-container">
-            <div
-              className="choice"
-              onClick={handleDelete}
-              onKeyDown={handleDelete}
-              role="button"
-              tabIndex={0}
-            >
-              Delete task
+        <HiOutlineArrowCircleDown
+          className={subtaskArrow ? "subtask-arrow activ" : "subtask-arrow"}
+          onClick={arrowClick}
+        />
+        <div
+          ref={choiceRef}
+          className="icon-container"
+          style={
+            checked ? { pointerEvents: "none" } : { pointerEvents: "auto" }
+          }
+        >
+          <HiEllipsisVertical className="icon" onClick={onClick} />
+          {openMenu ? (
+            <div className="icon-choice-container">
+              <div
+                className="choice"
+                onClick={handleDelete}
+                onKeyDown={handleDelete}
+                role="button"
+                tabIndex={0}
+              >
+                Delete task
+              </div>
+              <div
+                className="choice"
+                onClick={handleEdit}
+                onKeyDown={handleEdit}
+                role="button"
+                tabIndex={0}
+              >
+                Edit task
+              </div>
             </div>
-            <div
-              className="choice"
-              onClick={handleEdit}
-              onKeyDown={handleEdit}
-              role="button"
-              tabIndex={0}
-            >
-              Edit task
-            </div>
-          </div>
-        ) : null}
+          ) : null}
+        </div>
       </div>
+
+      {subtaskArrow ? (
+        <div className="links-menu">
+          <SubtaskListContent task={task} />
+        </div>
+      ) : null}
+
       {editModalOpen ? (
         <TaskForm
           type="edit"
@@ -115,21 +134,28 @@ function TaskItem({ task }) {
 
 const Wrapper = styled.div`
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  align-items: flex-start;
   justify-content: space-between;
   background-color: var(--box-color);
-  padding: 0.7rem 1rem 0.7rem 1rem;
+  tranisition: all 1s;
   margin-bottom: 0.7rem;
-
   border-radius: var(--border-radius);
   &:last-child {
     margin-bottom: 0;
   }
 
+  .links-menu {
+    background-color: var(--body-color);
+    border-radius: var(--border-radius);
+    width: 100%;
+  }
+
   .task-details {
+    padding: 0.7rem 1rem 0.7rem 1rem;
     display: flex;
     align-items: center;
-    justify-content: flex-start;
+    justify-content: center;
     gap: 1rem;
   }
   .task-title {
@@ -146,8 +172,6 @@ const Wrapper = styled.div`
     gap: 0.3rem;
   }
   .icon {
-    position: absolute;
-    margin-right: 1rem;
     font-size: 1.2rem;
     display: flex;
     align-items: center;
@@ -185,6 +209,15 @@ const Wrapper = styled.div`
   }
   .checkbox {
     cursor: pointer;
+  }
+  .subtask-arrow {
+    cursor: pointer;
+    transition: rotate 1s;
+    rotate: 0deg;
+  }
+  .activ {
+    rotate: 180deg;
+    transition: rotate 1s;
   }
 `;
 

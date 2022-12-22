@@ -1,2 +1,4 @@
 export const ADDBTN_OPEN = "ADDBTN_OPEN";
 export const ADDBTN_CLOSE = "ADDBTN_CLOSE";
+
+export const UPDATE_SUBTASK_STATUS = "UPDATE_SUBTASK_STATUS";

@@ -1,9 +1,9 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import TaskItem from "./taskListItem";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 
-function TaskListContent({ page, totalPages, setTotalPages }) {
+function TaskListContent({ page, setTotalPages }) {
   const taskList = useSelector((state) => state.task.taskList);
   const tasksPerPage = 4;
   const startIndex = (page - 1) * tasksPerPage;
@@ -12,14 +12,18 @@ function TaskListContent({ page, totalPages, setTotalPages }) {
   useEffect(() => {
     setTotalPages(Math.ceil(taskList.length / tasksPerPage));
   }, [taskList]);
-
   return (
     <div>
       <div style={{ position: "absolute", width: "80%" }}>
         {" "}
         {taskList && taskList.length > 0
           ? selectedTasks.map((task) => (
-              <TaskItem key={task.id} task={task} status={task.status} />
+              <TaskItem
+                key={task.id}
+                task={task}
+                status={task.status}
+                subtasks={task.subtasks}
+              />
             ))
           : "No tasks left for today"}
       </div>
