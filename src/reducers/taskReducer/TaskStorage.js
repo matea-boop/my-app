@@ -39,6 +39,7 @@ export const taskSlice = createSlice({
         );
       }
     },
+
     deleteTask: (state, action) => {
       let taskLista = window.localStorage.getItem("taskList");
       if (taskLista) {
@@ -72,7 +73,6 @@ export const taskSlice = createSlice({
         let taskListArr = JSON.parse(taskLista);
         taskListArr.forEach((task) => {
           if (task.subtasks) {
-            console.log(action.payload.id);
             task.subtasks.forEach((subtask) => {
               if (subtask.id === action.payload.id) {
                 subtask.subtaskStatus = action.payload.subtaskStatus;

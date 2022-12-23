@@ -7,12 +7,11 @@ import { useDispatch } from "react-redux";
 
 function SubtaskItem({ taskList, subtaskTitle, subtaskStatus, subtask }) {
   const [taskLista, setTaskLista] = useState(taskList);
-  const [clicked, setClicked] = useState("");
   const [subtaskChecked, setSubtaskChecked] = useState(false);
   const dispatch = useDispatch();
+
   const subtaskHandleCheck = () => {
     setSubtaskChecked(!subtaskChecked);
-
     dispatch(
       editSubtask({
         ...subtask,
@@ -24,25 +23,25 @@ function SubtaskItem({ taskList, subtaskTitle, subtaskStatus, subtask }) {
   useEffect(() => {
     if (subtaskStatus === "done") {
       setSubtaskChecked(true);
-      console.log(subtaskChecked);
     } else {
       setSubtaskChecked(false);
-      console.log(subtaskChecked);
     }
   }, [subtaskStatus]);
 
   return (
     <Wrapper>
-      <div
-        className="links"
-        style={subtaskChecked ? { opacity: "0.5" } : { opacity: "1" }}
-      >
+      <div className="links">
         <SubtaskCheckbox
           className="checkbox-subtasks"
           subtaskChecked={subtaskChecked}
           subtaskHandleCheck={subtaskHandleCheck}
         />
-        <div className="subtask-title">{subtaskTitle}</div>
+        <div
+          style={subtaskChecked ? { opacity: "0.5" } : { opacity: "1" }}
+          className="subtask-title"
+        >
+          {subtaskTitle}
+        </div>
       </div>
     </Wrapper>
   );
@@ -57,6 +56,7 @@ const Wrapper = styled.div`
     flex-direction: row;
     align-items: center;
     justify-content: flex-start;
+    background-color: var(--body-color);
   }
   .subtask-title {
     padding: 0.3rem 0.5rem 0.3rem 0.5rem;

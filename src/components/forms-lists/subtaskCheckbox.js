@@ -15,7 +15,11 @@ function SubtaskCheckbox({ subtaskChecked, subtaskHandleCheck }) {
       />
       <FiCheckSquare
         className="checkbox done"
-        style={subtaskChecked ? { display: "flex" } : { diyplay: "none" }}
+        style={
+          subtaskChecked
+            ? { display: "flex", opacity: "0.5" }
+            : { diyplay: "none" }
+        }
         onClick={() => {
           subtaskHandleCheck();
         }}

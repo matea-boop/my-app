@@ -5,19 +5,20 @@ import { useDispatch } from "react-redux";
 import { deleteTask, editTask } from "../../reducers/taskReducer/TaskStorage";
 import TaskForm from "../../reducers/taskReducer/TaskForm";
 import Checkbox from "./taskCheckbox";
-import SubtaskCheckbox from "./subtaskCheckbox";
 import { toast } from "react-hot-toast";
-import { HiOutlineArrowCircleDown } from "react-icons/hi";
-import { useSelector } from "react-redux";
+import { HiOutlineChevronDown } from "react-icons/hi";
 import SubtaskListContent from "./subtaskContent";
 
 function TaskItem({ task }) {
   const [openMenu, setOpenMenu] = useState(false);
   const [checked, setChecked] = useState(false);
+  const [clicked, setClicked] = useState("");
   const [subtaskArrow, setSubtaskArrow] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const dispatch = useDispatch();
   let choiceRef = useRef();
+  let divRef = useRef();
+  let subRef = useRef();
 
   useEffect(() => {
     let handler = (event) => {
@@ -30,6 +31,19 @@ function TaskItem({ task }) {
       document.removeEventListener("mousedown", handler);
     };
   });
+
+  useEffect(() => {
+    let handler = (event) => {
+      if (divRef.current.contains(event.target)) {
+        setClicked(task.id);
+      }
+    };
+    document.addEventListener("mousedown", handler);
+    return () => {
+      setClicked("");
+      document.removeEventListener("mousedown", handler);
+    };
+  }, []);
 
   useEffect(() => {
     if (task.status === "complete") {
@@ -69,7 +83,15 @@ function TaskItem({ task }) {
   };
 
   return (
-    <Wrapper style={checked ? { opacity: "0.5" } : { opacity: "1" }}>
+    <Wrapper
+      style={
+        (checked ? { opacity: "0.5" } : { opacity: "1" },
+        subtaskArrow
+          ? { borderRadius: "var(--border-radius) var(--border-radius) 0 0" }
+          : null)
+      }
+      ref={divRef}
+    >
       <div className="task-details">
         <Checkbox
           className="checkbox"
@@ -77,10 +99,12 @@ function TaskItem({ task }) {
           handleCheck={handleCheck}
         />
         <p className="task-title">{task.title}</p>
-        <HiOutlineArrowCircleDown
+
+        <HiOutlineChevronDown
           className={subtaskArrow ? "subtask-arrow activ" : "subtask-arrow"}
           onClick={arrowClick}
         />
+
         <div
           ref={choiceRef}
           className="icon-container"
@@ -114,11 +138,16 @@ function TaskItem({ task }) {
         </div>
       </div>
 
-      {subtaskArrow ? (
-        <div className="links-menu">
-          <SubtaskListContent task={task} />
-        </div>
-      ) : null}
+      <div className="links-menu" ref={choiceRef}>
+        {subtaskArrow ? (
+          <SubtaskListContent
+            className="links"
+            dropdownOpen={subtaskArrow}
+            clicked={clicked}
+            setClicked={setClicked}
+          />
+        ) : null}
+      </div>
 
       {editModalOpen ? (
         <TaskForm
@@ -143,12 +172,6 @@ const Wrapper = styled.div`
   border-radius: var(--border-radius);
   &:last-child {
     margin-bottom: 0;
-  }
-
-  .links-menu {
-    background-color: var(--body-color);
-    border-radius: var(--border-radius);
-    width: 100%;
   }
 
   .task-details {
@@ -212,12 +235,12 @@ const Wrapper = styled.div`
   }
   .subtask-arrow {
     cursor: pointer;
-    transition: rotate 1s;
+    transition: rotate 0.2s;
     rotate: 0deg;
   }
   .activ {
     rotate: 180deg;
-    transition: rotate 1s;
+    transition: rotate 0.2s;
   }
 `;
 

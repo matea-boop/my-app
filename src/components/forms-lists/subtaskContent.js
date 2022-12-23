@@ -1,39 +1,62 @@
-import React from "react";
+import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import SubtaskItem from "./subtaskItem";
+import styled from "styled-components";
 
-function SubtaskListContent({ task }) {
+function SubtaskListContent({ clicked }) {
   const taskList = useSelector((state) => state.task.taskList);
-  console.log(taskList);
 
   return (
-    <div>
-      <div>
-        {taskList && taskList.length > 0
-          ? taskList.map((tasks) => {
-              {
-                return (
-                  <div>
-                    {tasks.subtasks
-                      ? tasks.subtasks.map((subtask) => (
-                          <SubtaskItem
-                            key={subtask.id}
-                            subtask={subtask}
-                            taskList={taskList}
-                            task={tasks}
-                            subtaskStatus={subtask.subtaskStatus}
-                            subtaskTitle={subtask.subtaskTitle}
-                          />
-                        ))
-                      : null}
-                  </div>
-                );
-              }
-            })
-          : null}
-      </div>
-    </div>
+    <Wrapper className="links">
+      {taskList && taskList.length > 0
+        ? taskList.map((task) => {
+            {
+              return (
+                <div key={task.id}>
+                  {task.subtasks && clicked === task.id
+                    ? task.subtasks.map((subtask) => (
+                        <SubtaskItem
+                          key={subtask.id}
+                          subtask={subtask}
+                          taskList={taskList}
+                          task={task}
+                          subtaskStatus={subtask.subtaskStatus}
+                          subtaskTitle={subtask.subtaskTitle}
+                        />
+                      ))
+                    : null}
+                </div>
+              );
+            }
+          })
+        : null}
+    </Wrapper>
   );
 }
 
 export default SubtaskListContent;
+
+const Wrapper = styled.div`
+  position: absolute;
+  z-index: 100;
+  width: 100%;
+  overflow: hidden;
+
+  .links {
+    position: relative;
+    width: 100%;
+    animation: move ease-in-out 0.2s;
+  }
+  &:last-child {
+    border-radius: 0 0 var(--border-radius) var(--border-radius);
+  }
+
+  @keyframes move {
+    0% {
+      transform: translateY(-100%);
+    }
+    100% {
+      transform: translateY(0);
+    }
+  }
+`;

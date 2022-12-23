@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useDispatch } from "react-redux";
-import { addTask, editTask } from "./TaskStorage";
+import { addTask, editTask, addSubtask } from "./TaskStorage";
 import { v4 as uuid } from "uuid";
 import { toast } from "react-hot-toast";
 import { HiOutlineXMark } from "react-icons/hi2";
@@ -69,8 +69,8 @@ function TaskForm({ type, task, modalOpen, setModalOpen }) {
   };
 
   const addSubtask = () => {
-    setSubtasks((arr) => [
-      ...arr,
+    setSubtasks((subtask) => [
+      ...subtask,
       {
         id: uuid(),
         subtaskTitle: currentSubtask,
@@ -141,7 +141,9 @@ function TaskForm({ type, task, modalOpen, setModalOpen }) {
                   />
                   <button
                     type="button"
-                    onClick={addSubtask}
+                    onClick={() => {
+                      addSubtask();
+                    }}
                     className="btn-subtask-add"
                   >
                     Add
