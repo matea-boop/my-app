@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import SubtaskItem from "./subtaskItem";
 import styled from "styled-components";
 
-function SubtaskListContent({ clicked }) {
+function SubtaskListContent({ clicked, taskChecked, setTaskChecked, task }) {
   const taskList = useSelector((state) => state.task.taskList);
 
   return (
@@ -16,10 +16,12 @@ function SubtaskListContent({ clicked }) {
                   {task.subtasks && clicked === task.id
                     ? task.subtasks.map((subtask) => (
                         <SubtaskItem
+                          task={task}
+                          taskChecked={taskChecked}
+                          setTaskChecked={setTaskChecked}
+                          subtaskList={task.subtasks}
                           key={subtask.id}
                           subtask={subtask}
-                          taskList={taskList}
-                          task={task}
                           subtaskStatus={subtask.subtaskStatus}
                           subtaskTitle={subtask.subtaskTitle}
                         />

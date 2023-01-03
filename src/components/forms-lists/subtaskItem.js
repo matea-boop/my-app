@@ -2,33 +2,70 @@ import React from "react";
 import { useState, useEffect } from "react";
 import SubtaskCheckbox from "./subtaskCheckbox";
 import styled from "styled-components";
-import { editSubtask } from "../../reducers/taskReducer/TaskStorage";
+import { editSubtask, editTask } from "../../reducers/taskReducer/TaskStorage";
 import { useDispatch } from "react-redux";
 
-function SubtaskItem({ taskList, subtaskTitle, subtaskStatus, subtask }) {
-  const [taskLista, setTaskLista] = useState(taskList);
+function SubtaskItem({
+  subtaskTitle,
+  subtaskStatus,
+  subtask,
+  taskChecked,
+  setTaskChecked,
+  subtaskList,
+  task,
+}) {
   const [subtaskChecked, setSubtaskChecked] = useState(false);
   const dispatch = useDispatch();
+  let listBoolean = [];
+  subtaskList.forEach((sub) => listBoolean.push(sub.subtaskStatus));
 
   const subtaskHandleCheck = () => {
     setSubtaskChecked(!subtaskChecked);
     dispatch(
       editSubtask({
         ...subtask,
-        subtaskStatus: !subtaskChecked ? "done" : "notDone",
+        subtaskStatus: subtaskChecked ? "notDone" : "done",
       })
     );
   };
 
   useEffect(() => {
-    if (subtaskStatus === "done") {
-      setSubtaskChecked(true);
+    if (!listBoolean.includes("notDone")) {
+      setTaskChecked(true);
     } else {
-      setSubtaskChecked(false);
+      setTaskChecked(false);
     }
+    console.log(listBoolean);
   }, [subtaskStatus]);
 
+  useEffect(() => {
+    if (taskChecked) {
+      setSubtaskChecked(true);
+    } else {
+      if (!listBoolean.includes("notDone")) {
+        setSubtaskChecked(false);
+        subtaskList.forEach((sub) =>
+          dispatch(
+            editSubtask({
+              ...sub,
+              subtaskStatus: !subtaskChecked ? "done" : "notDone",
+            })
+          )
+        );
+        console.log(listBoolean);
+      } else {
+        console.log(listBoolean);
+        if (subtaskStatus === "done") {
+          setSubtaskChecked(true);
+        } else {
+          setSubtaskChecked(false);
+        }
+      }
+    }
+  }, [taskChecked]);
+
   return (
+    // style={taskChecked ? { display: "none" } : { display: "flex" }}
     <Wrapper>
       <div className="links">
         <SubtaskCheckbox
@@ -51,11 +88,11 @@ export default SubtaskItem;
 
 const Wrapper = styled.div`
   .links {
-    padding: 0.2rem 0rem 0.2rem 2rem;
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: flex-start;
+    padding: 0.2rem 0rem 0.2rem 2rem;
     background-color: var(--body-color);
   }
   .subtask-title {

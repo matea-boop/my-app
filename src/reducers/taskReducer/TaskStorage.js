@@ -39,7 +39,6 @@ export const taskSlice = createSlice({
         );
       }
     },
-
     deleteTask: (state, action) => {
       let taskLista = window.localStorage.getItem("taskList");
       if (taskLista) {

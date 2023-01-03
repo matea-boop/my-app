@@ -2,11 +2,15 @@ import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { HiEllipsisVertical } from "react-icons/hi2";
 import { useDispatch } from "react-redux";
-import { deleteTask, editTask } from "../../reducers/taskReducer/TaskStorage";
+import {
+  deleteTask,
+  editTask,
+  editSubtask,
+} from "../../reducers/taskReducer/TaskStorage";
 import TaskForm from "../../reducers/taskReducer/TaskForm";
 import Checkbox from "./taskCheckbox";
 import { toast } from "react-hot-toast";
-import { HiOutlineChevronDown } from "react-icons/hi";
+import { IoIosArrowDropdownCircle } from "react-icons/io";
 import SubtaskListContent from "./subtaskContent";
 
 function TaskItem({ task }) {
@@ -18,11 +22,13 @@ function TaskItem({ task }) {
   const dispatch = useDispatch();
   let choiceRef = useRef();
   let divRef = useRef();
-  let subRef = useRef();
+
+  let listBoolean = [];
+  task.subtasks.forEach((sub) => listBoolean.push(sub.subtaskStatus));
 
   useEffect(() => {
     let handler = (event) => {
-      if (!choiceRef.current.contains(event.target)) {
+      if (choiceRef.current.contains(event.target)) {
         setOpenMenu(false);
       }
     };
@@ -63,6 +69,15 @@ function TaskItem({ task }) {
     );
   };
 
+  // useEffect(() => {
+  //   if (!listBoolean.includes("notDone")) {
+  //     setChecked(true);
+  //   } else {
+  //     setChecked(false);
+  //   }
+  //   console.log(listBoolean);
+  // });
+
   const handleDelete = () => {
     dispatch(deleteTask(task.id));
     setOpenMenu(false);
@@ -84,12 +99,7 @@ function TaskItem({ task }) {
 
   return (
     <Wrapper
-      style={
-        (checked ? { opacity: "0.5" } : { opacity: "1" },
-        subtaskArrow
-          ? { borderRadius: "var(--border-radius) var(--border-radius) 0 0" }
-          : null)
-      }
+      style={checked ? { opacity: "0.5" } : { opacity: "1" }}
       ref={divRef}
     >
       <div className="task-details">
@@ -100,7 +110,10 @@ function TaskItem({ task }) {
         />
         <p className="task-title">{task.title}</p>
 
-        <HiOutlineChevronDown
+        <IoIosArrowDropdownCircle
+          style={
+            checked ? { pointerEvents: "none" } : { pointerEvents: "auto" }
+          }
           className={subtaskArrow ? "subtask-arrow activ" : "subtask-arrow"}
           onClick={arrowClick}
         />
@@ -120,7 +133,6 @@ function TaskItem({ task }) {
                 onClick={handleDelete}
                 onKeyDown={handleDelete}
                 role="button"
-                tabIndex={0}
               >
                 Delete task
               </div>
@@ -129,7 +141,6 @@ function TaskItem({ task }) {
                 onClick={handleEdit}
                 onKeyDown={handleEdit}
                 role="button"
-                tabIndex={0}
               >
                 Edit task
               </div>
@@ -141,8 +152,11 @@ function TaskItem({ task }) {
       <div className="links-menu" ref={choiceRef}>
         {subtaskArrow ? (
           <SubtaskListContent
+            taskChecked={checked}
+            setTaskChecked={setChecked}
             className="links"
             dropdownOpen={subtaskArrow}
+            task={task}
             clicked={clicked}
             setClicked={setClicked}
           />
@@ -166,25 +180,23 @@ const Wrapper = styled.div`
   flex-direction: column;
   align-items: flex-start;
   justify-content: space-between;
-  background-color: var(--box-color);
-  tranisition: all 1s;
+
   margin-bottom: 0.7rem;
+  background-color: var(--box-color);
   border-radius: var(--border-radius);
-  &:last-child {
-    margin-bottom: 0;
-  }
+  tranisition: all 1s;
 
   .task-details {
     padding: 0.7rem 1rem 0.7rem 1rem;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 1rem;
+    gap: 0.7rem;
   }
+
   .task-title {
-    word-break: break-all;
     font-weight: regular;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
   }
   .icon-container {
     position: absolute;
@@ -234,6 +246,8 @@ const Wrapper = styled.div`
     cursor: pointer;
   }
   .subtask-arrow {
+    color: var(--sidebar-color);
+    font-size: 1.2rem;
     cursor: pointer;
     transition: rotate 0.2s;
     rotate: 0deg;
