@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useDispatch } from "react-redux";
-import { addTask, editTask } from "./TaskStorage";
+import { addTask, editTask } from "./taskStorage";
 import { v4 as uuid } from "uuid";
 import { toast } from "react-hot-toast";
 import { HiOutlineXMark } from "react-icons/hi2";

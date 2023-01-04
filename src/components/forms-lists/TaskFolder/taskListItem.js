@@ -2,17 +2,13 @@ import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { HiEllipsisVertical } from "react-icons/hi2";
 import { useDispatch } from "react-redux";
-import {
-  deleteTask,
-  editTask,
-  editSubtask,
-} from "./TaskForm.js/taskReducer/TaskStorage";
-import TaskForm from "./TaskForm.js/TaskForm";
+import { deleteTask, editTask, editSubtask } from "./taskReducer/taskStorage";
+import TaskForm from "./taskReducer/taskForm";
 import Checkbox from "./taskCheckbox";
 import { toast } from "react-hot-toast";
 import { IoIosArrowDropdownCircle } from "react-icons/io";
-import SubtaskListContent from "./subtaskContent";
-import SubtaskBar from "../forms-lists/subtaskBar";
+import SubtaskListContent from "./subtasks/subtaskListContent";
+import SubtaskBar from "./subtasks/subtaskBar";
 
 function TaskItem({ task }) {
   const [openMenu, setOpenMenu] = useState(false);
@@ -65,6 +61,9 @@ function TaskItem({ task }) {
       setChecked(true);
     } else {
       setChecked(false);
+    }
+    if (task.status === "complete") {
+      setChecked(true);
     }
     console.log(listBoolean);
   }, [...task.subtasks.map((sub) => sub.subtaskStatus)]);

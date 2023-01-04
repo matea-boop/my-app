@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import TaskPagination from "../forms-lists/taskPagination";
-import TaskListContent from "../forms-lists/taskListContent";
+import TaskPagination from "../forms-lists/TaskFolder/taskPagination";
+import TaskListContent from "../forms-lists/TaskFolder/taskListContent";
 import { Toaster } from "react-hot-toast";
-import TasksDone from "../forms-lists/tasksDone";
+import TasksDone from "../forms-lists/TaskFolder/tasksDone";
 
 export const Tasks = () => {
   const [totalPages, setTotalPages] = useState(0);

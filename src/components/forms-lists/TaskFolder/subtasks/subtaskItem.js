@@ -2,7 +2,7 @@ import React from "react";
 import { useState, useEffect } from "react";
 import SubtaskCheckbox from "./subtaskCheckbox";
 import styled from "styled-components";
-import { editSubtask, editTask } from "./TaskForm.js/taskReducer/TaskStorage";
+import { editSubtask, editTask } from "../taskReducer/taskStorage";
 import { useDispatch } from "react-redux";
 
 function SubtaskItem({

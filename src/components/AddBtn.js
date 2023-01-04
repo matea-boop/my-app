@@ -3,10 +3,10 @@ import styled from "styled-components";
 import { HiPlusCircle } from "react-icons/hi";
 import { IconContext } from "react-icons";
 import { useAllContext } from "../context/indexContext";
-import TaskForm from "../reducers/taskReducer/TaskForm";
-import EventForm from "../components/forms-lists/EventForm";
-import HabitForm from "../components/forms-lists/HabitForm";
-import DeadlineForm from "../components/forms-lists/DeadlineForm";
+import TaskForm from "../components/forms-lists/TaskFolder/taskReducer/taskForm";
+import EventForm from "./forms-lists/EventFolder/EventForm";
+import HabitForm from "./forms-lists/HabitFolder/HabitForm";
+import DeadlineForm from "./forms-lists/DeadlineFolder/DeadlineForm";
 
 function AddButton() {
   const { isBtnOpen, addBtnOpen, addBtnClose } = useAllContext();
