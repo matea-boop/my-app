@@ -2,7 +2,7 @@ import React from "react";
 import { useState, useEffect } from "react";
 import SubtaskCheckbox from "./subtaskCheckbox";
 import styled from "styled-components";
-import { editSubtask, editTask } from "../../reducers/taskReducer/TaskStorage";
+import { editSubtask, editTask } from "./TaskForm.js/taskReducer/TaskStorage";
 import { useDispatch } from "react-redux";
 
 function SubtaskItem({
@@ -10,9 +10,7 @@ function SubtaskItem({
   subtaskStatus,
   subtask,
   taskChecked,
-  setTaskChecked,
   subtaskList,
-  task,
 }) {
   const [subtaskChecked, setSubtaskChecked] = useState(false);
   const dispatch = useDispatch();
@@ -30,15 +28,6 @@ function SubtaskItem({
   };
 
   useEffect(() => {
-    if (!listBoolean.includes("notDone")) {
-      setTaskChecked(true);
-    } else {
-      setTaskChecked(false);
-    }
-    console.log(listBoolean);
-  }, [subtaskStatus]);
-
-  useEffect(() => {
     if (taskChecked) {
       setSubtaskChecked(true);
     } else {
@@ -52,9 +41,7 @@ function SubtaskItem({
             })
           )
         );
-        console.log(listBoolean);
       } else {
-        console.log(listBoolean);
         if (subtaskStatus === "done") {
           setSubtaskChecked(true);
         } else {
@@ -65,8 +52,7 @@ function SubtaskItem({
   }, [taskChecked]);
 
   return (
-    // style={taskChecked ? { display: "none" } : { display: "flex" }}
-    <Wrapper>
+    <Wrapper style={taskChecked ? { display: "none" } : { display: "flex" }}>
       <div className="links">
         <SubtaskCheckbox
           className="checkbox-subtasks"

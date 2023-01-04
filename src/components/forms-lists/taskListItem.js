@@ -6,12 +6,13 @@ import {
   deleteTask,
   editTask,
   editSubtask,
-} from "../../reducers/taskReducer/TaskStorage";
-import TaskForm from "../../reducers/taskReducer/TaskForm";
+} from "./TaskForm.js/taskReducer/TaskStorage";
+import TaskForm from "./TaskForm.js/TaskForm";
 import Checkbox from "./taskCheckbox";
 import { toast } from "react-hot-toast";
 import { IoIosArrowDropdownCircle } from "react-icons/io";
 import SubtaskListContent from "./subtaskContent";
+import SubtaskBar from "../forms-lists/subtaskBar";
 
 function TaskItem({ task }) {
   const [openMenu, setOpenMenu] = useState(false);
@@ -59,24 +60,36 @@ function TaskItem({ task }) {
     }
   }, [task.status]);
 
+  useEffect(() => {
+    if (listBoolean.length > 0 && !listBoolean.includes("notDone")) {
+      setChecked(true);
+    } else {
+      setChecked(false);
+    }
+    console.log(listBoolean);
+  }, [...task.subtasks.map((sub) => sub.subtaskStatus)]);
+
   const handleCheck = () => {
     setChecked(!checked);
+
     dispatch(
       editTask({
         ...task,
         status: checked ? "incomplete" : "complete",
       })
     );
-  };
 
-  // useEffect(() => {
-  //   if (!listBoolean.includes("notDone")) {
-  //     setChecked(true);
-  //   } else {
-  //     setChecked(false);
-  //   }
-  //   console.log(listBoolean);
-  // });
+    dispatch(
+      editSubtask({
+        ...task.subtasks,
+        subtasks: task.subtasks.forEach((sub) =>
+          checked
+            ? { ...sub, subtaskStatus: "notDone" }
+            : { ...sub, subtaskStatus: "done" }
+        ),
+      })
+    );
+  };
 
   const handleDelete = () => {
     dispatch(deleteTask(task.id));
@@ -112,9 +125,13 @@ function TaskItem({ task }) {
 
         <IoIosArrowDropdownCircle
           style={
-            checked ? { pointerEvents: "none" } : { pointerEvents: "auto" }
+            listBoolean && listBoolean.length > 0
+              ? { display: "flex" }
+              : { display: "none" }
           }
-          className={subtaskArrow ? "subtask-arrow activ" : "subtask-arrow"}
+          className={
+            subtaskArrow && !checked ? "subtask-arrow activ" : "subtask-arrow"
+          }
           onClick={arrowClick}
         />
 
@@ -148,6 +165,14 @@ function TaskItem({ task }) {
           ) : null}
         </div>
       </div>
+      <div
+        className="subtask-bar-container"
+        style={
+          listBoolean.length > 0 ? { display: "block" } : { display: "none" }
+        }
+      >
+        <SubtaskBar listBoolean={listBoolean} checked={checked} />
+      </div>
 
       <div className="links-menu" ref={choiceRef}>
         {subtaskArrow ? (
@@ -176,6 +201,7 @@ function TaskItem({ task }) {
 }
 
 const Wrapper = styled.div`
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -255,6 +281,11 @@ const Wrapper = styled.div`
   .activ {
     rotate: 180deg;
     transition: rotate 0.2s;
+  }
+  .subtask-bar-container {
+    position: absolute;
+    bottom: 0.2rem;
+    width: 100%;
   }
 `;
 

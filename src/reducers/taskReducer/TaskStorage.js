@@ -1,11 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const getInitialTask = () => {
-  //we are getting it from local storage
   let localTaskList = window.localStorage.getItem("taskList");
-  //if we have local storage we will parse it
-  //JSON.parse() takes a JSON string and transforms it into a js object
-  //JSON.stringify() takes a js object and transforms it into a JSON string
   if (localTaskList) {
     return JSON.parse(localTaskList);
   }
@@ -14,8 +10,6 @@ const getInitialTask = () => {
 };
 
 const initialValue = {
-  /*whenever our app will run we have to get 
-    initial state from local storage*/
   taskList: getInitialTask(),
 };
 
