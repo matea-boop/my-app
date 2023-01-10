@@ -51,6 +51,7 @@ const Wrapper = styled.div`
   position: absolute;
   height: 100%;
   width: 100%;
+  min-width: 14rem;
   grid-area: tasks;
   border-radius: 0.3rem;
   background-color: var(--sidebar-color);
@@ -80,7 +81,7 @@ const Wrapper = styled.div`
       border-radius: var(--border-radius);
     }
     a {
-      font-size: 0.9rem;
+      font-size: 0.8rem;
       float: right;
       margin: 1.5rem;
       opacity: 0.5;
@@ -99,5 +100,19 @@ const Wrapper = styled.div`
     margin-left: auto;
     margin-right: auto;
     width: fit-content;
+  }
+  @media screen and (max-width: 1024px) {
+    .title {
+      h1 {
+        font-size: 0.9rem;
+      }
+      .tasks-done {
+        padding: 0.15rem 0.45rem 0.15rem 0.45rem;
+        font-size: 0.9rem;
+      }
+      a {
+        font-size: 0.7rem;
+      }
+    }
   }
 `;

@@ -14,7 +14,8 @@ export const Navbar = () => {
         <div className="sidebar">
           <div className="sidebar-header">
             <h1>
-              <span className="blue-header">Mind</span>Me
+              <span className="blue-header">Mind</span>
+              <span>Me</span>
               <span className="orange-header">.</span>
             </h1>
           </div>
@@ -82,6 +83,17 @@ const SidebarMenu = styled.div`
     pointer-events: none;
     color: var(--text-color);
     opacity: 1;
+  }
+  @media screen and (max-width: 1024px) {
+    .sidebar {
+      width: 5rem;
+    }
+    .blue-header {
+      display: none;
+    }
+    .text {
+      display: none;
+    }
   }
 `;
 export default Navbar;

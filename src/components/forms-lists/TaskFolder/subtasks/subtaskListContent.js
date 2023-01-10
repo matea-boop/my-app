@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import SubtaskItem from "./subtaskItem";
 import styled from "styled-components";
 
-function SubtaskListContent({ clicked, taskChecked, setTaskChecked, task }) {
+function SubtaskListContent({ clicked, taskChecked, setTaskChecked }) {
   const taskList = useSelector((state) => state.task.taskList);
 
   return (
@@ -47,7 +47,7 @@ const Wrapper = styled.div`
   .links {
     position: relative;
     width: 100%;
-    animation: move ease-in-out 0.2s;
+    animation: move 0.1s forwards;
   }
   &:last-child {
     border-radius: 0 0 var(--border-radius) var(--border-radius);

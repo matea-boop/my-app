@@ -11,8 +11,10 @@ export const Calendar = () => {
 export default Calendar;
 
 const Wrapper = styled.div`
+  position: absolute;
+  height: 100%;
+  width: 100%;
   display: grid;
-  height: auto;
   grid-area: calendar;
   border-radius: 0.3rem;
   background-color: var(--sidebar-color);

@@ -26,7 +26,7 @@
 body {
     font-family: 'Nunito', sans-serif;
     color: var(--text-color);
-    overflow: hidden;
+    overflow: hidden;   
 }
 .app{
     height:100vh;
@@ -56,5 +56,9 @@ a {
 a:hover{
     opacity: .75;
 }
-
+@media screen and (max-width: 1024px) {
+    .main-container{
+        grid-template-columns: 5rem auto;
+    }
+}
 

@@ -6,7 +6,7 @@ import { deleteTask, editTask, editSubtask } from "./taskReducer/taskStorage";
 import TaskForm from "./taskReducer/taskForm";
 import Checkbox from "./taskCheckbox";
 import { toast } from "react-hot-toast";
-import { IoIosArrowDropdownCircle } from "react-icons/io";
+import { TfiArrowCircleDown } from "react-icons/tfi";
 import SubtaskListContent from "./subtasks/subtaskListContent";
 import SubtaskBar from "./subtasks/subtaskBar";
 
@@ -25,7 +25,7 @@ function TaskItem({ task }) {
 
   useEffect(() => {
     let handler = (event) => {
-      if (choiceRef.current.contains(event.target)) {
+      if (!choiceRef.current.contains(event.target)) {
         setOpenMenu(false);
       }
     };
@@ -58,18 +58,23 @@ function TaskItem({ task }) {
 
   useEffect(() => {
     if (listBoolean.length > 0 && !listBoolean.includes("notDone")) {
-      setChecked(true);
+      dispatch(
+        editTask({
+          ...task,
+          status: "complete",
+        })
+      );
     } else {
       setChecked(false);
     }
     if (task.status === "complete") {
       setChecked(true);
     }
-    console.log(listBoolean);
   }, [...task.subtasks.map((sub) => sub.subtaskStatus)]);
 
   const handleCheck = () => {
     setChecked(!checked);
+    console.log("clicked");
 
     dispatch(
       editTask({
@@ -78,18 +83,16 @@ function TaskItem({ task }) {
       })
     );
 
-    dispatch(
-      editSubtask({
-        ...task.subtasks,
-        subtasks: task.subtasks.forEach((sub) =>
-          checked
-            ? { ...sub, subtaskStatus: "notDone" }
-            : { ...sub, subtaskStatus: "done" }
-        ),
-      })
-    );
+    task.subtasks.map((sub) => {
+      dispatch(
+        editSubtask({
+          ...sub,
+          subtaskStatus: checked ? "notDone" : "done",
+        })
+      );
+    });
   };
-
+  console.log(listBoolean);
   const handleDelete = () => {
     dispatch(deleteTask(task.id));
     setOpenMenu(false);
@@ -115,6 +118,8 @@ function TaskItem({ task }) {
       ref={divRef}
     >
       <div className="task-details">
+        {/* CHECKBOX */}
+
         <Checkbox
           className="checkbox"
           checked={checked}
@@ -122,28 +127,37 @@ function TaskItem({ task }) {
         />
         <p className="task-title">{task.title}</p>
 
-        <IoIosArrowDropdownCircle
-          style={
-            listBoolean && listBoolean.length > 0
-              ? { display: "flex" }
-              : { display: "none" }
-          }
-          className={
-            subtaskArrow && !checked ? "subtask-arrow activ" : "subtask-arrow"
-          }
-          onClick={arrowClick}
-        />
-
         <div
-          ref={choiceRef}
           className="icon-container"
           style={
             checked ? { pointerEvents: "none" } : { pointerEvents: "auto" }
           }
         >
-          <HiEllipsisVertical className="icon" onClick={onClick} />
-          {openMenu ? (
-            <div className="icon-choice-container">
+          {/* SUBTASK ARROW */}
+
+          <TfiArrowCircleDown
+            style={
+              listBoolean && listBoolean.length > 0
+                ? { display: "flex" }
+                : { display: "none" }
+            }
+            className={
+              subtaskArrow && !checked ? "subtask-arrow activ" : "subtask-arrow"
+            }
+            onClick={arrowClick}
+          />
+
+          {/* MENU EDIT / DELETE */}
+          <div ref={choiceRef} className="relat">
+            <div className="icon">
+              {" "}
+              <HiEllipsisVertical onClick={onClick} />
+            </div>
+
+            <div
+              className="icon-choice-container"
+              {...(openMenu ? { open: openMenu } : null)}
+            >
               <div
                 className="choice"
                 onClick={handleDelete}
@@ -161,9 +175,12 @@ function TaskItem({ task }) {
                 Edit task
               </div>
             </div>
-          ) : null}
+          </div>
         </div>
       </div>
+
+      {/* SUBTASK BAR */}
+
       <div
         className="subtask-bar-container"
         style={
@@ -173,12 +190,13 @@ function TaskItem({ task }) {
         <SubtaskBar listBoolean={listBoolean} checked={checked} />
       </div>
 
-      <div className="links-menu" ref={choiceRef}>
+      {/* SUBTASK LIST */}
+
+      <div className="links-menu">
         {subtaskArrow ? (
           <SubtaskListContent
             taskChecked={checked}
             setTaskChecked={setChecked}
-            className="links"
             dropdownOpen={subtaskArrow}
             task={task}
             clicked={clicked}
@@ -209,7 +227,6 @@ const Wrapper = styled.div`
   margin-bottom: 0.7rem;
   background-color: var(--box-color);
   border-radius: var(--border-radius);
-  tranisition: all 1s;
 
   .task-details {
     padding: 0.7rem 1rem 0.7rem 1rem;
@@ -218,7 +235,6 @@ const Wrapper = styled.div`
     justify-content: center;
     gap: 0.7rem;
   }
-
   .task-title {
     font-weight: regular;
     font-size: 0.8rem;
@@ -242,16 +258,27 @@ const Wrapper = styled.div`
       opacity: 1;
     }
   }
+  .relat {
+    position: relative;
+  }
   .icon-choice-container {
-    position: fixed;
-    display: flex;
-    margin-right: 8rem;
+    position: absolute;
+    top: -1.4rem;
+    right: 1.4rem;
     z-index: 200;
     min-width: 5.5rem;
+    display: flex;
     flex-direction: column;
     align-items: center;
     background-color: var(--mainorange-color);
     border-radius: var(--border-radius);
+    animation: fade-out 0.2s forwards;
+  }
+  .icon-choice-container[open] {
+    animation: fade-in 0.2s forwards;
+  }
+  .icon-choice-container[closing] {
+    display: none;
   }
   .choice {
     color: var(--box-color);
@@ -271,11 +298,15 @@ const Wrapper = styled.div`
     cursor: pointer;
   }
   .subtask-arrow {
-    color: var(--sidebar-color);
-    font-size: 1.2rem;
+    color: var(--text-color);
+    font-size: 0.9rem;
     cursor: pointer;
     transition: rotate 0.2s;
     rotate: 0deg;
+    opacity: 0.5;
+    &:hover {
+      opacity: 1;
+    }
   }
   .activ {
     rotate: 180deg;
@@ -285,6 +316,49 @@ const Wrapper = styled.div`
     position: absolute;
     bottom: 0.2rem;
     width: 100%;
+  }
+
+  @keyframes fade-in {
+    0% {
+      clip-path: polygon(100% 50%, 100% 50%, 100% 50%, 100% 50%);
+      transform: scale(0);
+    }
+    50% {
+      clip-path: polygon(0 0, 100% 40%, 100% 60%, 0% 100%);
+      transform: scale(0.5);
+    }
+    75% {
+      clip-path: polygon(0 0, 100% 20%, 100% 80%, 0% 100%);
+      transform: scale(0.7);
+    }
+    100% {
+      clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
+      transform: scale(1);
+    }
+  }
+  @keyframes fade-out {
+    100% {
+      clip-path: polygon(100% 50%, 100% 50%, 100% 50%, 100% 50%);
+      transform: scale(0);
+      transform-origin: 100% 50%;
+    }
+    75% {
+      clip-path: polygon(0 0, 100% 40%, 100% 60%, 0% 100%);
+    }
+    50% {
+      clip-path: polygon(0 0, 100% 20%, 100% 80%, 0% 100%);
+    }
+    0% {
+      clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
+      transform: scale(1);
+      transform-origin: 100% 50%;
+    }
+  }
+
+  @media screen and (max-width: 1024px) {
+    .task-title {
+      font-size: 0.7rem;
+    }
   }
 `;
 

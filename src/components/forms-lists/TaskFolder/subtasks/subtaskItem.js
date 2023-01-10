@@ -11,6 +11,7 @@ function SubtaskItem({
   subtask,
   taskChecked,
   subtaskList,
+  task,
 }) {
   const [subtaskChecked, setSubtaskChecked] = useState(false);
   const dispatch = useDispatch();
@@ -37,7 +38,7 @@ function SubtaskItem({
           dispatch(
             editSubtask({
               ...sub,
-              subtaskStatus: !subtaskChecked ? "done" : "notDone",
+              subtaskStatus: subtaskChecked ? "done" : "notDone",
             })
           )
         );
@@ -80,6 +81,7 @@ const Wrapper = styled.div`
     justify-content: flex-start;
     padding: 0.2rem 0rem 0.2rem 2rem;
     background-color: var(--body-color);
+    animation: close 0.1s forwards;
   }
   .subtask-title {
     padding: 0.3rem 0.5rem 0.3rem 0.5rem;
