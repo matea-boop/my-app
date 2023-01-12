@@ -19,6 +19,8 @@ function TaskItem({ task }) {
   const dispatch = useDispatch();
   let choiceRef = useRef();
   let divRef = useRef();
+  let subtaskRef = useRef();
+  let arrowRef = useRef();
 
   let listBoolean = [];
   task.subtasks.forEach((sub) => listBoolean.push(sub.subtaskStatus));
@@ -29,9 +31,19 @@ function TaskItem({ task }) {
         setOpenMenu(false);
       }
     };
+    let handler1 = (event) => {
+      if (
+        !arrowRef.current.contains(event.target) &&
+        !subtaskRef.current.contains(event.target)
+      ) {
+        setSubtaskArrow(false);
+      }
+    };
     document.addEventListener("mousedown", handler);
+    document.addEventListener("mousedown", handler1);
     return () => {
       document.removeEventListener("mousedown", handler);
+      document.removeEventListener("mousedown", handler1);
     };
   });
 
@@ -74,8 +86,6 @@ function TaskItem({ task }) {
 
   const handleCheck = () => {
     setChecked(!checked);
-    console.log("clicked");
-
     dispatch(
       editTask({
         ...task,
@@ -92,7 +102,7 @@ function TaskItem({ task }) {
       );
     });
   };
-  console.log(listBoolean);
+
   const handleDelete = () => {
     dispatch(deleteTask(task.id));
     setOpenMenu(false);
@@ -134,18 +144,21 @@ function TaskItem({ task }) {
           }
         >
           {/* SUBTASK ARROW */}
-
-          <TfiArrowCircleDown
-            style={
-              listBoolean && listBoolean.length > 0
-                ? { display: "flex" }
-                : { display: "none" }
-            }
-            className={
-              subtaskArrow && !checked ? "subtask-arrow activ" : "subtask-arrow"
-            }
-            onClick={arrowClick}
-          />
+          <div ref={arrowRef}>
+            <TfiArrowCircleDown
+              style={
+                listBoolean && listBoolean.length > 0
+                  ? { display: "flex" }
+                  : { display: "none" }
+              }
+              className={
+                subtaskArrow && !checked
+                  ? "subtask-arrow activ"
+                  : "subtask-arrow"
+              }
+              onClick={arrowClick}
+            />
+          </div>
 
           {/* MENU EDIT / DELETE */}
           <div ref={choiceRef} className="relat">
@@ -192,7 +205,7 @@ function TaskItem({ task }) {
 
       {/* SUBTASK LIST */}
 
-      <div className="links-menu">
+      <div className="links-menu" ref={subtaskRef}>
         {subtaskArrow ? (
           <SubtaskListContent
             taskChecked={checked}
@@ -268,6 +281,8 @@ const Wrapper = styled.div`
     z-index: 200;
     min-width: 5.5rem;
     display: flex;
+    opacity: 0;
+    transition: opacity 0.2s;
     flex-direction: column;
     align-items: center;
     background-color: var(--mainorange-color);
@@ -276,9 +291,8 @@ const Wrapper = styled.div`
   }
   .icon-choice-container[open] {
     animation: fade-in 0.2s forwards;
-  }
-  .icon-choice-container[closing] {
-    display: none;
+    opacity: 1;
+    transition: opacity 0.2s;
   }
   .choice {
     color: var(--box-color);
