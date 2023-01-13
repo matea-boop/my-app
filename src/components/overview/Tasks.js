@@ -72,7 +72,7 @@ const Wrapper = styled.div`
     h1 {
       font-size: 1rem;
       text-align: left;
-      margin: 1.5rem 0.5rem 1.5rem 1.5rem;
+      margin: 1.5rem 0.5rem 1.3rem 1.5rem;
       font-weight: normal;
     }
     .tasks-done {
@@ -83,9 +83,12 @@ const Wrapper = styled.div`
     a {
       font-size: 0.8rem;
       float: right;
-      margin: 1.5rem;
+      margin: 1.7rem 1.7rem 1.3rem 1.7rem;
       opacity: 0.5;
       font-weight: lighter;
+      &:hover {
+        opacity: 1;
+      }
     }
   }
   .task-list {
@@ -94,7 +97,8 @@ const Wrapper = styled.div`
   }
   .pagination {
     position: absolute;
-    bottom: 1rem;
+    bottom: 0.6rem;
+
     left: 0;
     right: 0;
     margin-left: auto;

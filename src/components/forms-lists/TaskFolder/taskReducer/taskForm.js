@@ -1,31 +1,38 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useDispatch } from "react-redux";
-import { addTask, editTask } from "./taskStorage";
+import { addTask, editTask, addSubtask } from "./taskStorage";
 import { v4 as uuid } from "uuid";
 import { toast } from "react-hot-toast";
 import { HiOutlineXMark } from "react-icons/hi2";
+
 import { IconContext } from "react-icons";
 
 function TaskForm({ type, task, modalOpen, setModalOpen }) {
   const [title, setTitle] = useState("");
-  const [subtasks, setSubtasks] = useState([]);
+  const [subtasks, setSubtasks] = useState(task ? task.subtasks : []);
   const [currentSubtask, setCurrentSubtask] = useState("");
+
   const [status, setStatus] = useState("incomplete");
   const [subtaskStatus, setSubtaskStatus] = useState("notDone");
-  // const [date, setDate] = useState("");
+  const [date, setDate] = useState(new Date().toLocaleDateString());
+  const [time, setTime] = useState(new Date().toLocaleTimeString());
   const dispatch = useDispatch();
 
   useEffect(() => {
     if (type === "edit" && task) {
       setTitle(task.title);
+      setSubtasks(task.subtasks);
     } else {
       setTitle("");
+      setSubtasks([]);
     }
   }, [type, task, modalOpen]);
 
-  const onClick = () => {
+  const onClick = (e) => {
+    e.preventDefault();
     setModalOpen(false);
+    console.log("clicked");
   };
 
   const handleSubmit = (e) => {
@@ -41,10 +48,10 @@ function TaskForm({ type, task, modalOpen, setModalOpen }) {
             title,
             subtasks,
             status,
-            time: new Date().toLocaleDateString(),
+            date,
+            time,
           })
         );
-
         toast.success("Task Added Successfully");
         setModalOpen(false);
       }
@@ -54,6 +61,15 @@ function TaskForm({ type, task, modalOpen, setModalOpen }) {
             editTask({
               ...task,
               title,
+            })
+          );
+          setModalOpen(false);
+          toast.success("Task Edited");
+        } else if (task.subtasks !== subtasks) {
+          dispatch(
+            editTask({
+              ...task,
+              subtasks,
             })
           );
           setModalOpen(false);
@@ -77,6 +93,7 @@ function TaskForm({ type, task, modalOpen, setModalOpen }) {
         subtaskStatus: subtaskStatus,
       },
     ]);
+
     setCurrentSubtask("");
   };
 
@@ -108,6 +125,7 @@ function TaskForm({ type, task, modalOpen, setModalOpen }) {
 
                 <input
                   type="text"
+                  maxLength="13"
                   placeholder="Task title"
                   value={title}
                   id="title"
@@ -122,18 +140,23 @@ function TaskForm({ type, task, modalOpen, setModalOpen }) {
                   placeholder="Date"
                   name="time"
                   className="task-input-date"
+                  value={date}
+                  onChange={(e) => setDate(e.target.value)}
                 />
                 <input
                   type="time"
                   placeholder="Time"
                   name="time"
                   className="task-input-time"
+                  value={time}
+                  onChange={(e) => setTime(e.target.value)}
                 />
 
                 <label htmlFor="subtasks">Subtasks</label>
                 <div className="add-subtask-container">
                   <input
                     type="text"
+                    maxLength="15"
                     placeholder="Add Subtask"
                     value={currentSubtask}
                     name="subtasks"
@@ -159,7 +182,9 @@ function TaskForm({ type, task, modalOpen, setModalOpen }) {
                             <div>{subtaskTitle}</div>
 
                             <HiOutlineXMark
-                              onClick={(e) => deleteSubtask(e, id)}
+                              onClick={() => {
+                                deleteSubtask(id);
+                              }}
                               className="delete-subtask"
                             />
                           </li>
@@ -176,9 +201,7 @@ function TaskForm({ type, task, modalOpen, setModalOpen }) {
                   <button
                     type="button"
                     className="task-btn cancel"
-                    role="button"
-                    tabIndex={0}
-                    onClick={onClick}
+                    onClick={(e) => onClick(e)}
                   >
                     Cancel
                   </button>
@@ -254,11 +277,13 @@ const Wrapper = styled.div`
     .button-container {
       width: fit-content;
       margin: 0 auto;
+      z-index: 1000;
     }
     .task-btn {
       padding: 1rem 1.5rem 1rem 1.5rem;
       font-size: 1rem;
       margin: 0.3rem;
+      z-index: 1000;
       font-family: "Nunito", sans-serif;
       font-weight: bold;
       background-color: var(--body-color);
@@ -268,6 +293,7 @@ const Wrapper = styled.div`
       cursor: pointer;
     }
     .cancel {
+      z-index: 1000;
       opacity: 0.75;
     }
   }
@@ -291,7 +317,11 @@ const Wrapper = styled.div`
     margin-left: 0.5rem;
     padding: 0 1rem 0 1rem;
   }
-  .subtask {
+  .icons-subtask {
+    gap: 0.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
   .links {
     display: flex;

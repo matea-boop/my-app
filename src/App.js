@@ -24,7 +24,7 @@ export const App = () => {
             <AddButton />
 
             <Routes>
-              <Route exact path="/Overview" element={<Overview />}></Route>
+              <Route exact path="/*" element={<Overview />}></Route>
               <Route exact path="/Calendar" element={<Calendar />}></Route>
               <Route exact path="/Notebook" element={<Notebook />}></Route>
               <Route exact path="/Tasks" element={<Tasks />}></Route>

@@ -1,25 +1,58 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
 import CircuralProgress from "./Graph/circuralProgress";
 import TaskBar from "./Graph/taskBar";
 import NotebookBar from "./Graph/notebookBar";
+import { motivationalText } from "../../constants/constants";
 
 export const Graph = () => {
   const taskLength = useSelector((state) => state.task.taskList.length);
   const listOfcompletedTasks = useSelector((state) =>
     state.task.taskList.filter((task) => task.status === "complete")
   );
+  const listOfUncompletedTasks = useSelector((state) =>
+    state.task.taskList.filter((task) => task.status === "incomplete")
+  );
+  const uncompletedTasks = listOfUncompletedTasks.length;
   const completedTasks = listOfcompletedTasks.length;
-  const tasksDone = (completedTasks / taskLength) * 100;
+  const tasksDone =
+    completedTasks === 0 ? 0 : (completedTasks / taskLength) * 100;
+  const [index, setIndex] = useState(0);
+  useEffect(() => {
+    if (completedTasks === 0 && uncompletedTasks === 0) {
+      setIndex(0);
+    } else if (tasksDone >= 0 && tasksDone <= 10) {
+      setIndex(1);
+    } else if (tasksDone > 10 && tasksDone <= 30) {
+      setIndex(2);
+    } else if (tasksDone > 30 && tasksDone < 50) {
+      setIndex(3);
+    } else if (tasksDone === 50) {
+      setIndex(4);
+    } else if (tasksDone > 50 && tasksDone <= 70) {
+      setIndex(5);
+    } else if (tasksDone > 70 && tasksDone <= 90) {
+      setIndex(6);
+    } else if (tasksDone > 90 && tasksDone <= 99) {
+      setIndex(7);
+    } else if (tasksDone === 100) {
+      setIndex(8);
+    }
+  }, [uncompletedTasks]);
 
   return (
     <Wrapper>
       <div className="items">
         <div className="headers">
           <h1 className="header">Friday 18th October</h1>
-          <h2 className="motivational">Great Job!</h2>
+          <div className="motivational">
+            {motivationalText.map(({ id, text }) => {
+              return index === id ? <span key={id}>{text}</span> : null;
+            })}
+          </div>
         </div>
+
         <div className="circle">
           <CircuralProgress percentage={tasksDone} circleWidth="140" />
         </div>
@@ -63,8 +96,8 @@ const Wrapper = styled.div`
     justify-content: center;
   }
   .motivational {
-    padding-top: 0.8rem;
-    font-size: 1rem;
+    padding-top: 0.7rem;
+    font-size: 0.9rem;
     font-weight: normal;
     display: flex;
     align-items: center;

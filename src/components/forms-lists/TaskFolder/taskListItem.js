@@ -251,6 +251,7 @@ const Wrapper = styled.div`
   .task-title {
     font-weight: regular;
     font-size: 0.8rem;
+    max-width: 8rem;
   }
   .icon-container {
     position: absolute;
@@ -370,6 +371,11 @@ const Wrapper = styled.div`
   }
 
   @media screen and (max-width: 1024px) {
+    .task-title {
+      font-size: 0.7rem;
+    }
+  }
+  @media screen and (max-width: 1200px) {
     .task-title {
       font-size: 0.7rem;
     }

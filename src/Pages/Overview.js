@@ -31,6 +31,6 @@ const Wrapper = styled.div`
     grid-template-columns: 18rem 14rem 1fr;
   }
   @media screen and (max-width: 1200px) {
-    grid-template-columns: 14rem 14rem 1fr;
+    grid-template-columns: 14rem 15rem 1fr;
   }
 `;

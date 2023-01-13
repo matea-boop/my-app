@@ -44,3 +44,42 @@ export const menuItems = [
     url: "/Settings",
   },
 ];
+
+export const motivationalText = [
+  {
+    id: 0, //0%
+    text: "No work for today :(",
+  },
+  {
+    id: 1, //0-10%
+    text: "We are just getting started...",
+  },
+  {
+    id: 2, //10-30%
+    text: "Good job! Warming up!",
+  },
+  {
+    id: 3, //30-49%
+    text: "Almost half way!",
+  },
+  {
+    id: 4, //50%
+    text: "Harder half is over!",
+  },
+  {
+    id: 5, // 50-70%
+    text: "Don't lose focus now!",
+  },
+  {
+    id: 6, // 70-90%
+    text: "Almost There!",
+  },
+  {
+    id: 7, // 90-99%
+    text: "You can do it!",
+  },
+  {
+    id: 8, // 100%
+    text: "Congrats! All done!",
+  },
+];
