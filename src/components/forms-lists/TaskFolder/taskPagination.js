@@ -1,13 +1,18 @@
 import React from "react";
 import { BsFillCircleFill } from "react-icons/bs";
 import styled from "styled-components";
+import { useSelector } from "react-redux";
 
 export const TaskPagination = ({ totalPages, handleClick, pageActive }) => {
+  const taskList = useSelector((state) => state.task.taskList);
   const pages = [...Array(totalPages).keys()].map((num) => num + 1);
 
   return (
     <Wrapper>
-      <div className="container">
+      <div
+        className="container"
+        style={taskList.length > 0 ? { display: "flex" } : { display: "none" }}
+      >
         {pages.map((num) => (
           <button
             key={num}

@@ -55,6 +55,7 @@ export const taskSlice = createSlice({
             task.status = action.payload.status;
             task.title = action.payload.title;
             task.subtasks = action.payload.subtasks;
+            task.date = action.payload.date;
           }
         });
         window.localStorage.setItem("taskList", JSON.stringify(taskListArr));

@@ -58,5 +58,6 @@ const Wrapper = styled.div`
   }
   .circle-text {
     fill: var(--mainorange-color);
+    font-weight: bold;
   }
 `;

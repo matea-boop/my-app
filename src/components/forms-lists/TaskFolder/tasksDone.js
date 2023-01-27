@@ -3,9 +3,20 @@ import styled from "styled-components";
 import { useSelector } from "react-redux";
 
 export const TasksDone = () => {
-  const incompletedTasks = useSelector((state) =>
-    state.task.taskList.filter((task) => task.status === "incomplete")
+  let todaysDate = new Date().toLocaleDateString();
+  const mainList = [];
+  const listOfTasksToday = useSelector((state) =>
+    state.task.taskList.forEach((task) => {
+      if (task.date === todaysDate) {
+        mainList.push({ status: task.status, date: task.date });
+      }
+    })
   );
+
+  const incompletedTasks = useSelector(() =>
+    mainList.filter((task) => task.status === "incomplete")
+  );
+
   const incTasks = incompletedTasks.length;
 
   return <Wrapper>{incTasks}</Wrapper>;

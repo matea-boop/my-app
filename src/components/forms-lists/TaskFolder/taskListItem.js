@@ -9,6 +9,7 @@ import { toast } from "react-hot-toast";
 import { TfiArrowCircleDown } from "react-icons/tfi";
 import SubtaskListContent from "./subtasks/subtaskListContent";
 import SubtaskBar from "./subtasks/subtaskBar";
+import axios from "axios";
 
 function TaskItem({ task }) {
   const [openMenu, setOpenMenu] = useState(false);
@@ -21,6 +22,16 @@ function TaskItem({ task }) {
   let divRef = useRef();
   let subtaskRef = useRef();
   let arrowRef = useRef();
+
+  const [taskData, setTaskData] = useState({
+    data: [],
+    id: 0,
+    message: null,
+    intervalIsSet: false,
+    idToDelete: null,
+    idToUpdate: null,
+    objectToUpdate: null,
+  });
 
   let listBoolean = [];
   task.subtasks.forEach((sub) => listBoolean.push(sub.subtaskStatus));
@@ -103,8 +114,58 @@ function TaskItem({ task }) {
     });
   };
 
+  useEffect(() => {
+    const componentDidMount = () => {
+      fetchData();
+      if (!taskData.intervalIsSet) {
+        let interval = setInterval(fetchData(), 1000);
+        setTaskData({ intervalIsSet: interval });
+      }
+    };
+
+    const componentWillUnmount = () => {
+      if (taskData.intervalIsSet) {
+        clearInterval(taskData.intervalIsSet);
+        setTaskData({ intervalIsSet: null });
+      }
+    };
+
+    const url = "http://localhost:3035/api/getData";
+    const fetchData = async () => {
+      try {
+        const response = await fetch(url);
+        const json = await response.json();
+        setTaskData({ data: json.data });
+        console.log(json);
+      } catch (error) {
+        console.log("error", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const deleteFromDB = (idTodelete) => {
+    parseInt(idTodelete);
+    let objIdToDelete = null;
+    taskData.data.forEach((dat) => {
+      if (dat.id === idTodelete) {
+        objIdToDelete = dat._id;
+      }
+    });
+
+    axios
+      .delete("http://localhost:3035/api/deleteData", {
+        data: {
+          id: objIdToDelete,
+        },
+      })
+      .then(() => window.location.reload());
+  };
+
   const handleDelete = () => {
-    dispatch(deleteTask(task.id));
+    deleteFromDB(task.id);
+    // dispatch(deleteTask(task.id));
     setOpenMenu(false);
     toast.success("Task Deleted");
   };

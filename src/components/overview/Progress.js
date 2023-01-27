@@ -1,10 +1,12 @@
 import React from "react";
 import styled from "styled-components";
+import AreaChartProgress from "./Progress/areaChart";
 
 export const Progress = () => {
   return (
     <Wrapper>
       <h1>Progress</h1>
+      <AreaChartProgress />
     </Wrapper>
   );
 };

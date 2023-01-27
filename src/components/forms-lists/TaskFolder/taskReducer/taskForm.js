@@ -5,24 +5,107 @@ import { addTask, editTask, addSubtask } from "./taskStorage";
 import { v4 as uuid } from "uuid";
 import { toast } from "react-hot-toast";
 import { HiOutlineXMark } from "react-icons/hi2";
-
+import { useSelector } from "react-redux";
+import { saveAs } from "file-saver";
 import { IconContext } from "react-icons";
+import axios from "axios";
 
 function TaskForm({ type, task, modalOpen, setModalOpen }) {
+  const [taskData, setTaskData] = useState({
+    data: [],
+    id: 0,
+    message: null,
+    intervalIsSet: false,
+    idToDelete: null,
+    idToUpdate: null,
+    objectToUpdate: null,
+  });
+
   const [title, setTitle] = useState("");
   const [subtasks, setSubtasks] = useState(task ? task.subtasks : []);
   const [currentSubtask, setCurrentSubtask] = useState("");
-
   const [status, setStatus] = useState("incomplete");
   const [subtaskStatus, setSubtaskStatus] = useState("notDone");
   const [date, setDate] = useState(new Date().toLocaleDateString());
-  const [time, setTime] = useState(new Date().toLocaleTimeString());
+  const [valid, setValid] = useState(false);
   const dispatch = useDispatch();
+
+  // const componentDidMount = () => {
+  //   getDataFromDb();
+  //   if (!taskData.intervalIsSet) {
+  //     let interval = setInterval(getDataFromDb(), 1000);
+  //     setTaskData({ intervalIsSet: interval });
+  //   }
+  // };
+
+  // const componentWillUnmount = () => {
+  //   if (taskData.intervalIsSet) {
+  //     clearInterval(taskData.intervalIsSet);
+  //     setTaskData({ intervalIsSet: null });
+  //   }
+  // };
+
+  useEffect(() => {
+    const url = "http://localhost:3035/api/getData";
+
+    const fetchData = async () => {
+      try {
+        const response = await fetch(url);
+        const json = await response.json();
+        setTaskData({ data: json.data });
+      } catch (error) {
+        console.log("error", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  // const getDataFromDb = () => {
+  //   // axios
+  //   //   .get("http://localhost:3035/api/getData")
+  //   //   .then((res) => {
+  //   //     const data = res.data.data;
+  //   //     setTaskData({ data: data });
+  //   //     console.log(data);
+  //   //   })
+  //   //   .catch(() => console.log("error hehehe"));
+  //   fetch("http://localhost:3035/api/getData")
+  //     .then((data) => {
+  //       return data.json();
+  //     })
+  //     .then((res) => {
+  //       console.log(res.data);
+  //       setTaskData({ data: res.data });
+  //     });
+  // };
+
+  const putDataToDB = () => {
+    const newData = {
+      id: uuid(),
+      title: title,
+      subtasks: subtasks,
+      status: status,
+      date: date,
+    };
+
+    axios
+      .post("http://localhost:3035/api/putData", newData, {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Methods": "GET,HEAD,OPTIONS,POST,PUT",
+        },
+      })
+      .then(() => window.location.reload());
+  };
 
   useEffect(() => {
     if (type === "edit" && task) {
       setTitle(task.title);
       setSubtasks(task.subtasks);
+      setDate(task.date);
     } else {
       setTitle("");
       setSubtasks([]);
@@ -32,15 +115,20 @@ function TaskForm({ type, task, modalOpen, setModalOpen }) {
   const onClick = (e) => {
     e.preventDefault();
     setModalOpen(false);
-    console.log("clicked");
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (title === "") {
+
+    // componentDidMount();
+    // componentWillUnmount();
+    putDataToDB();
+    // getDataFromDb();
+
+    if (title === "" || !valid) {
       return;
     }
-    if (title) {
+    if (title && valid) {
       if (type === "add") {
         dispatch(
           addTask({
@@ -49,9 +137,9 @@ function TaskForm({ type, task, modalOpen, setModalOpen }) {
             subtasks,
             status,
             date,
-            time,
           })
         );
+
         toast.success("Task Added Successfully");
         setModalOpen(false);
       }
@@ -70,6 +158,15 @@ function TaskForm({ type, task, modalOpen, setModalOpen }) {
             editTask({
               ...task,
               subtasks,
+            })
+          );
+          setModalOpen(false);
+          toast.success("Task Edited");
+        } else if (task.date !== date) {
+          dispatch(
+            editTask({
+              ...task,
+              date,
             })
           );
           setModalOpen(false);
@@ -101,6 +198,28 @@ function TaskForm({ type, task, modalOpen, setModalOpen }) {
     setSubtasks(subtasks.filter((subtask) => subtask.id !== id));
   };
 
+  useEffect(() => {
+    const ddmmyyyy = /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/;
+
+    if (ddmmyyyy.test(date)) {
+      setValid(true);
+    } else {
+      setValid(false);
+    }
+  }, [date]);
+
+  // useEffect(() => {
+
+  //   // .then((response) => response.json())
+  //   // .then((data) => {
+  //   //   console.log(data);
+  //   //   // Handle data
+  //   // })
+  //   // .catch((err) => {
+  //   //   console.log(err.message);
+  //   // });
+  // }, [modalOpen]);
+
   return (
     <IconContext.Provider
       value={{
@@ -113,6 +232,7 @@ function TaskForm({ type, task, modalOpen, setModalOpen }) {
           <Wrapper>
             <div className="form-container">
               <form
+                method="POST"
                 className="task-form"
                 onSubmit={(e) => {
                   handleSubmit(e);
@@ -136,20 +256,13 @@ function TaskForm({ type, task, modalOpen, setModalOpen }) {
                 <label htmlFor="time">Date and Time</label>
 
                 <input
-                  type="date"
-                  placeholder="Date"
+                  id={valid ? "valid" : "notValid"}
+                  type="text"
+                  placeholder="dd/mm/yyyy"
                   name="time"
                   className="task-input-date"
                   value={date}
                   onChange={(e) => setDate(e.target.value)}
-                />
-                <input
-                  type="time"
-                  placeholder="Time"
-                  name="time"
-                  className="task-input-time"
-                  value={time}
-                  onChange={(e) => setTime(e.target.value)}
                 />
 
                 <label htmlFor="subtasks">Subtasks</label>
@@ -261,17 +374,10 @@ const Wrapper = styled.div`
       width: 100%;
       padding: 1rem;
       border: none;
+      outline: none;
       border-radius: var(--border-radius);
       background-color: var(--text-color);
       font-size: 1rem;
-    }
-    .task-input-date {
-      margin-bottom: 0.3rem;
-    }
-    .task-input-time {
-      margin-top: 0;
-      width: 60%;
-      margin-right: 40%;
     }
 
     .button-container {
@@ -296,6 +402,9 @@ const Wrapper = styled.div`
       z-index: 1000;
       opacity: 0.75;
     }
+  }
+  input[id="notValid"] {
+    outline: 2px solid red;
   }
   .add-subtask-container {
     display: flex;

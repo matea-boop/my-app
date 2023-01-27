@@ -7,18 +7,28 @@ import NotebookBar from "./Graph/notebookBar";
 import { motivationalText } from "../../constants/constants";
 
 export const Graph = () => {
-  const taskLength = useSelector((state) => state.task.taskList.length);
-  const listOfcompletedTasks = useSelector((state) =>
-    state.task.taskList.filter((task) => task.status === "complete")
+  let todaysDate = new Date().toLocaleDateString();
+  const mainList = [];
+  const listOfTasksToday = useSelector((state) =>
+    state.task.taskList.forEach((task) => {
+      if (task.date === todaysDate) {
+        mainList.push({ status: task.status, date: task.date });
+      }
+    })
   );
-  const listOfUncompletedTasks = useSelector((state) =>
-    state.task.taskList.filter((task) => task.status === "incomplete")
+  const listOfcompletedTasks = useSelector(() =>
+    mainList.filter((task) => task.status === "complete")
   );
+  const listOfUncompletedTasks = useSelector(() =>
+    mainList.filter((task) => task.status === "incomplete")
+  );
+  const mainListLength = mainList.length;
   const uncompletedTasks = listOfUncompletedTasks.length;
   const completedTasks = listOfcompletedTasks.length;
   const tasksDone =
-    completedTasks === 0 ? 0 : (completedTasks / taskLength) * 100;
+    completedTasks === 0 ? 0 : (completedTasks / mainListLength) * 100;
   const [index, setIndex] = useState(0);
+
   useEffect(() => {
     if (completedTasks === 0 && uncompletedTasks === 0) {
       setIndex(0);
