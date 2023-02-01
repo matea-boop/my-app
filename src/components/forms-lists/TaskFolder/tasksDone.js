@@ -1,23 +1,41 @@
 import React from "react";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
+import axios from "axios";
+import { useState, useEffect } from "react";
+
+async function getDataFromDB() {
+  const url = "http://localhost:3001/api/tasks";
+  try {
+    const {
+      data: { tasks },
+    } = await axios.get(url);
+
+    return tasks;
+  } catch (error) {
+    console.log("error", error);
+    return error;
+  }
+}
 
 export const TasksDone = () => {
   let todaysDate = new Date().toLocaleDateString();
+  const [taskList, setTaskList] = useState([]);
+
+  useEffect(() => {
+    getDataFromDB().then((res) => setTaskList(res));
+  }, [mainList]);
+
   const mainList = [];
   const listOfTasksToday = useSelector((state) =>
     state.task.taskList.forEach((task) => {
       if (task.date === todaysDate) {
-        mainList.push({ status: task.status, date: task.date });
+        mainList.push(task);
       }
     })
   );
 
-  const incompletedTasks = useSelector(() =>
-    mainList.filter((task) => task.status === "incomplete")
-  );
-
-  const incTasks = incompletedTasks.length;
+  const incTasks = mainList.filter((task) => task.status === false).length;
 
   return <Wrapper>{incTasks}</Wrapper>;
 };

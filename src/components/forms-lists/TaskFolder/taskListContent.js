@@ -4,61 +4,37 @@ import TaskItem from "./taskListItem";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
+async function getDataFromDB() {
+  const url = "http://localhost:3001/api/tasks";
+  try {
+    const {
+      data: { tasks },
+    } = await axios.get(url);
+
+    return tasks;
+  } catch (error) {
+    console.log("error", error);
+    return error;
+  }
+}
+
 function TaskListContent({ page, setTotalPages }) {
-  const taskList = useSelector((state) => state.task.taskList);
+  const [taskList, setTaskList] = useState([]);
   const tasksPerPage = 4;
   const startIndex = (page - 1) * tasksPerPage;
   let todaysDate = new Date().toLocaleDateString();
   const mainList = [];
+
+  useEffect(() => {
+    getDataFromDB().then((res) => setTaskList(res));
+  }, [mainList]);
+
   taskList.forEach((task) => {
     if (task.date === todaysDate) {
       mainList.push(task);
     }
   });
 
-  const [taskData, setTaskData] = useState({
-    data: [],
-    id: 0,
-    message: null,
-    intervalIsSet: false,
-    idToDelete: null,
-    idToUpdate: null,
-    objectToUpdate: null,
-  });
-
-  useEffect(() => {
-    const url = "http://localhost:3035/api/getData";
-
-    const componentDidMount = () => {
-      fetchData();
-      if (!taskData.intervalIsSet) {
-        let interval = setInterval(fetchData(), 1000);
-        setTaskData({ intervalIsSet: interval });
-      }
-    };
-
-    const componentWillUnmount = () => {
-      if (taskData.intervalIsSet) {
-        clearInterval(taskData.intervalIsSet);
-        setTaskData({ intervalIsSet: null });
-      }
-    };
-
-    const fetchData = async () => {
-      try {
-        const response = await fetch(url);
-        const json = await response.json();
-        setTaskData({ data: json.data });
-        console.log(json);
-      } catch (error) {
-        console.log("error", error);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  console.log(taskData.data);
   const selectedTasks =
     mainList.length > 0
       ? mainList.slice(startIndex, startIndex + tasksPerPage)
@@ -72,8 +48,8 @@ function TaskListContent({ page, setTotalPages }) {
     <div>
       <div style={{ position: "absolute", width: "80%" }}>
         {" "}
-        {taskData.data && taskData.data.length > 0 ? (
-          taskData.data.map((task) => {
+        {taskList && taskList.length > 0 ? (
+          selectedTasks.map((task) => {
             return task.date === todaysDate ? (
               <TaskItem
                 key={task.id}

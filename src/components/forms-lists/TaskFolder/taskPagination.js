@@ -2,10 +2,36 @@ import React from "react";
 import { BsFillCircleFill } from "react-icons/bs";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
+import { useState, useEffect } from "react";
+import axios from "axios";
+
+async function getDataFromDB() {
+  const url = "http://localhost:3001/api/tasks";
+  try {
+    const {
+      data: { tasks },
+    } = await axios.get(url);
+
+    return tasks;
+  } catch (error) {
+    console.log("error", error);
+    return error;
+  }
+}
 
 export const TaskPagination = ({ totalPages, handleClick, pageActive }) => {
-  const taskList = useSelector((state) => state.task.taskList);
+  const [taskList, setTaskList] = useState([]);
   const pages = [...Array(totalPages).keys()].map((num) => num + 1);
+
+  const mainList = [];
+
+  useEffect(() => {
+    getDataFromDB().then((res) => setTaskList(res));
+  }, [mainList]);
+
+  taskList.forEach((task) => {
+    mainList.push(task);
+  });
 
   return (
     <Wrapper>

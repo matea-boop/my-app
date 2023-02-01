@@ -1,10 +1,37 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import SubtaskItem from "./subtaskItem";
 import styled from "styled-components";
+import axios from "axios";
+
+async function getDataFromDB() {
+  const url = "http://localhost:3001/api/tasks";
+  try {
+    const {
+      data: { tasks },
+    } = await axios.get(url);
+
+    return tasks;
+  } catch (error) {
+    console.log("error", error);
+    return error;
+  }
+}
 
 function SubtaskListContent({ clicked, taskChecked, setTaskChecked }) {
-  const taskList = useSelector((state) => state.task.taskList);
+  const [taskList, setTaskList] = useState([]);
+  let todaysDate = new Date().toLocaleDateString();
+  const mainList = [];
+
+  useEffect(() => {
+    getDataFromDB().then((res) => setTaskList(res));
+  }, [mainList]);
+
+  taskList.forEach((task) => {
+    if (task.date === todaysDate) {
+      mainList.push(task.id);
+    }
+  });
 
   return (
     <Wrapper className="links">

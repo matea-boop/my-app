@@ -11,7 +11,22 @@ import SubtaskListContent from "./subtasks/subtaskListContent";
 import SubtaskBar from "./subtasks/subtaskBar";
 import axios from "axios";
 
+async function getDataFromDB() {
+  const url = "http://localhost:3001/api/tasks";
+  try {
+    const {
+      data: { tasks },
+    } = await axios.get(url);
+
+    return tasks;
+  } catch (error) {
+    console.log("error", error);
+    return error;
+  }
+}
+
 function TaskItem({ task }) {
+  const [taskList, setTaskList] = useState([]);
   const [openMenu, setOpenMenu] = useState(false);
   const [checked, setChecked] = useState(false);
   const [clicked, setClicked] = useState("");
@@ -22,19 +37,18 @@ function TaskItem({ task }) {
   let divRef = useRef();
   let subtaskRef = useRef();
   let arrowRef = useRef();
+  const mainList = [];
+  let listBooleanSubtasks = [];
 
-  const [taskData, setTaskData] = useState({
-    data: [],
-    id: 0,
-    message: null,
-    intervalIsSet: false,
-    idToDelete: null,
-    idToUpdate: null,
-    objectToUpdate: null,
+  useEffect(() => {
+    getDataFromDB().then((res) => setTaskList(res));
+  }, [mainList]);
+
+  taskList.forEach((task) => {
+    mainList.push(task);
   });
 
-  let listBoolean = [];
-  task.subtasks.forEach((sub) => listBoolean.push(sub.subtaskStatus));
+  task.subtasks.forEach((sub) => listBooleanSubtasks.push(sub.subtaskStatus));
 
   useEffect(() => {
     let handler = (event) => {
@@ -61,7 +75,7 @@ function TaskItem({ task }) {
   useEffect(() => {
     let handler = (event) => {
       if (divRef.current.contains(event.target)) {
-        setClicked(task.id);
+        setClicked(task._id);
       }
     };
     document.addEventListener("mousedown", handler);
@@ -72,28 +86,28 @@ function TaskItem({ task }) {
   }, []);
 
   useEffect(() => {
-    if (task.status === "complete") {
+    if (task.status === true) {
       setChecked(true);
     } else {
       setChecked(false);
     }
   }, [task.status]);
 
-  useEffect(() => {
-    if (listBoolean.length > 0 && !listBoolean.includes("notDone")) {
-      dispatch(
-        editTask({
-          ...task,
-          status: "complete",
-        })
-      );
-    } else {
-      setChecked(false);
-    }
-    if (task.status === "complete") {
-      setChecked(true);
-    }
-  }, [...task.subtasks.map((sub) => sub.subtaskStatus)]);
+  // useEffect(() => {
+  //   if (listBoolean.length > 0 && !listBoolean.includes("notDone")) {
+  //     dispatch(
+  //       editTask({
+  //         ...task,
+  //         status: "complete",
+  //       })
+  //     );
+  //   } else {
+  //     setChecked(false);
+  //   }
+  //   if (task.status === "complete") {
+  //     setChecked(true);
+  //   }
+  // }, [...task.subtasks.map((sub) => sub.subtaskStatus)]);
 
   const handleCheck = () => {
     setChecked(!checked);
@@ -114,58 +128,17 @@ function TaskItem({ task }) {
     });
   };
 
-  useEffect(() => {
-    const componentDidMount = () => {
-      fetchData();
-      if (!taskData.intervalIsSet) {
-        let interval = setInterval(fetchData(), 1000);
-        setTaskData({ intervalIsSet: interval });
-      }
-    };
-
-    const componentWillUnmount = () => {
-      if (taskData.intervalIsSet) {
-        clearInterval(taskData.intervalIsSet);
-        setTaskData({ intervalIsSet: null });
-      }
-    };
-
-    const url = "http://localhost:3035/api/getData";
-    const fetchData = async () => {
-      try {
-        const response = await fetch(url);
-        const json = await response.json();
-        setTaskData({ data: json.data });
-        console.log(json);
-      } catch (error) {
-        console.log("error", error);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  const deleteFromDB = (idTodelete) => {
-    parseInt(idTodelete);
-    let objIdToDelete = null;
-    taskData.data.forEach((dat) => {
-      if (dat.id === idTodelete) {
-        objIdToDelete = dat._id;
-      }
-    });
-
-    axios
-      .delete("http://localhost:3035/api/deleteData", {
-        data: {
-          id: objIdToDelete,
-        },
-      })
-      .then(() => window.location.reload());
+  const deleteFromDB = async (idToDelete) => {
+    try {
+      await axios.delete(`http://localhost:3001/api/tasks/${idToDelete}`);
+      getDataFromDB();
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const handleDelete = () => {
-    deleteFromDB(task.id);
-    // dispatch(deleteTask(task.id));
+    deleteFromDB(task._id);
     setOpenMenu(false);
     toast.success("Task Deleted");
   };
@@ -208,7 +181,7 @@ function TaskItem({ task }) {
           <div ref={arrowRef}>
             <TfiArrowCircleDown
               style={
-                listBoolean && listBoolean.length > 0
+                listBooleanSubtasks && listBooleanSubtasks.length > 0
                   ? { display: "flex" }
                   : { display: "none" }
               }
@@ -258,10 +231,12 @@ function TaskItem({ task }) {
       <div
         className="subtask-bar-container"
         style={
-          listBoolean.length > 0 ? { display: "block" } : { display: "none" }
+          listBooleanSubtasks.length > 0
+            ? { display: "block" }
+            : { display: "none" }
         }
       >
-        <SubtaskBar listBoolean={listBoolean} checked={checked} />
+        <SubtaskBar listBoolean={listBooleanSubtasks} checked={checked} />
       </div>
 
       {/* SUBTASK LIST */}

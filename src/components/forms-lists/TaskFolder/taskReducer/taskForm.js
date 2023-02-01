@@ -5,82 +5,24 @@ import { addTask, editTask, addSubtask } from "./taskStorage";
 import { v4 as uuid } from "uuid";
 import { toast } from "react-hot-toast";
 import { HiOutlineXMark } from "react-icons/hi2";
-import { useSelector } from "react-redux";
-import { saveAs } from "file-saver";
 import { IconContext } from "react-icons";
 import axios from "axios";
+import { useReducer } from "react";
+import TaskListContent from "../taskListContent";
 
 function TaskForm({ type, task, modalOpen, setModalOpen }) {
-  const [taskData, setTaskData] = useState({
-    data: [],
-    id: 0,
-    message: null,
-    intervalIsSet: false,
-    idToDelete: null,
-    idToUpdate: null,
-    objectToUpdate: null,
-  });
-
   const [title, setTitle] = useState("");
   const [subtasks, setSubtasks] = useState(task ? task.subtasks : []);
   const [currentSubtask, setCurrentSubtask] = useState("");
-  const [status, setStatus] = useState("incomplete");
-  const [subtaskStatus, setSubtaskStatus] = useState("notDone");
+  const [status, setStatus] = useState(false);
+  const [subtaskStatus, setSubtaskStatus] = useState(false);
   const [date, setDate] = useState(new Date().toLocaleDateString());
   const [valid, setValid] = useState(false);
   const dispatch = useDispatch();
+  const [taskList, setTaskList] = useState([]);
+  const url = "http://localhost:3001/api/tasks";
 
-  // const componentDidMount = () => {
-  //   getDataFromDb();
-  //   if (!taskData.intervalIsSet) {
-  //     let interval = setInterval(getDataFromDb(), 1000);
-  //     setTaskData({ intervalIsSet: interval });
-  //   }
-  // };
-
-  // const componentWillUnmount = () => {
-  //   if (taskData.intervalIsSet) {
-  //     clearInterval(taskData.intervalIsSet);
-  //     setTaskData({ intervalIsSet: null });
-  //   }
-  // };
-
-  useEffect(() => {
-    const url = "http://localhost:3035/api/getData";
-
-    const fetchData = async () => {
-      try {
-        const response = await fetch(url);
-        const json = await response.json();
-        setTaskData({ data: json.data });
-      } catch (error) {
-        console.log("error", error);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  // const getDataFromDb = () => {
-  //   // axios
-  //   //   .get("http://localhost:3035/api/getData")
-  //   //   .then((res) => {
-  //   //     const data = res.data.data;
-  //   //     setTaskData({ data: data });
-  //   //     console.log(data);
-  //   //   })
-  //   //   .catch(() => console.log("error hehehe"));
-  //   fetch("http://localhost:3035/api/getData")
-  //     .then((data) => {
-  //       return data.json();
-  //     })
-  //     .then((res) => {
-  //       console.log(res.data);
-  //       setTaskData({ data: res.data });
-  //     });
-  // };
-
-  const putDataToDB = () => {
+  const putDataToDB = async () => {
     const newData = {
       id: uuid(),
       title: title,
@@ -89,28 +31,19 @@ function TaskForm({ type, task, modalOpen, setModalOpen }) {
       date: date,
     };
 
-    axios
-      .post("http://localhost:3035/api/putData", newData, {
+    try {
+      await axios.post(url, newData, {
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
           "Access-Control-Allow-Origin": "*",
           "Access-Control-Allow-Methods": "GET,HEAD,OPTIONS,POST,PUT",
         },
-      })
-      .then(() => window.location.reload());
-  };
-
-  useEffect(() => {
-    if (type === "edit" && task) {
-      setTitle(task.title);
-      setSubtasks(task.subtasks);
-      setDate(task.date);
-    } else {
-      setTitle("");
-      setSubtasks([]);
+      });
+    } catch (error) {
+      console.log("error", error);
     }
-  }, [type, task, modalOpen]);
+  };
 
   const onClick = (e) => {
     e.preventDefault();
@@ -119,66 +52,8 @@ function TaskForm({ type, task, modalOpen, setModalOpen }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    // componentDidMount();
-    // componentWillUnmount();
     putDataToDB();
-    // getDataFromDb();
-
-    if (title === "" || !valid) {
-      return;
-    }
-    if (title && valid) {
-      if (type === "add") {
-        dispatch(
-          addTask({
-            id: uuid(),
-            title,
-            subtasks,
-            status,
-            date,
-          })
-        );
-
-        toast.success("Task Added Successfully");
-        setModalOpen(false);
-      }
-      if (type === "edit") {
-        if (task.title !== title) {
-          dispatch(
-            editTask({
-              ...task,
-              title,
-            })
-          );
-          setModalOpen(false);
-          toast.success("Task Edited");
-        } else if (task.subtasks !== subtasks) {
-          dispatch(
-            editTask({
-              ...task,
-              subtasks,
-            })
-          );
-          setModalOpen(false);
-          toast.success("Task Edited");
-        } else if (task.date !== date) {
-          dispatch(
-            editTask({
-              ...task,
-              date,
-            })
-          );
-          setModalOpen(false);
-          toast.success("Task Edited");
-        } else {
-          toast.error("No changes made");
-        }
-      }
-    } else {
-      toast.error("Title shouldn't be empty");
-      setModalOpen(true);
-    }
+    setModalOpen(false);
   };
 
   const addSubtask = () => {
@@ -208,18 +83,6 @@ function TaskForm({ type, task, modalOpen, setModalOpen }) {
     }
   }, [date]);
 
-  // useEffect(() => {
-
-  //   // .then((response) => response.json())
-  //   // .then((data) => {
-  //   //   console.log(data);
-  //   //   // Handle data
-  //   // })
-  //   // .catch((err) => {
-  //   //   console.log(err.message);
-  //   // });
-  // }, [modalOpen]);
-
   return (
     <IconContext.Provider
       value={{
@@ -232,7 +95,6 @@ function TaskForm({ type, task, modalOpen, setModalOpen }) {
           <Wrapper>
             <div className="form-container">
               <form
-                method="POST"
                 className="task-form"
                 onSubmit={(e) => {
                   handleSubmit(e);
