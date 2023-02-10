@@ -1,27 +1,50 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { useSelector } from "react-redux";
+import axios from "axios";
 import CircuralProgress from "./Graph/circuralProgress";
 import TaskBar from "./Graph/taskBar";
 import NotebookBar from "./Graph/notebookBar";
 import { motivationalText } from "../../constants/constants";
 
+async function getDataFromDB() {
+  const url = "http://localhost:3001/api/tasks";
+  try {
+    const {
+      data: { tasks },
+    } = await axios.get(url);
+
+    return tasks;
+  } catch (error) {
+    console.log("error", error);
+    return error;
+  }
+}
+
 export const Graph = () => {
   let todaysDate = new Date().toLocaleDateString();
+  const [taskList, setTaskList] = useState([]);
+
   const mainList = [];
-  const listOfTasksToday = useSelector((state) =>
-    state.task.taskList.forEach((task) => {
-      if (task.date === todaysDate) {
-        mainList.push({ status: task.status, date: task.date });
-      }
-    })
+
+  const check =
+    taskList.length > 0
+      ? taskList.forEach((task) => {
+          if (task.date === todaysDate) {
+            mainList.push(task);
+          }
+        })
+      : null;
+
+  useEffect(() => {
+    getDataFromDB().then((res) => setTaskList(res));
+  }, [mainList]);
+
+  const listOfcompletedTasks = mainList.filter((task) => task.status === true);
+
+  const listOfUncompletedTasks = mainList.filter(
+    (task) => task.status === false
   );
-  const listOfcompletedTasks = useSelector(() =>
-    mainList.filter((task) => task.status === "complete")
-  );
-  const listOfUncompletedTasks = useSelector(() =>
-    mainList.filter((task) => task.status === "incomplete")
-  );
+
   const mainListLength = mainList.length;
   const uncompletedTasks = listOfUncompletedTasks.length;
   const completedTasks = listOfcompletedTasks.length;

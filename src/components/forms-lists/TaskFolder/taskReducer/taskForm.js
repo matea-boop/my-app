@@ -1,14 +1,11 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useDispatch } from "react-redux";
-import { addTask, editTask, addSubtask } from "./taskStorage";
 import { v4 as uuid } from "uuid";
 import { toast } from "react-hot-toast";
 import { HiOutlineXMark } from "react-icons/hi2";
 import { IconContext } from "react-icons";
 import axios from "axios";
-import { useReducer } from "react";
-import TaskListContent from "../taskListContent";
 
 function TaskForm({ type, task, modalOpen, setModalOpen }) {
   const [title, setTitle] = useState("");
@@ -21,6 +18,17 @@ function TaskForm({ type, task, modalOpen, setModalOpen }) {
   const dispatch = useDispatch();
   const [taskList, setTaskList] = useState([]);
   const url = "http://localhost:3001/api/tasks";
+
+  useEffect(() => {
+    if (type === "edit" && task) {
+      setTitle(task.title);
+      setSubtasks(task.subtasks);
+      setDate(task.date);
+    } else {
+      setTitle("");
+      setSubtasks([]);
+    }
+  }, [type, modalOpen]);
 
   const putDataToDB = async () => {
     const newData = {
@@ -37,7 +45,7 @@ function TaskForm({ type, task, modalOpen, setModalOpen }) {
           Accept: "application/json",
           "Content-Type": "application/json",
           "Access-Control-Allow-Origin": "*",
-          "Access-Control-Allow-Methods": "GET,HEAD,OPTIONS,POST,PUT",
+          "Access-Control-Allow-Methods": "GET,HEAD,OPTIONS,POST,PUT,PATCH",
         },
       });
     } catch (error) {
@@ -50,9 +58,41 @@ function TaskForm({ type, task, modalOpen, setModalOpen }) {
     setModalOpen(false);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    putDataToDB();
+
+    if (title === "" || !valid) {
+      return;
+    }
+    if (title && valid && type === "add") {
+      putDataToDB();
+      toast.success("Task Added Successfully");
+      setModalOpen(false);
+    }
+    if (type === "edit") {
+      if (task.title !== title) {
+        await axios.patch(`http://localhost:3001/api/tasks/${task._id}`, {
+          title: title,
+        });
+        setModalOpen(false);
+        toast.success("Task Edited");
+      } else if (task.subtasks !== subtasks) {
+        await axios.patch(`http://localhost:3001/api/tasks/${task._id}`, {
+          subtasks: subtasks,
+        });
+        setModalOpen(false);
+        toast.success("Task Edited");
+      } else if (task.date !== date && valid) {
+        await axios.patch(`http://localhost:3001/api/tasks/${task._id}`, {
+          date: date,
+        });
+        setModalOpen(false);
+        toast.success("Task Edited");
+      } else {
+        toast.error("No changes made");
+      }
+    }
+
     setModalOpen(false);
   };
 
@@ -121,7 +161,7 @@ function TaskForm({ type, task, modalOpen, setModalOpen }) {
                   id={valid ? "valid" : "notValid"}
                   type="text"
                   placeholder="dd/mm/yyyy"
-                  name="time"
+                  name="date"
                   className="task-input-date"
                   value={date}
                   onChange={(e) => setDate(e.target.value)}

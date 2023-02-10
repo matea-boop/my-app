@@ -54,7 +54,7 @@ const Wrapper = styled.div`
     fill: none;
     stroke: var(--mainorange-color);
     stroke-linecap: round;
-    transition: all 0.4s;
+    transition: all 0.8s;
   }
   .circle-text {
     fill: var(--mainorange-color);

@@ -1,6 +1,5 @@
 import React from "react";
 import styled from "styled-components";
-import { useSelector } from "react-redux";
 import axios from "axios";
 import { useState, useEffect } from "react";
 
@@ -22,20 +21,22 @@ export const TasksDone = () => {
   let todaysDate = new Date().toLocaleDateString();
   const [taskList, setTaskList] = useState([]);
 
+  const mainList = [];
+
+  const check =
+    taskList.length > 0
+      ? taskList.forEach((task) => {
+          if (task.date === todaysDate) {
+            mainList.push(task);
+          }
+        })
+      : null;
+
   useEffect(() => {
     getDataFromDB().then((res) => setTaskList(res));
   }, [mainList]);
 
-  const mainList = [];
-  const listOfTasksToday = useSelector((state) =>
-    state.task.taskList.forEach((task) => {
-      if (task.date === todaysDate) {
-        mainList.push(task);
-      }
-    })
-  );
-
-  const incTasks = mainList.filter((task) => task.status === false).length;
+  const incTasks = mainList.filter((task) => task.status !== true).length;
 
   return <Wrapper>{incTasks}</Wrapper>;
 };

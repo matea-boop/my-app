@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { HiEllipsisVertical } from "react-icons/hi2";
-import { useDispatch } from "react-redux";
-import { deleteTask, editTask, editSubtask } from "./taskReducer/taskStorage";
 import TaskForm from "./taskReducer/taskForm";
 import Checkbox from "./taskCheckbox";
 import { toast } from "react-hot-toast";
@@ -26,27 +24,22 @@ async function getDataFromDB() {
 }
 
 function TaskItem({ task }) {
+  const [subtasks, setSubtasks] = useState(task ? task.subtasks : []);
   const [taskList, setTaskList] = useState([]);
   const [openMenu, setOpenMenu] = useState(false);
   const [checked, setChecked] = useState(false);
   const [clicked, setClicked] = useState("");
   const [subtaskArrow, setSubtaskArrow] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
-  const dispatch = useDispatch();
   let choiceRef = useRef();
   let divRef = useRef();
   let subtaskRef = useRef();
   let arrowRef = useRef();
-  const mainList = [];
   let listBooleanSubtasks = [];
 
   useEffect(() => {
     getDataFromDB().then((res) => setTaskList(res));
-  }, [mainList]);
-
-  taskList.forEach((task) => {
-    mainList.push(task);
-  });
+  }, [openMenu, clicked]);
 
   task.subtasks.forEach((sub) => listBooleanSubtasks.push(sub.subtaskStatus));
 
@@ -93,38 +86,41 @@ function TaskItem({ task }) {
     }
   }, [task.status]);
 
-  // useEffect(() => {
-  //   if (listBoolean.length > 0 && !listBoolean.includes("notDone")) {
-  //     dispatch(
-  //       editTask({
-  //         ...task,
-  //         status: "complete",
-  //       })
-  //     );
-  //   } else {
-  //     setChecked(false);
-  //   }
-  //   if (task.status === "complete") {
-  //     setChecked(true);
-  //   }
-  // }, [...task.subtasks.map((sub) => sub.subtaskStatus)]);
+  useEffect(() => {
+    if (
+      listBooleanSubtasks.length > 0 &&
+      !listBooleanSubtasks.includes(false)
+    ) {
+      setChecked(true);
+      const taskCompleted = async () => {
+        await axios.patch(`http://localhost:3001/api/tasks/${task._id}`, {
+          status: checked,
+        });
+      };
+      taskCompleted();
+    } else {
+      setChecked(false);
+    }
+    if (task.status === true) {
+      setChecked(true);
+    }
+  }, [...task.subtasks.map((sub) => sub.subtaskStatus)]);
 
-  const handleCheck = () => {
+  const handleCheck = async () => {
     setChecked(!checked);
-    dispatch(
-      editTask({
-        ...task,
-        status: checked ? "incomplete" : "complete",
-      })
-    );
 
-    task.subtasks.map((sub) => {
-      dispatch(
-        editSubtask({
-          ...sub,
-          subtaskStatus: checked ? "notDone" : "done",
-        })
-      );
+    const newSubtasks = [];
+    if (subtasks) {
+      subtasks.forEach((sub) => {
+        newSubtasks.push({ ...sub, subtaskStatus: checked });
+      });
+      setSubtasks([]);
+      setSubtasks([...newSubtasks]);
+    }
+
+    await axios.patch(`http://localhost:3001/api/tasks/${task._id}`, {
+      status: !checked,
+      subtasks: subtasks,
     });
   };
 
@@ -186,8 +182,9 @@ function TaskItem({ task }) {
                   : { display: "none" }
               }
               className={
-                subtaskArrow && !checked
-                  ? "subtask-arrow activ"
+                subtaskArrow
+                  ? // && !checked
+                    "subtask-arrow activ"
                   : "subtask-arrow"
               }
               onClick={arrowClick}
@@ -244,6 +241,7 @@ function TaskItem({ task }) {
       <div className="links-menu" ref={subtaskRef}>
         {subtaskArrow ? (
           <SubtaskListContent
+            taskList={taskList}
             taskChecked={checked}
             setTaskChecked={setChecked}
             dropdownOpen={subtaskArrow}

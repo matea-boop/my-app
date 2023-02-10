@@ -1,46 +1,21 @@
-import React, { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
+import React from "react";
 import SubtaskItem from "./subtaskItem";
 import styled from "styled-components";
-import axios from "axios";
 
-async function getDataFromDB() {
-  const url = "http://localhost:3001/api/tasks";
-  try {
-    const {
-      data: { tasks },
-    } = await axios.get(url);
-
-    return tasks;
-  } catch (error) {
-    console.log("error", error);
-    return error;
-  }
-}
-
-function SubtaskListContent({ clicked, taskChecked, setTaskChecked }) {
-  const [taskList, setTaskList] = useState([]);
-  let todaysDate = new Date().toLocaleDateString();
-  const mainList = [];
-
-  useEffect(() => {
-    getDataFromDB().then((res) => setTaskList(res));
-  }, [mainList]);
-
-  taskList.forEach((task) => {
-    if (task.date === todaysDate) {
-      mainList.push(task.id);
-    }
-  });
-
+function SubtaskListContent({
+  clicked,
+  taskChecked,
+  setTaskChecked,
+  taskList,
+}) {
   return (
     <Wrapper className="links">
       {taskList && taskList.length > 0
         ? taskList.map((task) => {
             {
               return (
-                <div key={task.id}>
-                  {task.subtasks && clicked === task.id
+                <div key={task._id}>
+                  {task.subtasks && clicked === task._id
                     ? task.subtasks.map((subtask) => (
                         <SubtaskItem
                           task={task}

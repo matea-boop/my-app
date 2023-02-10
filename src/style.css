@@ -1,64 +1,77 @@
-@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@200;300;400;600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Nunito:wght@200;300;400;600;700&display=swap");
 
 :root {
-    --body-color: rgba(54, 54, 54, 1);
-    --sidebar-color: rgba(21, 21, 21, 1);
-    --box-color:rgba(36, 36, 36, 1);
-    --text-color:rgba(232, 244, 250, 1);
-    --textdark-color: rgba(21, 21, 21, 1);
-    --mainblue-color:rgba(64, 94, 255, 1);
-    --mainorange-color:rgba(236, 165, 66, 1);
-    --margin-size: 1.2rem;
-    --border-radius: 0.3rem;
+  --body-color: rgba(54, 54, 54, 1);
+  --sidebar-color: rgba(21, 21, 21, 1);
+  --box-color: rgba(36, 36, 36, 1);
+  --text-color: rgba(232, 244, 250, 1);
+  --textdark-color: rgba(21, 21, 21, 1);
+  --mainblue-color: rgba(64, 94, 255, 1);
+  --mainorange-color: rgba(236, 165, 66, 1);
+  --margin-size: 1.2rem;
+  --border-radius: 0.3rem;
 
-    --right-btn-move: 10.2rem;
-    --bottom-btn-move: 4.5rem;
+  --right-btn-move: 10.2rem;
+  --bottom-btn-move: 4.5rem;
 }
 
 *,
 ::after,
 ::before {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 body {
-    font-family: 'Nunito', sans-serif;
-    color: var(--text-color);
-    overflow: hidden;   
+  font-family: "Nunito", sans-serif;
+  color: var(--text-color);
+  overflow: hidden;
 }
-.app{
-    height:100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.app {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-.main-container{
-    display:grid;
-    position:absolute;
-    grid-template-columns: 15rem auto;
-    background-color: var(--body-color);
-    height:98%;
-    width:99%;
-    border-radius: var(--border-radius);
+.main-container {
+  display: grid;
+  position: absolute;
+  grid-template-columns: 15rem auto;
+  background-color: var(--body-color);
+  height: 98%;
+  width: 99%;
+  border-radius: var(--border-radius);
 }
 
 ul {
-    list-style-type: none;
+  list-style-type: none;
 }
 
 a {
-    text-decoration: none;
-    color: var(--text-color);
-    opacity: .5;
+  text-decoration: none;
+  color: var(--text-color);
+  opacity: 0.5;
 }
-a:hover{
-    opacity: .75;
-}
-@media screen and (max-width: 1024px) {
-    .main-container{
-        grid-template-columns: 5rem auto;
-    }
+a:hover {
+  opacity: 0.75;
 }
 
+.tooltipArea {
+  border-radius: var(--border-radius);
+  border: none;
+  background: var(--body-color);
+  color: var(--text-color);
+  padding: 1rem;
+  font-size: 0.7rem;
+  box-shadow: 15px 30px 40px 5px rgba(0, 0, 0, 0.5);
+}
+.tooltipArea-header {
+  display: flex;
+}
+
+@media screen and (max-width: 1024px) {
+  .main-container {
+    grid-template-columns: 5rem auto;
+  }
+}

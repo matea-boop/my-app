@@ -2,8 +2,7 @@ import React from "react";
 import { useState, useEffect } from "react";
 import SubtaskCheckbox from "./subtaskCheckbox";
 import styled from "styled-components";
-import { editSubtask, editTask } from "../taskReducer/taskStorage";
-import { useDispatch } from "react-redux";
+import axios from "axios";
 
 function SubtaskItem({
   subtaskTitle,
@@ -13,37 +12,64 @@ function SubtaskItem({
   subtaskList,
   task,
 }) {
+  const [subtasks, setSubtasks] = useState(task ? task.subtasks : []);
   const [subtaskChecked, setSubtaskChecked] = useState(false);
-  const dispatch = useDispatch();
   let listBoolean = [];
   subtaskList.forEach((sub) => listBoolean.push(sub.subtaskStatus));
 
-  const subtaskHandleCheck = () => {
+  const subtaskHandleCheck = async () => {
     setSubtaskChecked(!subtaskChecked);
-    dispatch(
-      editSubtask({
-        ...subtask,
-        subtaskStatus: subtaskChecked ? "notDone" : "done",
-      })
-    );
+    subtaskStatusUpdate();
   };
+
+  const subtaskStatusUpdate = async () => {
+    const newSubtasks = [];
+
+    if (subtaskList) {
+      subtaskList.forEach((sub) => {
+        if (subtask.id === sub.id) {
+          newSubtasks.push({ ...sub, subtaskStatus: !subtaskChecked });
+        } else {
+          newSubtasks.push({ ...sub });
+        }
+      });
+      setSubtasks([]);
+      setSubtasks([...newSubtasks]);
+
+      console.log(subtasks);
+    }
+
+    await axios.patch(`http://localhost:3001/api/tasks/${task._id}`, {
+      subtasks: subtasks,
+    });
+  };
+
+  useEffect(() => {
+    subtaskStatusUpdate();
+  }, [subtaskChecked]);
 
   useEffect(() => {
     if (taskChecked) {
       setSubtaskChecked(true);
     } else {
-      if (!listBoolean.includes("notDone")) {
+      if (!listBoolean.includes(false)) {
         setSubtaskChecked(false);
-        subtaskList.forEach((sub) =>
-          dispatch(
-            editSubtask({
-              ...sub,
-              subtaskStatus: subtaskChecked ? "done" : "notDone",
-            })
-          )
-        );
+
+        const changeSubtasks = async () => {
+          const newSubtasks = [];
+          subtaskList.forEach((sub) =>
+            newSubtasks.push({ ...sub, subtaskStatus: subtaskChecked })
+          );
+          setSubtasks([]);
+          setSubtasks([...newSubtasks]);
+
+          await axios.patch(`http://localhost:3001/api/tasks/${task._id}`, {
+            subtasks: subtasks,
+          });
+        };
+        changeSubtasks();
       } else {
-        if (subtaskStatus === "done") {
+        if (subtaskStatus === true) {
           setSubtaskChecked(true);
         } else {
           setSubtaskChecked(false);
@@ -54,7 +80,7 @@ function SubtaskItem({
 
   return (
     <Wrapper style={taskChecked ? { display: "none" } : { display: "flex" }}>
-      <div className="links">
+      <div className="links" key={subtask.id}>
         <SubtaskCheckbox
           className="checkbox-subtasks"
           subtaskChecked={subtaskChecked}

@@ -29,9 +29,12 @@ export const TaskPagination = ({ totalPages, handleClick, pageActive }) => {
     getDataFromDB().then((res) => setTaskList(res));
   }, [mainList]);
 
-  taskList.forEach((task) => {
-    mainList.push(task);
-  });
+  const check =
+    taskList.length > 0
+      ? taskList.forEach((task) => {
+          mainList.push(task);
+        })
+      : null;
 
   return (
     <Wrapper>

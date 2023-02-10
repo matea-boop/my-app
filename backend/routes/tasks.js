@@ -8,6 +8,10 @@ const {
   deleteTask,
 } = require("../controllers/tasks");
 
+const { getProgressStatistics } = require("../controllers/progressAggr");
+
+router.route("/ProgressStatistics").get(getProgressStatistics);
+
 router
   .route("/")
   .get(getAllTasks)

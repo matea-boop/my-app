@@ -3,7 +3,7 @@ import styled from "styled-components";
 
 function SubtaskBar({ listBoolean, checked }) {
   const listLength = listBoolean.length;
-  const completedSubtasks = listBoolean.filter((i) => i === "done").length;
+  const completedSubtasks = listBoolean.filter((i) => i === true).length;
   const barWidth = completedSubtasks / listLength;
   return (
     <Wrapper>

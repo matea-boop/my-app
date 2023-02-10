@@ -1,5 +1,4 @@
 import React from "react";
-import { useSelector } from "react-redux";
 import TaskItem from "./taskListItem";
 import { useEffect, useState } from "react";
 import axios from "axios";
@@ -29,11 +28,14 @@ function TaskListContent({ page, setTotalPages }) {
     getDataFromDB().then((res) => setTaskList(res));
   }, [mainList]);
 
-  taskList.forEach((task) => {
-    if (task.date === todaysDate) {
-      mainList.push(task);
-    }
-  });
+  const check =
+    taskList.length > 0
+      ? taskList.forEach((task) => {
+          if (task.date === todaysDate) {
+            mainList.push(task);
+          }
+        })
+      : null;
 
   const selectedTasks =
     mainList.length > 0
