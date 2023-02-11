@@ -1,10 +1,40 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import AreaChartProgress from "./Progress/areaChart";
 import { Link } from "react-router-dom";
 import { BsFillCircleFill } from "react-icons/bs";
 
 export const Progress = () => {
+  const [button1Clicked, setButton1Clicked] = useState(true);
+  const [button2Clicked, setButton2Clicked] = useState(false);
+  const [button3Clicked, setButton3Clicked] = useState(false);
+
+  const [weekButton, setWeekButton] = useState(true);
+  const [monthButton, setMonthButton] = useState(false);
+
+  const handleClick1 = () => {
+    setButton1Clicked(!button1Clicked);
+  };
+  const handleClick2 = () => {
+    setButton2Clicked(!button2Clicked);
+  };
+  const handleClick3 = () => {
+    setButton3Clicked(!button3Clicked);
+  };
+
+  const weekClick = () => {
+    if (!weekButton) {
+      setMonthButton(false);
+    }
+    setWeekButton(true);
+  };
+
+  const monthClick = () => {
+    if (!monthButton) {
+      setWeekButton(false);
+    }
+    setMonthButton(true);
+  };
   return (
     <Wrapper>
       <div className="title-p">
@@ -13,25 +43,56 @@ export const Progress = () => {
       </div>
       <div className="buttons-area">
         <div className="buttons-area-1">
-          <div className="item">
+          <div
+            className="item"
+            onClick={handleClick1}
+            style={button1Clicked ? { opacity: "1" } : { opacity: "0.5" }}
+          >
             <BsFillCircleFill className="task-circle" />
-            &nbsp;&nbsp;Tasks
+            <p>Tasks</p>
           </div>
-          <div className="item">
+          <div
+            className="item"
+            onClick={handleClick2}
+            style={button2Clicked ? { opacity: "1" } : { opacity: "0.5" }}
+          >
             <BsFillCircleFill className="notebook-circle" />
-            &nbsp;&nbsp;Notebook
+            <p>Notebook</p>
           </div>
-          <div className="item">
+          <div
+            className="item"
+            onClick={handleClick3}
+            style={button3Clicked ? { opacity: "1" } : { opacity: "0.5" }}
+          >
             <BsFillCircleFill className="all-circle" />
-            &nbsp;&nbsp;All
+            <p>All</p>
           </div>
         </div>
         <div className="buttons-area-2">
-          <div>week</div>
-          <div>month</div>
+          <div
+            className="week"
+            onClick={weekClick}
+            style={weekButton ? { opacity: "1" } : { opacity: "0.5" }}
+          >
+            Week
+          </div>
+          <div
+            className="month"
+            onClick={monthClick}
+            style={monthButton ? { opacity: "1" } : { opacity: "0.5" }}
+          >
+            Month
+          </div>
         </div>
       </div>
-      <AreaChartProgress className="areaChart" />
+      <AreaChartProgress
+        className="areaChart"
+        button1Clicked={button1Clicked}
+        button2Clicked={button2Clicked}
+        button3Clicked={button3Clicked}
+        monthButton={monthButton}
+        weekButton={weekButton}
+      />
     </Wrapper>
   );
 };
@@ -72,7 +133,7 @@ const Wrapper = styled.div`
   .buttons-area {
     display: flex;
     justify-content: space-between;
-    margin-top: 1.5rem;
+    margin-top: 0.8rem;
   }
 
   .buttons-area-1 {
@@ -85,9 +146,16 @@ const Wrapper = styled.div`
     justify-content: space-between;
   }
   .item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     padding-right: 1rem;
+    gap: 0.5rem;
+    cursor: pointer;
   }
   .buttons-area-2 {
+    font-size: 0.8rem;
+    gap: 1rem;
     margin-right: 1.5rem;
     display: flex;
     justify-content: space-between;
@@ -103,5 +171,21 @@ const Wrapper = styled.div`
   .all-circle {
     color: var(--text-color);
     font-size: 0.5rem;
+  }
+  .week {
+    width: 4.5rem;
+    text-align: center;
+    border-radius: var(--border-radius);
+    padding: 0.5rem 0rem 0rem 0rem;
+    background: var(--body-color);
+    cursor: pointer;
+  }
+  .month {
+    width: 4.5rem;
+    text-align: center;
+    border-radius: var(--border-radius);
+    padding: 0.5rem 0rem 0rem 0rem;
+    cursor: pointer;
+    background: var(--body-color);
   }
 `;

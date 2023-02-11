@@ -26,14 +26,24 @@ async function getDataProgressFromDB() {
   }
 }
 
-export const AreaChartProgress = () => {
+export const AreaChartProgress = ({
+  button1Clicked,
+  button2Clicked,
+  button3Clicked,
+  weekButton,
+  monthButton,
+}) => {
   const [progressList, setProgressList] = useState([]);
+  const [data, setData] = useState();
   let todaysDate = new Date().toLocaleDateString();
   const mainList = [];
-  const resultDates = [];
-  const data = { id: 0, list: [], dateData: [] };
-  const test = [];
-  const testData = [];
+  const weekDates = [];
+  const wtest = [];
+  const wtestData = [];
+
+  const monthDates = [];
+  const mtestData = [];
+  const mtest = [];
 
   useEffect(() => {
     getDataProgressFromDB().then((res) => setProgressList(res));
@@ -41,8 +51,9 @@ export const AreaChartProgress = () => {
 
   const current = moment();
   let n = 7;
+  let x = 30;
   while (n > 0) {
-    resultDates.push({
+    weekDates.push({
       id: n,
       dateFormat: current.format("DD/MM/YYYY"),
       dateName: current.format("ddd"),
@@ -51,10 +62,33 @@ export const AreaChartProgress = () => {
     n--;
   }
 
+  const mcurrent = moment();
+  while (x > 0) {
+    monthDates.push({
+      id: x,
+      dateFormat: mcurrent.format("DD/MM/YYYY"),
+      dateName: mcurrent.format("ddd"),
+    });
+    mcurrent.subtract(1, "day");
+    x--;
+  }
+
   const check =
-    resultDates.length > 0
-      ? resultDates.reverse().forEach((i) => {
-          test.push({
+    weekDates.length > 0
+      ? weekDates.reverse().forEach((i) => {
+          wtest.push({
+            id: i.id,
+            dateName: i.dateName,
+            dateFormat: i.dateFormat,
+            value: "100",
+          });
+        })
+      : null;
+
+  const mckeck =
+    monthDates.length > 0
+      ? monthDates.reverse().forEach((i) => {
+          mtest.push({
             id: i.id,
             dateName: i.dateName,
             dateFormat: i.dateFormat,
@@ -70,46 +104,86 @@ export const AreaChartProgress = () => {
         })
       : null;
 
-  const check2 =
-    test.length > 0
-      ? test.forEach((i) => {
-          testData.push({
+  const mcheck2 =
+    mtest.length > 0
+      ? mtest.forEach((i) => {
+          mtestData.push({
             id: i.id,
             name: i.dateName,
             date: i.dateFormat,
             percent: 0,
+            notebook: 0,
+            allProgress: 100,
           });
-          progressList.map((x) => {
-            if (i.dateFormat === x.date) {
-              testData.push({
-                id: i.id,
-                name: i.dateName,
-                date: i.dateFormat,
-                percent: x.percent,
-              });
-            }
-          });
+          if (progressList.length > 0) {
+            progressList.map((x) => {
+              if (i.dateFormat === x.date) {
+                mtestData.push({
+                  id: i.id,
+                  name: i.dateName,
+                  date: i.dateFormat,
+                  percent: x.percent,
+                  notebook: 0,
+                  allProgress: 100,
+                });
+              }
+            });
+          }
         })
       : null;
 
-  const pass =
-    testData.length > 0
-      ? testData.filter(function(item, index) {
-          const fixed = index + 1;
-          return testData.indexOf(item.id) === fixed;
+  const check2 =
+    wtest.length > 0
+      ? wtest.forEach((i) => {
+          wtestData.push({
+            id: i.id,
+            name: i.dateName,
+            date: i.dateFormat,
+            percent: 0,
+            notebook: 0,
+            allProgress: 100,
+          });
+          if (progressList.length > 0) {
+            progressList.map((x) => {
+              if (i.dateFormat === x.date) {
+                wtestData.push({
+                  id: i.id,
+                  name: i.dateName,
+                  date: i.dateFormat,
+                  percent: x.percent,
+                  notebook: 0,
+                  allProgress: 100,
+                });
+              }
+            });
+          }
         })
       : null;
 
-  const unique = [...new Map(testData.map((m) => [m.id, m])).values()];
+  const weekData = [...new Map(wtestData.map((m) => [m.id, m])).values()];
+  const monthData = [...new Map(mtestData.map((m) => [m.id, m])).values()];
 
+  useEffect(() => {
+    if (monthButton) {
+      setData([]);
+      setData(monthData);
+    } else if (weekButton) {
+      setData([]);
+      setData(weekData);
+    }
+  }, [monthButton, weekButton]);
   return (
     <Wrapper>
       <ResponsiveContainer width="100%" height={200}>
-        <AreaChart data={unique} margin={{ right: 30, top: 30 }}>
+        <AreaChart data={data} margin={{ right: 30, top: 30 }}>
           <defs>
-            <linearGradient id="color" x1="0" y1="0" x2="0" y2="1">
+            <linearGradient id="colorblue" x1="0" y1="0" x2="0" y2="1">
               <stop offset="10%" stopColor="#405eff" stopOpacity={0.9} />
               <stop offset="90%" stopColor="#405eff" stopOpacity={0.05} />
+            </linearGradient>
+            <linearGradient id="colororange" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="10%" stopColor="#eca542" stopOpacity={0.9} />
+              <stop offset="90%" stopColor="#eca542" stopOpacity={0.05} />
             </linearGradient>
           </defs>
           <Area
@@ -118,16 +192,66 @@ export const AreaChartProgress = () => {
             stroke="#405eff"
             strokeLinecap="round"
             strokeWidth={3}
+            className="tasks"
             animationDuration={800}
             animationEasing={"ease-in-out"}
-            fill="url(#color)"
+            fill="url(#colorblue)"
+            style={
+              button1Clicked
+                ? { opacity: "1", transition: "all 0.2s" }
+                : { opacity: "0", transition: "all 0.2s" }
+            }
+          />
+          <Area
+            dataKey="notebook"
+            type="monotone"
+            stroke="#eca542"
+            strokeLinecap="round"
+            strokeWidth={3}
+            className="notebook"
+            animationDuration={800}
+            animationEasing={"ease-in-out"}
+            fill="url(#colororange)"
+            style={
+              button2Clicked
+                ? { opacity: "1", transition: "all 0.2s" }
+                : { opacity: "0", transition: "all 0.2s" }
+            }
+          />
+          <Area
+            dataKey="allProgress"
+            type="monotone"
+            stroke="#e8f4fa"
+            strokeLinecap="round"
+            strokeWidth={2}
+            className="all"
+            animationDuration={800}
+            animationEasing={"ease-in-out"}
+            fill="none"
+            dot={true}
+            style={
+              button3Clicked
+                ? { opacity: "1", transition: "all 0.2s" }
+                : { opacity: "0", transition: "all 0.2s" }
+            }
           />
           <XAxis
-            dataKey="name"
+            dataKey={monthButton ? "date" : "name"}
             interval={0}
             axisLine={false}
             tickLine={false}
             tick={{ fontSize: 12 }}
+            tickFormatter={(x, index) => {
+              if (monthButton) {
+                const day = index + 1;
+                if (day === 1 || day % 6 === 0) {
+                  const date = moment(x).format("MM DD");
+                  return date;
+                }
+                return "";
+              }
+              return x;
+            }}
           />
           <YAxis
             dataKey="percent"
@@ -136,7 +260,15 @@ export const AreaChartProgress = () => {
             tickLine={false}
             tick={{ fontSize: 12 }}
           />
-          <Tooltip content={<CustomToolTip />} />
+          <Tooltip
+            content={
+              <CustomToolTip
+                button1Clicked={button1Clicked}
+                button2Clicked={button2Clicked}
+                button3Clicked={button3Clicked}
+              />
+            }
+          />
           <CartesianGrid opacity={0.1} vertical={false} />
         </AreaChart>
       </ResponsiveContainer>
@@ -169,7 +301,14 @@ const getWeekNames = (label) => {
   return "0";
 };
 
-function CustomToolTip({ active, payload, label }) {
+function CustomToolTip({
+  active,
+  payload,
+  label,
+  button1Clicked,
+  button2Clicked,
+  button3Clicked,
+}) {
   if (active) {
     return (
       <div className="tooltipArea">
@@ -179,8 +318,31 @@ function CustomToolTip({ active, payload, label }) {
             {moment(payload[0].payload.date, "DD/MM/YYYY").format("D MMM YYYY")}
           </p>
         </div>
-
-        <p>{`${payload[0].value.toFixed()}% assignments done`}</p>
+        {button1Clicked ? (
+          <p
+            style={
+              button2Clicked || button3Clicked
+                ? {
+                    display: "none",
+                  }
+                : { display: "flex" }
+            }
+          >{`${payload[0].value.toFixed()}% tasks done`}</p>
+        ) : null}
+        {button2Clicked ? (
+          <p
+            style={
+              button1Clicked || button3Clicked
+                ? {
+                    display: "none",
+                  }
+                : { display: "flex" }
+            }
+          >{`${payload[1].value.toFixed()}% notebook fullfilled`}</p>
+        ) : null}
+        {button3Clicked ? (
+          <p>{`${payload[2].value.toFixed()}% assignments done`}</p>
+        ) : null}
       </div>
     );
   }
