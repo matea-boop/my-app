@@ -9,8 +9,15 @@ import HabitForm from "./forms-lists/HabitFolder/HabitForm";
 import DeadlineForm from "./forms-lists/DeadlineFolder/DeadlineForm";
 
 function AddButton() {
-  const { isBtnOpen, addBtnOpen, addBtnClose } = useAllContext();
-  const [modalOpen, setModalOpen] = useState(false);
+  const {
+    isBtnOpen,
+    addBtnOpen,
+    addBtnClose,
+    isModalOpen,
+    modalOpen,
+    modalClose,
+  } = useAllContext();
+  // const [modalOpen, setModalOpen] = useState(false);
   const [getId, setGetId] = useState("");
 
   const linksAddBtn = [
@@ -21,8 +28,9 @@ function AddButton() {
       element: (
         <TaskForm
           type="add"
+          isModalOpen={isModalOpen}
           modalOpen={modalOpen}
-          setModalOpen={setModalOpen}
+          modalClose={modalClose}
         />
       ),
     },
@@ -71,13 +79,13 @@ function AddButton() {
   const btnClickOpen = () => {
     setGetId("");
     addBtnOpen();
-    setModalOpen(false);
+    modalClose();
   };
 
   const btnClickClose = () => {
     setGetId("");
     addBtnClose();
-    setModalOpen(false);
+    modalClose();
   };
 
   return (
@@ -103,7 +111,7 @@ function AddButton() {
                 onClick={() => {
                   setGetId(id);
                   addBtnClose();
-                  setModalOpen(true);
+                  modalOpen();
                 }}
                 style={
                   getId !== "" ? { opacity: "0", transition: " 0s" } : null

@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import axios from "axios";
+import { useAllContext } from "../../../context/indexContext";
 import { useState, useEffect } from "react";
 
 async function getDataFromDB() {
@@ -19,6 +20,7 @@ async function getDataFromDB() {
 
 export const TasksDone = () => {
   let todaysDate = new Date().toLocaleDateString();
+  const { isModalOpen, isDeleted, isTaskChecked } = useAllContext();
   const [taskList, setTaskList] = useState([]);
 
   const mainList = [];
@@ -34,7 +36,7 @@ export const TasksDone = () => {
 
   useEffect(() => {
     getDataFromDB().then((res) => setTaskList(res));
-  }, [mainList]);
+  }, [isModalOpen, isDeleted, isTaskChecked]);
 
   const incTasks = mainList.filter((task) => task.status !== true).length;
 

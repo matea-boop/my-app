@@ -9,10 +9,10 @@ import {
   CartesianGrid,
   Tooltip,
 } from "recharts";
-
 import styled from "styled-components";
 import moment from "moment/moment";
 import axios from "axios";
+import { useAllContext } from "../../../context/indexContext";
 
 async function getDataProgressFromDB() {
   const url = "http://localhost:3001/api/tasks/ProgressStatistics";
@@ -33,10 +33,12 @@ export const AreaChartProgress = ({
   weekButton,
   monthButton,
 }) => {
+  const { isModalOpen, isDeleted, isTaskChecked } = useAllContext();
   const [progressList, setProgressList] = useState([]);
-  const [data, setData] = useState();
+  const [data, setData] = useState([]);
   let todaysDate = new Date().toLocaleDateString();
   const mainList = [];
+
   const weekDates = [];
   const wtest = [];
   const wtestData = [];
@@ -47,7 +49,20 @@ export const AreaChartProgress = ({
 
   useEffect(() => {
     getDataProgressFromDB().then((res) => setProgressList(res));
-  }, [mainList]);
+    // if (weekButton) {
+    //   setData(weekData);
+    // } else {
+    //   setData(monthData);
+    // }
+  }, [isModalOpen, isDeleted, isTaskChecked]);
+
+  // useEffect(() => {
+  //   if (weekButton) {
+  //     setData(weekData);
+  //   } else {
+  //     setData(monthData);
+  //   }
+  // }, [progressList, weekButton, monthButton]);
 
   const current = moment();
   let n = 7;
@@ -112,6 +127,7 @@ export const AreaChartProgress = ({
             name: i.dateName,
             date: i.dateFormat,
             percent: 0,
+            all: "No",
             notebook: 0,
             allProgress: 100,
           });
@@ -123,6 +139,7 @@ export const AreaChartProgress = ({
                   name: i.dateName,
                   date: i.dateFormat,
                   percent: x.percent,
+                  all: x.all,
                   notebook: 0,
                   allProgress: 100,
                 });
@@ -140,6 +157,7 @@ export const AreaChartProgress = ({
             name: i.dateName,
             date: i.dateFormat,
             percent: 0,
+            all: "No",
             notebook: 0,
             allProgress: 100,
           });
@@ -151,6 +169,7 @@ export const AreaChartProgress = ({
                   name: i.dateName,
                   date: i.dateFormat,
                   percent: x.percent,
+                  all: x.all,
                   notebook: 0,
                   allProgress: 100,
                 });
@@ -163,19 +182,13 @@ export const AreaChartProgress = ({
   const weekData = [...new Map(wtestData.map((m) => [m.id, m])).values()];
   const monthData = [...new Map(mtestData.map((m) => [m.id, m])).values()];
 
-  useEffect(() => {
-    if (monthButton) {
-      setData([]);
-      setData(monthData);
-    } else if (weekButton) {
-      setData([]);
-      setData(weekData);
-    }
-  }, [monthButton, weekButton]);
   return (
     <Wrapper>
-      <ResponsiveContainer width="100%" height={200}>
-        <AreaChart data={data} margin={{ right: 30, top: 30 }}>
+      <ResponsiveContainer width="99%" height={200}>
+        <AreaChart
+          data={monthButton ? monthData : weekData}
+          margin={{ right: 30, top: 30 }}
+        >
           <defs>
             <linearGradient id="colorblue" x1="0" y1="0" x2="0" y2="1">
               <stop offset="10%" stopColor="#405eff" stopOpacity={0.9} />
@@ -193,8 +206,8 @@ export const AreaChartProgress = ({
             strokeLinecap="round"
             strokeWidth={3}
             className="tasks"
-            animationDuration={800}
-            animationEasing={"ease-in-out"}
+            // animationDuration={800}
+            // animationEasing={"ease-in-out"}
             fill="url(#colorblue)"
             style={
               button1Clicked
@@ -209,8 +222,8 @@ export const AreaChartProgress = ({
             strokeLinecap="round"
             strokeWidth={3}
             className="notebook"
-            animationDuration={800}
-            animationEasing={"ease-in-out"}
+            // animationDuration={800}
+            // animationEasing={"ease-in-out"}
             fill="url(#colororange)"
             style={
               button2Clicked
@@ -225,10 +238,9 @@ export const AreaChartProgress = ({
             strokeLinecap="round"
             strokeWidth={2}
             className="all"
-            animationDuration={800}
-            animationEasing={"ease-in-out"}
+            // animationDuration={800}
+            // animationEasing={"ease-in-out"}
             fill="none"
-            dot={true}
             style={
               button3Clicked
                 ? { opacity: "1", transition: "all 0.2s" }
@@ -245,7 +257,7 @@ export const AreaChartProgress = ({
               if (monthButton) {
                 const day = index + 1;
                 if (day === 1 || day % 6 === 0) {
-                  const date = moment(x).format("MM DD");
+                  const date = moment(x, "DD/MM/YYYY").format("DD MM");
                   return date;
                 }
                 return "";
@@ -259,6 +271,12 @@ export const AreaChartProgress = ({
             interval={0}
             tickLine={false}
             tick={{ fontSize: 12 }}
+            tickFormatter={(x) => {
+              if (x === 0) {
+                return "";
+              }
+              return x;
+            }}
           />
           <Tooltip
             content={
@@ -313,7 +331,7 @@ function CustomToolTip({
     return (
       <div className="tooltipArea">
         <div className="tooltipArea-header">
-          <h4>{getWeekNames(label)},&nbsp;</h4>
+          <h4>{getWeekNames(payload[0].payload.name)},&nbsp;</h4>
           <p>
             {moment(payload[0].payload.date, "DD/MM/YYYY").format("D MMM YYYY")}
           </p>
@@ -327,7 +345,11 @@ function CustomToolTip({
                   }
                 : { display: "flex" }
             }
-          >{`${payload[0].value.toFixed()}% tasks done`}</p>
+          >
+            {payload[0].payload.all === "No"
+              ? `${payload[0].payload.all} tasks assigned that day`
+              : `${payload[0].value.toFixed()}% tasks done`}
+          </p>
         ) : null}
         {button2Clicked ? (
           <p
@@ -338,7 +360,7 @@ function CustomToolTip({
                   }
                 : { display: "flex" }
             }
-          >{`${payload[1].value.toFixed()}% notebook fullfilled`}</p>
+          >{`${payload[1].value.toFixed()}% notebook `}</p>
         ) : null}
         {button3Clicked ? (
           <p>{`${payload[2].value.toFixed()}% assignments done`}</p>

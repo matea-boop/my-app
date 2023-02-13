@@ -6,6 +6,7 @@ import Checkbox from "./taskCheckbox";
 import { toast } from "react-hot-toast";
 import { TfiArrowCircleDown } from "react-icons/tfi";
 import SubtaskListContent from "./subtasks/subtaskListContent";
+import { useAllContext } from "../../../context/indexContext";
 import SubtaskBar from "./subtasks/subtaskBar";
 import axios from "axios";
 
@@ -24,6 +25,14 @@ async function getDataFromDB() {
 }
 
 function TaskItem({ task }) {
+  const {
+    isDeleted,
+    taskDeleted,
+    taskNotd,
+    isTaskChecked,
+    taskChecked,
+    taskUnchecked,
+  } = useAllContext();
   const [subtasks, setSubtasks] = useState(task ? task.subtasks : []);
   const [taskList, setTaskList] = useState([]);
   const [openMenu, setOpenMenu] = useState(false);
@@ -63,7 +72,7 @@ function TaskItem({ task }) {
       document.removeEventListener("mousedown", handler);
       document.removeEventListener("mousedown", handler1);
     };
-  });
+  }, []);
 
   useEffect(() => {
     let handler = (event) => {
@@ -92,6 +101,7 @@ function TaskItem({ task }) {
       !listBooleanSubtasks.includes(false)
     ) {
       setChecked(true);
+      taskChecked();
       const taskCompleted = async () => {
         await axios.patch(`http://localhost:3001/api/tasks/${task._id}`, {
           status: checked,
@@ -100,15 +110,21 @@ function TaskItem({ task }) {
       taskCompleted();
     } else {
       setChecked(false);
+      taskUnchecked();
     }
     if (task.status === true) {
       setChecked(true);
+      taskChecked();
     }
   }, [...task.subtasks.map((sub) => sub.subtaskStatus)]);
 
   const handleCheck = async () => {
     setChecked(!checked);
-
+    if (isTaskChecked) {
+      taskUnchecked();
+    } else if (!isTaskChecked) {
+      taskChecked();
+    }
     const newSubtasks = [];
     if (subtasks) {
       subtasks.forEach((sub) => {
@@ -125,9 +141,10 @@ function TaskItem({ task }) {
   };
 
   const deleteFromDB = async (idToDelete) => {
+    taskDeleted();
     try {
       await axios.delete(`http://localhost:3001/api/tasks/${idToDelete}`);
-      getDataFromDB();
+      taskNotd();
     } catch (error) {
       console.log(error);
     }
@@ -136,6 +153,7 @@ function TaskItem({ task }) {
   const handleDelete = () => {
     deleteFromDB(task._id);
     setOpenMenu(false);
+
     toast.success("Task Deleted");
   };
 
@@ -256,8 +274,8 @@ function TaskItem({ task }) {
         <TaskForm
           type="edit"
           task={task}
-          modalOpen={editModalOpen}
-          setModalOpen={setEditModalOpen}
+          isModalOpen={editModalOpen}
+          modalClose={setEditModalOpen}
         />
       ) : null}
     </Wrapper>

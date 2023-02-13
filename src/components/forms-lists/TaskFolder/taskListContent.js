@@ -2,31 +2,38 @@ import React from "react";
 import TaskItem from "./taskListItem";
 import { useEffect, useState } from "react";
 import axios from "axios";
-
-async function getDataFromDB() {
-  const url = "http://localhost:3001/api/tasks";
-  try {
-    const {
-      data: { tasks },
-    } = await axios.get(url);
-
-    return tasks;
-  } catch (error) {
-    console.log("error", error);
-    return error;
-  }
-}
+import { useAllContext } from "../../../context/indexContext";
+import Loading from "../../Loading";
 
 function TaskListContent({ page, setTotalPages }) {
+  const { isModalOpen, isDeleted, isTaskChecked } = useAllContext();
   const [taskList, setTaskList] = useState([]);
+  const [loading, setLoading] = useState(false);
   const tasksPerPage = 4;
   const startIndex = (page - 1) * tasksPerPage;
   let todaysDate = new Date().toLocaleDateString();
   const mainList = [];
 
+  async function getDataFromDB() {
+    const url = "http://localhost:3001/api/tasks";
+
+    try {
+      setLoading(true);
+      const {
+        data: { tasks },
+      } = await axios.get(url);
+      setLoading(false);
+      return tasks;
+    } catch (error) {
+      setLoading(false);
+      console.log("error", error);
+      return error;
+    }
+  }
+
   useEffect(() => {
     getDataFromDB().then((res) => setTaskList(res));
-  }, [mainList]);
+  }, [isModalOpen, isDeleted, isTaskChecked]);
 
   const check =
     taskList.length > 0
@@ -48,9 +55,12 @@ function TaskListContent({ page, setTotalPages }) {
 
   return (
     <div>
+      {/* {loading ? (
+        <Loading />
+      ) : ( */}
       <div style={{ position: "absolute", width: "80%" }}>
         {" "}
-        {taskList && taskList.length > 0 ? (
+        {selectedTasks && selectedTasks.length > 0 ? (
           selectedTasks.map((task) => {
             return task.date === todaysDate ? (
               <TaskItem
@@ -66,13 +76,16 @@ function TaskListContent({ page, setTotalPages }) {
             style={{
               fontSize: " 0.9rem",
               fontWeight: "normal",
-              paddingLeft: "1.5rem",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
             }}
           >
             No tasks left for today
           </div>
         )}
       </div>
+      {/* )} */}
     </div>
   );
 }

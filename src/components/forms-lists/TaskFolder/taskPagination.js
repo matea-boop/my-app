@@ -1,9 +1,9 @@
 import React from "react";
 import { BsFillCircleFill } from "react-icons/bs";
 import styled from "styled-components";
-import { useSelector } from "react-redux";
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { useAllContext } from "../../../context/indexContext";
 
 async function getDataFromDB() {
   const url = "http://localhost:3001/api/tasks";
@@ -20,21 +20,13 @@ async function getDataFromDB() {
 }
 
 export const TaskPagination = ({ totalPages, handleClick, pageActive }) => {
+  const { isModalOpen, isDeleted, isTaskChecked } = useAllContext();
   const [taskList, setTaskList] = useState([]);
   const pages = [...Array(totalPages).keys()].map((num) => num + 1);
 
-  const mainList = [];
-
   useEffect(() => {
     getDataFromDB().then((res) => setTaskList(res));
-  }, [mainList]);
-
-  const check =
-    taskList.length > 0
-      ? taskList.forEach((task) => {
-          mainList.push(task);
-        })
-      : null;
+  }, [isModalOpen, isDeleted, isTaskChecked]);
 
   return (
     <Wrapper>

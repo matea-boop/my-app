@@ -5,6 +5,7 @@ import CircuralProgress from "./Graph/circuralProgress";
 import TaskBar from "./Graph/taskBar";
 import NotebookBar from "./Graph/notebookBar";
 import { motivationalText } from "../../constants/constants";
+import { useAllContext } from "../../context/indexContext";
 
 async function getDataFromDB() {
   const url = "http://localhost:3001/api/tasks";
@@ -22,6 +23,7 @@ async function getDataFromDB() {
 
 export const Graph = () => {
   let todaysDate = new Date().toLocaleDateString();
+  const { isModalOpen, isDeleted, isTaskChecked } = useAllContext();
   const [taskList, setTaskList] = useState([]);
 
   const mainList = [];
@@ -37,7 +39,7 @@ export const Graph = () => {
 
   useEffect(() => {
     getDataFromDB().then((res) => setTaskList(res));
-  }, [mainList]);
+  }, [isModalOpen, isDeleted, isTaskChecked]);
 
   const listOfcompletedTasks = mainList.filter((task) => task.status === true);
 

@@ -7,7 +7,7 @@ import { HiOutlineXMark } from "react-icons/hi2";
 import { IconContext } from "react-icons";
 import axios from "axios";
 
-function TaskForm({ type, task, modalOpen, setModalOpen }) {
+function TaskForm({ type, task, modalOpen, modalClose, isModalOpen }) {
   const [title, setTitle] = useState("");
   const [subtasks, setSubtasks] = useState(task ? task.subtasks : []);
   const [currentSubtask, setCurrentSubtask] = useState("");
@@ -53,47 +53,43 @@ function TaskForm({ type, task, modalOpen, setModalOpen }) {
     }
   };
 
-  const onClick = (e) => {
-    e.preventDefault();
-    setModalOpen(false);
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (title === "" || !valid) {
+    if (title === "") {
+      toast.error("TaskTitle cannot be empty!");
       return;
     }
     if (title && valid && type === "add") {
       putDataToDB();
-      toast.success("Task Added Successfully");
-      setModalOpen(false);
+      toast.success("Task Added Successfully!");
+      modalClose();
     }
     if (type === "edit") {
       if (task.title !== title) {
         await axios.patch(`http://localhost:3001/api/tasks/${task._id}`, {
           title: title,
         });
-        setModalOpen(false);
-        toast.success("Task Edited");
+        modalClose();
+        toast.success("Task Edited Successfully!");
       } else if (task.subtasks !== subtasks) {
         await axios.patch(`http://localhost:3001/api/tasks/${task._id}`, {
           subtasks: subtasks,
         });
-        setModalOpen(false);
-        toast.success("Task Edited");
+        modalClose();
+        toast.success("Task Edited Successfully!");
       } else if (task.date !== date && valid) {
         await axios.patch(`http://localhost:3001/api/tasks/${task._id}`, {
           date: date,
         });
-        setModalOpen(false);
-        toast.success("Task Edited");
+        modalClose();
+        toast.success("Task Edited Successfully!");
       } else {
-        toast.error("No changes made");
+        toast.error("No changes made...");
       }
     }
 
-    setModalOpen(false);
+    modalClose();
   };
 
   const addSubtask = () => {
@@ -115,11 +111,13 @@ function TaskForm({ type, task, modalOpen, setModalOpen }) {
 
   useEffect(() => {
     const ddmmyyyy = /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/;
+    let todaysDate = new Date().toLocaleDateString();
 
-    if (ddmmyyyy.test(date)) {
+    if (ddmmyyyy.test(date) && date >= todaysDate) {
       setValid(true);
     } else {
       setValid(false);
+      toast.error("Invalid date input!", { autoClose: 100 });
     }
   }, [date]);
 
@@ -131,7 +129,7 @@ function TaskForm({ type, task, modalOpen, setModalOpen }) {
       }}
     >
       <div style={{ borderRadius: "var(--border-radius)" }}>
-        {modalOpen ? (
+        {isModalOpen ? (
           <Wrapper>
             <div className="form-container">
               <form
@@ -152,7 +150,12 @@ function TaskForm({ type, task, modalOpen, setModalOpen }) {
                   value={title}
                   id="title"
                   name="title"
-                  onChange={(e) => setTitle(e.target.value)}
+                  onChange={(e) =>
+                    setTitle(
+                      e.target.value.charAt(0).toUpperCase() +
+                        e.target.value.slice(1)
+                    )
+                  }
                 />
 
                 <label htmlFor="time">Date and Time</label>
@@ -216,7 +219,9 @@ function TaskForm({ type, task, modalOpen, setModalOpen }) {
                   <button
                     type="button"
                     className="task-btn cancel"
-                    onClick={(e) => onClick(e)}
+                    onClick={() => {
+                      modalClose();
+                    }}
                   >
                     Cancel
                   </button>
