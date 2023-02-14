@@ -1,6 +1,7 @@
 const express = require("express");
 const app = express();
 const tasks = require("./routes/tasks");
+const events = require("./routes/events");
 const connectDB = require("./db/connect");
 const cors = require("cors");
 require("dotenv").config();
@@ -16,6 +17,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/tasks", tasks);
+app.use("/api/events", events);
 
 const start = async () => {
   try {

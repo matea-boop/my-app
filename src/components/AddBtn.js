@@ -16,6 +16,9 @@ function AddButton() {
     isModalOpen,
     modalOpen,
     modalClose,
+    isEventModalOpen,
+    eventModalOpen,
+    eventModalClose,
   } = useAllContext();
   // const [modalOpen, setModalOpen] = useState(false);
   const [getId, setGetId] = useState("");
@@ -38,7 +41,14 @@ function AddButton() {
       id: 2,
       text: "Event",
       url: "/AddEvent",
-      element: <EventForm />,
+      element: (
+        <EventForm
+          type="add"
+          isEventModalOpen={isEventModalOpen}
+          eventModalOpen={eventModalOpen}
+          eventModalClose={eventModalClose}
+        />
+      ),
     },
     {
       id: 3,
@@ -112,6 +122,7 @@ function AddButton() {
                   setGetId(id);
                   addBtnClose();
                   modalOpen();
+                  eventModalOpen();
                 }}
                 style={
                   getId !== "" ? { opacity: "0", transition: " 0s" } : null
@@ -123,7 +134,7 @@ function AddButton() {
           })}
         </ul>
 
-        {modalOpen ? (
+        {isModalOpen || isEventModalOpen ? (
           <div>
             {linksAddBtn.map(({ id, element }) => {
               if (getId === id) {

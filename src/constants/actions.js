@@ -10,5 +10,5 @@ export const TASK_NOTD = "TASK_NOTD";
 export const TASK_CHECKED = "TASK_CHECKED";
 export const TASK_UNCHECKED = "TASK_UNCHECKED";
 
-export const TASK_DATA = "TASK_DATA";
-export const TASK_DATA_EMPTY = "TASK_DATA_EMPTY";
+export const EVENT_MODAL_OPEN = "EVENT_MODAL_OPEN";
+export const EVENT_MODAL_CLOSE = "EVENT_MODAL_CLOSE";

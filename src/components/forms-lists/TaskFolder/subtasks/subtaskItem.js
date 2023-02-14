@@ -3,19 +3,21 @@ import { useState, useEffect } from "react";
 import SubtaskCheckbox from "./subtaskCheckbox";
 import styled from "styled-components";
 import axios from "axios";
+import { useAllContext } from "../../../../context/indexContext";
 
 function SubtaskItem({
   subtaskTitle,
   subtaskStatus,
   subtask,
-  taskChecked,
+  // taskChecked,
   subtaskList,
   task,
 }) {
+  const { isTaskChecked, taskChecked, taskUnchecked } = useAllContext();
   const [subtasks, setSubtasks] = useState(task ? task.subtasks : []);
   const [subtaskChecked, setSubtaskChecked] = useState(false);
   let listBoolean = [];
-  subtaskList.forEach((sub) => listBoolean.push(sub.subtaskStatus));
+  subtasks.forEach((sub) => listBoolean.push(sub.subtaskStatus));
 
   const subtaskHandleCheck = async () => {
     setSubtaskChecked(!subtaskChecked);
@@ -25,18 +27,16 @@ function SubtaskItem({
   const subtaskStatusUpdate = async () => {
     const newSubtasks = [];
 
-    if (subtaskList) {
-      subtaskList.forEach((sub) => {
+    if (subtasks) {
+      subtasks.forEach((sub) => {
         if (subtask.id === sub.id) {
           newSubtasks.push({ ...sub, subtaskStatus: !subtaskChecked });
         } else {
-          newSubtasks.push({ ...sub });
+          newSubtasks.push({ ...sub, subtaskStatus: sub.subtaskStatus });
         }
       });
       setSubtasks([]);
       setSubtasks([...newSubtasks]);
-
-      console.log(subtasks);
     }
 
     await axios.patch(`http://localhost:3001/api/tasks/${task._id}`, {
@@ -45,11 +45,22 @@ function SubtaskItem({
   };
 
   useEffect(() => {
-    subtaskStatusUpdate();
+    // subtaskStatusUpdate();
+    console.log(listBoolean);
+    if (listBoolean.length > 0 && !listBoolean.includes(false)) {
+      const taskCompleted = async () => {
+        await axios.patch(`http://localhost:3001/api/tasks/${task._id}`, {
+          status: !isTaskChecked,
+        });
+      };
+      taskChecked();
+      taskCompleted();
+      console.log(isTaskChecked);
+    }
   }, [subtaskChecked]);
 
   useEffect(() => {
-    if (taskChecked) {
+    if (isTaskChecked) {
       setSubtaskChecked(true);
     } else {
       if (!listBoolean.includes(false)) {
@@ -58,7 +69,7 @@ function SubtaskItem({
         const changeSubtasks = async () => {
           const newSubtasks = [];
           subtaskList.forEach((sub) =>
-            newSubtasks.push({ ...sub, subtaskStatus: subtaskChecked })
+            newSubtasks.push({ ...sub, subtaskStatus: !subtaskChecked })
           );
           setSubtasks([]);
           setSubtasks([...newSubtasks]);
@@ -76,10 +87,10 @@ function SubtaskItem({
         }
       }
     }
-  }, [taskChecked]);
+  }, [isTaskChecked]);
 
   return (
-    <Wrapper style={taskChecked ? { display: "none" } : { display: "flex" }}>
+    <Wrapper style={isTaskChecked ? { display: "none" } : { display: "flex" }}>
       <div className="links" key={subtask.id}>
         <SubtaskCheckbox
           className="checkbox-subtasks"

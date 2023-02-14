@@ -81,7 +81,7 @@ function TaskListContent({ page, setTotalPages }) {
               justifyContent: "center",
             }}
           >
-            No tasks left for today
+            No tasks assigned for today
           </div>
         )}
       </div>

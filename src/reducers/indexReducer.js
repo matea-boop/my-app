@@ -7,8 +7,8 @@ import {
   TASK_NOTD,
   TASK_UNCHECKED,
   TASK_CHECKED,
-  TASK_DATA,
-  TASK_DATA_EMPTY,
+  EVENT_MODAL_CLOSE,
+  EVENT_MODAL_OPEN,
 } from "../constants/actions";
 
 const reducer = (state, action) => {
@@ -36,11 +36,11 @@ const reducer = (state, action) => {
   if (action.type === TASK_UNCHECKED) {
     return { ...state, isTaskChecked: false };
   }
-  if (action.type === TASK_DATA) {
-    return { ...state, tasksData: action.payload };
+  if (action.type === EVENT_MODAL_OPEN) {
+    return { ...state, isEventModalOpen: true };
   }
-  if (action.type === TASK_DATA_EMPTY) {
-    return { ...state, tasksData: [] };
+  if (action.type === EVENT_MODAL_CLOSE) {
+    return { ...state, isEventModalOpen: false };
   }
 };
 

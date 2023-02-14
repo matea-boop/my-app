@@ -8,17 +8,17 @@ import {
   TASK_NOTD,
   TASK_CHECKED,
   TASK_UNCHECKED,
-  TASK_DATA,
-  TASK_DATA_EMPTY,
+  EVENT_MODAL_OPEN,
+  EVENT_MODAL_CLOSE,
 } from "../constants/actions";
 import React, { useContext, useReducer } from "react";
 
 const initialState = {
   isBtnOpen: false,
   isModalOpen: false,
+  isEventModalOpen: false,
   isDeleted: false,
   isTaskChecked: false,
-  tasksData: [],
 };
 
 const AllContext = React.createContext();
@@ -54,11 +54,11 @@ export const AddBtnProvider = ({ children }) => {
     dispatch({ type: TASK_UNCHECKED });
   };
 
-  const taskData = () => {
-    dispatch({ type: TASK_DATA });
+  const eventModalOpen = () => {
+    dispatch({ type: EVENT_MODAL_OPEN });
   };
-  const taskDataEmpty = () => {
-    dispatch({ type: TASK_DATA_EMPTY });
+  const eventModalClose = () => {
+    dispatch({ type: EVENT_MODAL_CLOSE });
   };
 
   return (
@@ -73,8 +73,8 @@ export const AddBtnProvider = ({ children }) => {
         taskNotd,
         taskChecked,
         taskUnchecked,
-        taskData,
-        taskDataEmpty,
+        eventModalOpen,
+        eventModalClose,
       }}
     >
       {children}

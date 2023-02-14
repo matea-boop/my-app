@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { useDispatch } from "react-redux";
 import { v4 as uuid } from "uuid";
@@ -14,10 +14,27 @@ function TaskForm({ type, task, modalOpen, modalClose, isModalOpen }) {
   const [status, setStatus] = useState(false);
   const [subtaskStatus, setSubtaskStatus] = useState(false);
   const [date, setDate] = useState(new Date().toLocaleDateString());
-  const [valid, setValid] = useState(false);
+  const [valid, setValid] = useState(true);
   const dispatch = useDispatch();
   const [taskList, setTaskList] = useState([]);
   const url = "http://localhost:3001/api/tasks";
+  const formRef = useRef();
+
+  useEffect(() => {
+    const handler = (event) => {
+      if (formRef.current === null) {
+        return;
+      }
+      if (formRef.current.contains(event.target)) {
+        return;
+      }
+      modalClose();
+    };
+    document.body.addEventListener("mousedown", handler, true);
+    return () => {
+      document.body.removeEventListener("mousedown", handler, true);
+    };
+  }, []);
 
   useEffect(() => {
     if (type === "edit" && task) {
@@ -58,6 +75,10 @@ function TaskForm({ type, task, modalOpen, modalClose, isModalOpen }) {
 
     if (title === "") {
       toast.error("TaskTitle cannot be empty!");
+      return;
+    }
+    if (!valid) {
+      toast.error("Invalid date input!");
       return;
     }
     if (title && valid && type === "add") {
@@ -117,7 +138,6 @@ function TaskForm({ type, task, modalOpen, modalClose, isModalOpen }) {
       setValid(true);
     } else {
       setValid(false);
-      toast.error("Invalid date input!", { autoClose: 100 });
     }
   }, [date]);
 
@@ -131,7 +151,7 @@ function TaskForm({ type, task, modalOpen, modalClose, isModalOpen }) {
       <div style={{ borderRadius: "var(--border-radius)" }}>
         {isModalOpen ? (
           <Wrapper>
-            <div className="form-container">
+            <div ref={formRef} className="form-container">
               <form
                 className="task-form"
                 onSubmit={(e) => {
@@ -158,7 +178,7 @@ function TaskForm({ type, task, modalOpen, modalClose, isModalOpen }) {
                   }
                 />
 
-                <label htmlFor="time">Date and Time</label>
+                <label htmlFor="time">Date</label>
 
                 <input
                   id={valid ? "valid" : "notValid"}
@@ -178,7 +198,12 @@ function TaskForm({ type, task, modalOpen, modalClose, isModalOpen }) {
                     placeholder="Add Subtask"
                     value={currentSubtask}
                     name="subtasks"
-                    onChange={(e) => setCurrentSubtask(e.target.value)}
+                    onChange={(e) =>
+                      setCurrentSubtask(
+                        e.target.value.charAt(0).toUpperCase() +
+                          e.target.value.slice(1)
+                      )
+                    }
                   />
                   <button
                     type="button"
@@ -247,7 +272,7 @@ const Wrapper = styled.div`
   height: 100%;
   background: rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(5px);
-  color: var(--body-color);
+  color: var(--text-color);
   border-radius: inherit;
 
   .header {
@@ -256,7 +281,8 @@ const Wrapper = styled.div`
     margin-bottom: 1.5rem;
   }
   .form-container {
-    background-color: var(--mainorange-color);
+    // outline: 0.05rem solid var(--mainorange-color);
+    background-color: var(--sidebar-color);
     max-width: 500px;
     height: fit-content;
     border-radius: inherit;
@@ -275,7 +301,8 @@ const Wrapper = styled.div`
       font-size: 1rem;
     }
     input {
-      height: 3rem;
+      height: 2.7rem;
+      font-size: 0.8rem;
       margin-top: 0.5rem;
       margin-bottom: 2rem;
       width: 100%;
@@ -284,7 +311,6 @@ const Wrapper = styled.div`
       outline: none;
       border-radius: var(--border-radius);
       background-color: var(--text-color);
-      font-size: 1rem;
     }
 
     .button-container {
@@ -299,8 +325,8 @@ const Wrapper = styled.div`
       z-index: 1000;
       font-family: "Nunito", sans-serif;
       font-weight: bold;
-      background-color: var(--body-color);
-      color: var(--text-color);
+      background-color: var(--mainorange-color);
+      color: var(--body-color);
       border: none;
       border-radius: var(--border-radius);
       cursor: pointer;
@@ -309,6 +335,11 @@ const Wrapper = styled.div`
       z-index: 1000;
       opacity: 0.75;
     }
+  }
+  .subtask {
+    color: var(--body-color);
+    font-family: "Nunito", sans-serif;
+    font-size: 0.8rem;
   }
   input[id="notValid"] {
     outline: 2px solid red;
@@ -320,14 +351,14 @@ const Wrapper = styled.div`
     align-items: center;
   }
   .btn-subtask-add {
-    height: 3rem;
-    background: var(--body-color);
+    height: 2.7rem;
+    background: var(--mainorange-color);
     border-radius: var(--border-radius);
     border: none;
     font-family: "Nunito", sans-serif;
     font-weight: bold;
     cursor: pointer;
-    color: var(--text-color);
+    color: var(--body-color);
     margin-top: 0.5rem;
     margin-bottom: 2rem;
     margin-left: 0.5rem;
