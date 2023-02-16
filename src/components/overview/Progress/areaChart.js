@@ -328,6 +328,7 @@ function CustomToolTip({
   button3Clicked,
 }) {
   if (active) {
+    let todaysDate = new Date().toLocaleDateString();
     return (
       <div className="tooltipArea">
         <div className="tooltipArea-header">
@@ -347,7 +348,9 @@ function CustomToolTip({
             }
           >
             {payload[0].payload.all === "No"
-              ? `${payload[0].payload.all} tasks assigned that day`
+              ? payload[0].payload.date === new Date().toLocaleDateString()
+                ? `${payload[0].payload.all} tasks assigned today`
+                : `${payload[0].payload.all} tasks assigned that day`
               : `${payload[0].value.toFixed()}% tasks done`}
           </p>
         ) : null}

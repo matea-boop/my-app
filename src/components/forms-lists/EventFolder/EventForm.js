@@ -82,33 +82,25 @@ function EventForm({
   useEffect(() => {
     const hhmm = /^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/;
 
-    let todaysDate = new Date().toLocaleDateString();
-    let todaysTime = moment().format("HH:mm");
-
     if (hhmm.test(startTime) || startTime === "") {
       setStartTimeValid(true);
     } else {
       setStartTimeValid(false);
     }
-    // if (todaysDate === date && startTime <= todaysTime) {
-    //   setStartTimeValid(false);
-    // } u submit handle
 
     if (hhmm.test(endTime) || endTime === "") {
       setEndTimeValid(true);
     } else {
       setEndTimeValid(false);
     }
-    // if (todaysDate === date && endTime < startTime) {
-    //   setEndTimeValid(false);
-    // } ovo stavi u submit handle
   }, [startTime, endTime, date]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
+    let todaysDate = new Date().toLocaleDateString();
+    let todaysTime = moment().format("HH:mm");
     if (title === "") {
-      toast.error("TaskTitle cannot be empty!");
+      toast.error("Event title cannot be empty!");
       return;
     }
     if (!valid) {
@@ -119,9 +111,24 @@ function EventForm({
       toast.error("Choose event type!");
       return;
     }
+    if (startTime === "" || endTime === "") {
+      toast.error("Start nor end time cannot be empty!");
+      return;
+    }
+    if (todaysDate === date && startTime <= todaysTime) {
+      setStartTimeValid(false);
+      toast.error("Invalid start time input!");
+      return;
+    }
+    if (todaysDate === date && endTime < startTime) {
+      setEndTimeValid(false);
+      toast.error("Invalid end time input!");
+      return;
+    }
+
     if (title && valid && typeChosen !== "" && type === "add") {
       putDataToDB();
-      toast.success("Task Added Successfully!");
+      toast.success("Event added successfully!");
       eventModalClose();
     }
   };
@@ -384,7 +391,7 @@ const Wrapper = styled.div`
   }
   .btn-eventtype-container {
     margin-top: 0.5rem;
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
 
     display: flex;
     flex-wrap: wrap;
@@ -425,11 +432,13 @@ const Wrapper = styled.div`
       background-color: var(--maingreen-color);
     }
     .appointment {
+      width: 40%;
       border: none;
       font-family: "Nunito", sans-serif;
       border-radius: var(--border-radius);
       cursor: pointer;
       color: var(--text-color);
+      margin: 0rem 0rem 0.5rem 0rem;
       padding: 0.3rem 1rem 0.3rem 1rem;
       background-color: var(--mainblue-color);
     }

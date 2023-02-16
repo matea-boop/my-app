@@ -74,7 +74,7 @@ function TaskForm({ type, task, modalOpen, modalClose, isModalOpen }) {
     e.preventDefault();
 
     if (title === "") {
-      toast.error("TaskTitle cannot be empty!");
+      toast.error("Task title cannot be empty!");
       return;
     }
     if (!valid) {
@@ -83,7 +83,7 @@ function TaskForm({ type, task, modalOpen, modalClose, isModalOpen }) {
     }
     if (title && valid && type === "add") {
       putDataToDB();
-      toast.success("Task Added Successfully!");
+      toast.success("Task added successfully!");
       modalClose();
     }
     if (type === "edit") {
@@ -104,7 +104,7 @@ function TaskForm({ type, task, modalOpen, modalClose, isModalOpen }) {
           date: date,
         });
         modalClose();
-        toast.success("Task Edited Successfully!");
+        toast.success("Task edited successfully!");
       } else {
         toast.error("No changes made...");
       }
