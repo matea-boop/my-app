@@ -115,14 +115,14 @@ const Wrapper = styled.div`
     .title-progress {
       font-size: 1rem;
       text-align: left;
-      margin: 1.5rem 1.5rem 0.1rem 1.5rem;
+      margin: 1.5rem 1.5rem 0rem 1.5rem;
       font-weight: normal;
     }
 
     a {
       font-size: 0.8rem;
       float: right;
-      margin: 1.7rem 1.5rem 0.1rem 1.7rem;
+      margin: 1.7rem 1.5rem 0rem 1.7rem;
       opacity: 0.5;
       font-weight: lighter;
       &:hover {
@@ -133,12 +133,11 @@ const Wrapper = styled.div`
   .buttons-area {
     display: flex;
     justify-content: space-between;
-    margin-top: 0.8rem;
   }
 
   .buttons-area-1 {
     font-size: 0.8rem;
-    font-weight: normal;
+    font-weight: lighter;
 
     margin-left: 1.5rem;
     display: flex;
@@ -156,6 +155,7 @@ const Wrapper = styled.div`
   .buttons-area-2 {
     font-size: 0.8rem;
     gap: 1rem;
+    font-weight: lighter;
     margin-right: 1.5rem;
     display: flex;
     justify-content: space-between;
@@ -175,17 +175,47 @@ const Wrapper = styled.div`
   .week {
     width: 4.5rem;
     text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     border-radius: var(--border-radius);
-    padding: 0.5rem 0rem 0rem 0rem;
     background: var(--body-color);
     cursor: pointer;
   }
   .month {
     width: 4.5rem;
     text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     border-radius: var(--border-radius);
-    padding: 0.5rem 0rem 0rem 0rem;
     cursor: pointer;
     background: var(--body-color);
+  }
+
+  @media screen and (max-width: 1024px) {
+    .buttons-area-1 {
+      font-size: 0.7rem;
+    }
+    .buttons-area-2 {
+      font-size: 0.7rem;
+    }
+    a {
+      font-size: 0.7rem;
+    }
+  }
+  @media screen and (max-width: 1200px) {
+    .buttons-area-1 {
+      font-size: 0.7rem;
+    }
+    .buttons-area-2 {
+      font-size: 0.7rem;
+    }
+
+    .title-p {
+      a {
+        font-size: 0.7rem;
+      }
+    }
   }
 `;

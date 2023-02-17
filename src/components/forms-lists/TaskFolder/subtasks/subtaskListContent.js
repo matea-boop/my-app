@@ -4,9 +4,10 @@ import styled from "styled-components";
 
 function SubtaskListContent({
   clicked,
-  taskChecked,
+  taskCheck,
   setTaskChecked,
   taskList,
+  setListBoolean,
 }) {
   return (
     <Wrapper className="links">
@@ -16,12 +17,14 @@ function SubtaskListContent({
               return (
                 <div key={task._id}>
                   {task.subtasks && clicked === task._id
-                    ? task.subtasks.map((subtask) => (
+                    ? task.subtasks.map((subtask, index) => (
                         <SubtaskItem
                           task={task}
-                          taskChecked={taskChecked}
+                          taskCheck={taskCheck}
+                          subtaskIndex={index}
                           setTaskChecked={setTaskChecked}
                           subtaskList={task.subtasks}
+                          setListBoolean={setListBoolean}
                           key={subtask.id}
                           subtask={subtask}
                           subtaskStatus={subtask.subtaskStatus}

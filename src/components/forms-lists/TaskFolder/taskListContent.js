@@ -9,7 +9,7 @@ function TaskListContent({ page, setTotalPages }) {
   const { isModalOpen, isDeleted, isTaskChecked } = useAllContext();
   const [taskList, setTaskList] = useState([]);
   const [loading, setLoading] = useState(false);
-  const tasksPerPage = 4;
+  const tasksPerPage = 5;
   const startIndex = (page - 1) * tasksPerPage;
   let todaysDate = new Date().toLocaleDateString();
   const mainList = [];
@@ -18,14 +18,12 @@ function TaskListContent({ page, setTotalPages }) {
     const url = "http://localhost:3001/api/tasks";
 
     try {
-      setLoading(true);
       const {
         data: { tasks },
       } = await axios.get(url);
-      setLoading(false);
+
       return tasks;
     } catch (error) {
-      setLoading(false);
       console.log("error", error);
       return error;
     }

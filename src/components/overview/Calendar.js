@@ -36,4 +36,14 @@ const Wrapper = styled.div`
       opacity: 1;
     }
   }
+  @media screen and (max-width: 1024px) {
+    a {
+      font-size: 0.7rem;
+    }
+  }
+  @media screen and (max-width: 1200px) {
+    a {
+      font-size: 0.7rem;
+    }
+  }
 `;

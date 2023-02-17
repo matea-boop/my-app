@@ -37,6 +37,7 @@ const Wrapper = styled.div`
 
   .checkbox {
     font-size: 1rem;
+    stroke-width: 1;
   }
   .done {
     display: none;

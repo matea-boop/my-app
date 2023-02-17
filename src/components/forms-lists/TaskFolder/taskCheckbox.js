@@ -4,20 +4,19 @@ import { FiSquare } from "react-icons/fi";
 import { FiCheckSquare } from "react-icons/fi";
 import { useAllContext } from "../../../context/indexContext";
 
-function Checkbox({ handleCheck }) {
-  const { isTaskChecked } = useAllContext();
+function Checkbox({ checked, handleCheck }) {
   return (
     <Wrapper>
       <FiSquare
         className="checkbox"
-        style={isTaskChecked ? { display: "none" } : { diyplay: "flex" }}
+        style={checked ? { display: "none" } : { diyplay: "flex" }}
         onClick={() => {
           handleCheck();
         }}
       />
       <FiCheckSquare
         className="checkbox done"
-        style={isTaskChecked ? { display: "flex" } : { diyplay: "none" }}
+        style={checked ? { display: "flex" } : { diyplay: "none" }}
         onClick={() => {
           handleCheck();
         }}
@@ -35,6 +34,7 @@ const Wrapper = styled.div`
 
   .checkbox {
     font-size: 1.4rem;
+    stroke-width: 1;
   }
   .done {
     display: none;

@@ -1,10 +1,11 @@
 import React from "react";
 import styled from "styled-components";
 
-function SubtaskBar({ listBoolean, checked }) {
+function SubtaskBar({ checked, listBoolean }) {
   const listLength = listBoolean.length;
   const completedSubtasks = listBoolean.filter((i) => i === true).length;
   const barWidth = completedSubtasks / listLength;
+
   return (
     <Wrapper>
       <div className="full-bar"></div>

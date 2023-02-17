@@ -9,6 +9,8 @@ import {
   TASK_CHECKED,
   EVENT_MODAL_CLOSE,
   EVENT_MODAL_OPEN,
+  SUBTASK_STATUS_FALSE,
+  SUBTASK_STATUS_TRUE,
 } from "../constants/actions";
 
 const reducer = (state, action) => {
@@ -41,6 +43,13 @@ const reducer = (state, action) => {
   }
   if (action.type === EVENT_MODAL_CLOSE) {
     return { ...state, isEventModalOpen: false };
+  }
+
+  if (action.type === SUBTASK_STATUS_TRUE) {
+    return { ...state, isSubtaskStatusChanged: true };
+  }
+  if (action.type === SUBTASK_STATUS_FALSE) {
+    return { ...state, isSubtaskStatusChanged: false };
   }
 };
 

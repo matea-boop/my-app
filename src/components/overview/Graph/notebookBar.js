@@ -53,13 +53,13 @@ const Wrapper = styled.div`
     align-items: center;
 
     justify-content: center;
-    padding: 0.3rem 0 0.3rem 0.7rem;
+    padding: 0.2rem 0 0.2rem 0.7rem;
   }
   h1 {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.8rem;
+    font-size: 0.7rem;
     font-weight: normal;
   }
   .circle {

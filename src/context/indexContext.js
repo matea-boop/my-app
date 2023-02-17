@@ -10,6 +10,8 @@ import {
   TASK_UNCHECKED,
   EVENT_MODAL_OPEN,
   EVENT_MODAL_CLOSE,
+  SUBTASK_STATUS_FALSE,
+  SUBTASK_STATUS_TRUE,
 } from "../constants/actions";
 import React, { useContext, useReducer } from "react";
 
@@ -19,6 +21,7 @@ const initialState = {
   isEventModalOpen: false,
   isDeleted: false,
   isTaskChecked: false,
+  isSubtaskStatusChanged: false,
 };
 
 const AllContext = React.createContext();
@@ -61,6 +64,13 @@ export const AddBtnProvider = ({ children }) => {
     dispatch({ type: EVENT_MODAL_CLOSE });
   };
 
+  const subtaskStatusChangedTrue = () => {
+    dispatch({ type: TASK_CHECKED });
+  };
+  const subtaskStatusChangedFalse = () => {
+    dispatch({ type: TASK_UNCHECKED });
+  };
+
   return (
     <AllContext.Provider
       value={{
@@ -75,6 +85,8 @@ export const AddBtnProvider = ({ children }) => {
         taskUnchecked,
         eventModalOpen,
         eventModalClose,
+        subtaskStatusChangedFalse,
+        subtaskStatusChangedTrue,
       }}
     >
       {children}

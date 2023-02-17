@@ -16,7 +16,7 @@ export const CircuralProgress = ({ percentage, circleWidth }) => {
         <circle
           cx={circleWidth / 2}
           cy={circleWidth / 2}
-          strokeWidth="0.3rem"
+          strokeWidth="0.2rem"
           r={radius}
           className="circle"
         />
@@ -48,7 +48,7 @@ const Wrapper = styled.div`
   .circle {
     fill: none;
     stroke: var(--text-color);
-    opacity: 0.2;
+    opacity: 0.1;
   }
   .circle-task {
     fill: none;
@@ -59,5 +59,6 @@ const Wrapper = styled.div`
   .circle-text {
     fill: var(--mainorange-color);
     font-weight: bold;
+    font-size: 1rem;
   }
 `;

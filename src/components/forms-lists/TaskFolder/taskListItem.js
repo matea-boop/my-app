@@ -27,6 +27,7 @@ async function getDataFromDB() {
 function TaskItem({ task }) {
   const {
     isDeleted,
+    isSubtaskStatusChanged,
     taskDeleted,
     taskNotd,
     isTaskChecked,
@@ -44,13 +45,13 @@ function TaskItem({ task }) {
   let divRef = useRef();
   let subtaskRef = useRef();
   let arrowRef = useRef();
-  let listBooleanSubtasks = [];
+  let list = [];
+  task.subtasks.forEach((sub) => list.push(sub.subtaskStatus));
+  const [listBooleanSubtasks, setListBooleanSubtasks] = useState([...list]);
 
   useEffect(() => {
     getDataFromDB().then((res) => setTaskList(res));
-  }, [openMenu, clicked]);
-
-  task.subtasks.forEach((sub) => listBooleanSubtasks.push(sub.subtaskStatus));
+  }, [openMenu, clicked, isTaskChecked, task]);
 
   useEffect(() => {
     let handler = (event) => {
@@ -97,48 +98,25 @@ function TaskItem({ task }) {
     }
   }, [task.status]);
 
-  // useEffect(() => {
-  //   if (
-  //     listBooleanSubtasks.length > 0 &&
-  //     !listBooleanSubtasks.includes(false)
-  //   ) {
-  //     setChecked(true);
-  //     taskChecked();
-  //     const taskCompleted = async () => {
-  //       await axios.patch(`http://localhost:3001/api/tasks/${task._id}`, {
-  //         status: isTaskChecked,
-  //       });
-  //     };
-  //     taskCompleted();
-  //   } else {
-  //     setChecked(false);
-  //     taskUnchecked();
-  //   }
-  //   if (task.status === true) {
-  //     setChecked(true);
-  //     taskChecked();
-  //   }
-  // }, [...task.subtasks.map((sub) => sub.subtaskStatus)]);
-
   const handleCheck = async () => {
     setChecked(!checked);
     if (isTaskChecked) {
       taskUnchecked();
-    } else if (!isTaskChecked) {
+    } else {
       taskChecked();
     }
-    const newSubtasks = [];
-    if (subtasks) {
-      subtasks.forEach((sub) => {
-        newSubtasks.push({ ...sub, subtaskStatus: checked });
-      });
-      setSubtasks([]);
-      setSubtasks([...newSubtasks]);
-    }
+    // const newSubtasks = [];
+    // if (subtasks) {
+    //   subtasks.forEach((sub) => {
+    //     newSubtasks.push({ ...sub, subtaskStatus: !checked });
+    //   });
+    //   setSubtasks([]);
+    //   setSubtasks([...newSubtasks]);
+    // }
 
     await axios.patch(`http://localhost:3001/api/tasks/${task._id}`, {
       status: !checked,
-      subtasks: subtasks,
+      // subtasks: subtasks,
     });
   };
 
@@ -262,7 +240,9 @@ function TaskItem({ task }) {
         {subtaskArrow ? (
           <SubtaskListContent
             taskList={taskList}
-            taskChecked={checked}
+            taskCheck={checked}
+            listBoolean={listBooleanSubtasks}
+            setListBoolean={setListBooleanSubtasks}
             setTaskChecked={setChecked}
             dropdownOpen={subtaskArrow}
             task={task}
@@ -291,12 +271,12 @@ const Wrapper = styled.div`
   align-items: flex-start;
   justify-content: space-between;
 
-  margin-bottom: 0.7rem;
+  margin-bottom: 0.3rem;
   background-color: var(--box-color);
   border-radius: var(--border-radius);
 
   .task-details {
-    padding: 0.7rem 1rem 0.7rem 1rem;
+    padding: 0.6rem 1rem 0.6rem 1rem;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -306,6 +286,7 @@ const Wrapper = styled.div`
     font-weight: regular;
     font-size: 0.8rem;
     max-width: 8rem;
+    font-weight: lighter;
   }
   .icon-container {
     position: absolute;
@@ -437,3 +418,28 @@ const Wrapper = styled.div`
 `;
 
 export default TaskItem;
+
+// useEffect(() => {
+//   console.log(listBooleanSubtasks);
+//   if (
+//     listBooleanSubtasks.length > 0 &&
+//     !listBooleanSubtasks.includes(false)
+//   ) {
+//     setChecked(true);
+//     taskChecked();
+//     const taskCompleted = async () => {
+//       console.log(checked);
+//       await axios.patch(`http://localhost:3001/api/tasks/${task._id}`, {
+//         status: !checked,
+//       });
+//     };
+//     taskCompleted();
+//   } else {
+//     setChecked(false);
+//     taskUnchecked();
+//   }
+//   if (task.status === true) {
+//     setChecked(true);
+//     taskChecked();
+//   }
+// }, [...taskList.map((sub) => sub.subtaskStatus)]);

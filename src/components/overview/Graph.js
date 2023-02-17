@@ -6,6 +6,7 @@ import TaskBar from "./Graph/taskBar";
 import NotebookBar from "./Graph/notebookBar";
 import { motivationalText } from "../../constants/constants";
 import { useAllContext } from "../../context/indexContext";
+import moment from "moment/moment";
 
 async function getDataFromDB() {
   const url = "http://localhost:3001/api/tasks";
@@ -28,6 +29,7 @@ export const Graph = () => {
 
   const mainList = [];
 
+  const currentDate = moment().format("dddd Do MMMM");
   const check =
     taskList.length > 0
       ? taskList.forEach((task) => {
@@ -80,7 +82,7 @@ export const Graph = () => {
     <Wrapper>
       <div className="items">
         <div className="headers">
-          <h1 className="header">Friday 18th October</h1>
+          <h1 className="header">{currentDate}</h1>
           <div className="motivational">
             {motivationalText.map(({ id, text }) => {
               return index === id ? <span key={id}>{text}</span> : null;
@@ -89,7 +91,7 @@ export const Graph = () => {
         </div>
 
         <div className="circle">
-          <CircuralProgress percentage={tasksDone} circleWidth="140" />
+          <CircuralProgress percentage={tasksDone} circleWidth="160" />
         </div>
         <div className="bars">
           <div className="task-bar">
@@ -127,13 +129,14 @@ const Wrapper = styled.div`
     padding-top: 1rem;
     font-size: 1.2rem;
     display: flex;
+    font-weight: normal;
     align-items: center;
     justify-content: center;
   }
   .motivational {
-    padding-top: 0.7rem;
+    padding-top: 0.4rem;
     font-size: 0.9rem;
-    font-weight: normal;
+    font-weight: lighter;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -145,7 +148,7 @@ const Wrapper = styled.div`
   }
   .bars {
     margin-bottom: 1rem;
-    gap: 0.3rem;
+    gap: 0.2rem;
     display: flex;
     align-items: center;
     flex-direction: column;

@@ -9,75 +9,74 @@ function SubtaskItem({
   subtaskTitle,
   subtaskStatus,
   subtask,
-  // taskChecked,
+  subtaskIndex,
+  taskCheck,
+  setTaskChecked,
   subtaskList,
+  setListBoolean,
   task,
 }) {
-  const { isTaskChecked, taskChecked, taskUnchecked } = useAllContext();
+  const { isTaskChecked, taskUnchecked, taskChecked } = useAllContext();
   const [subtasks, setSubtasks] = useState(task ? task.subtasks : []);
   const [subtaskChecked, setSubtaskChecked] = useState(false);
   let listBoolean = [];
   subtasks.forEach((sub) => listBoolean.push(sub.subtaskStatus));
 
-  const subtaskHandleCheck = async () => {
-    setSubtaskChecked(!subtaskChecked);
-    subtaskStatusUpdate();
-  };
-
   const subtaskStatusUpdate = async () => {
-    const newSubtasks = [];
-
     if (subtasks) {
-      subtasks.forEach((sub) => {
-        if (subtask.id === sub.id) {
-          newSubtasks.push({ ...sub, subtaskStatus: !subtaskChecked });
-        } else {
-          newSubtasks.push({ ...sub, subtaskStatus: sub.subtaskStatus });
-        }
-      });
-      setSubtasks([]);
-      setSubtasks([...newSubtasks]);
+      subtasks[subtaskIndex] = { ...subtask, subtaskStatus: !subtaskChecked };
     }
-
     await axios.patch(`http://localhost:3001/api/tasks/${task._id}`, {
       subtasks: subtasks,
     });
   };
 
+  const subtaskHandleCheck = async () => {
+    setSubtaskChecked(!subtaskChecked);
+    subtaskStatusUpdate();
+    setListBoolean([...listBoolean]);
+  };
+
   useEffect(() => {
     // subtaskStatusUpdate();
-    console.log(listBoolean);
     if (listBoolean.length > 0 && !listBoolean.includes(false)) {
+      setTaskChecked(true);
+      taskChecked();
       const taskCompleted = async () => {
         await axios.patch(`http://localhost:3001/api/tasks/${task._id}`, {
-          status: !isTaskChecked,
+          status: !taskCheck,
         });
       };
-      taskChecked();
       taskCompleted();
-      console.log(isTaskChecked);
+    } else {
+      setTaskChecked(false);
+      const taskCompleted = async () => {
+        await axios.patch(`http://localhost:3001/api/tasks/${task._id}`, {
+          status: !taskCheck,
+        });
+      };
+      taskCompleted();
+      taskUnchecked();
     }
+    setListBoolean([...listBoolean]);
   }, [subtaskChecked]);
 
   useEffect(() => {
-    if (isTaskChecked) {
+    const changeSubtasks = async () => {
+      subtasks.forEach(
+        (sub, i) => (subtasks[i] = { ...sub, subtaskStatus: !taskCheck })
+      );
+      await axios.patch(`http://localhost:3001/api/tasks/${task._id}`, {
+        subtasks: subtasks,
+      });
+    };
+
+    if (taskCheck) {
       setSubtaskChecked(true);
+      changeSubtasks();
     } else {
       if (!listBoolean.includes(false)) {
         setSubtaskChecked(false);
-
-        const changeSubtasks = async () => {
-          const newSubtasks = [];
-          subtaskList.forEach((sub) =>
-            newSubtasks.push({ ...sub, subtaskStatus: !subtaskChecked })
-          );
-          setSubtasks([]);
-          setSubtasks([...newSubtasks]);
-
-          await axios.patch(`http://localhost:3001/api/tasks/${task._id}`, {
-            subtasks: subtasks,
-          });
-        };
         changeSubtasks();
       } else {
         if (subtaskStatus === true) {
@@ -87,10 +86,15 @@ function SubtaskItem({
         }
       }
     }
+    setListBoolean([...listBoolean]);
+  }, [taskCheck]);
+
+  useEffect(() => {
+    setListBoolean([...listBoolean]);
   }, [isTaskChecked]);
 
   return (
-    <Wrapper style={isTaskChecked ? { display: "none" } : { display: "flex" }}>
+    <Wrapper style={taskCheck ? { display: "none" } : { display: "flex" }}>
       <div className="links" key={subtask.id}>
         <SubtaskCheckbox
           className="checkbox-subtasks"
@@ -123,6 +127,7 @@ const Wrapper = styled.div`
   .subtask-title {
     padding: 0.3rem 0.5rem 0.3rem 0.5rem;
     font-size: 0.7rem;
+    font-weight: lighter;
   }
   .checkbox-subtasks {
     font-size: 0.7rem;
