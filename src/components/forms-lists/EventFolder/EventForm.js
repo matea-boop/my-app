@@ -122,7 +122,9 @@ function EventForm({
     }
     if (todaysDate === date && endTime < startTime) {
       setEndTimeValid(false);
-      toast.error("Invalid end time input!");
+      toast.error(
+        "Invalid end time input! End time cannot be less than start time!"
+      );
       return;
     }
 

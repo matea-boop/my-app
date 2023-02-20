@@ -6,6 +6,13 @@ import { useEffect } from "react";
 import moment from "moment/moment";
 import { useState } from "react";
 
+const activityType = [
+  { id: 0, color: "var(--mainorange-color)", actName: "personal" },
+  { id: 1, color: "var(--mainred-color)", actName: "work/study" },
+  { id: 2, color: "var(--maingreen-color)", actName: "meeting" },
+  { id: 2, color: "var(--mainblue-color)", actName: "appointment" },
+];
+
 const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const monthsOfYear = [
   "January",
@@ -44,7 +51,7 @@ function range(start, end) {
   return result;
 }
 
-export const SmallCalendar = () => {
+export const SmallCalendar = ({ getDate, categoryList }) => {
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
   const [currentDay, setCurrentDay] = useState(new Date().getDate());
@@ -52,10 +59,9 @@ export const SmallCalendar = () => {
   const [selectedDate, setSelectedDate] = useState(
     new Date(currDate).getTime()
   );
-  const [dateClicked, setDateClicked] = useState("");
-  const [className, setClassName] = useState("");
-
-  const currentDate = moment().format("DD/MM/YYYY");
+  const [dateClicked, setDateClicked] = useState(
+    moment(currDate).format("DD/MM/YYYY")
+  );
 
   const firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay();
   const lastDateOfMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
@@ -107,7 +113,11 @@ export const SmallCalendar = () => {
       );
     }
   };
-  console.log(dateClicked);
+
+  useEffect(() => {
+    getDate(dateClicked);
+  }, [dateClicked]);
+
   return (
     <Wrapper>
       <div className="header-date-arrows">
@@ -119,8 +129,13 @@ export const SmallCalendar = () => {
       </div>
       <div className="container">
         <div className="days">
-          {getSortedDays().map((day) => (
-            <p className="day">{day}</p>
+          {getSortedDays().map((day, i) => (
+            <p
+              className="day"
+              id={i === new Date().getDay() ? "week-today-day" : ""}
+            >
+              {day}
+            </p>
           ))}
         </div>
         <div
@@ -134,26 +149,45 @@ export const SmallCalendar = () => {
           ))}
           {range(1, getNumberOfDaysInMonth(currentYear, currentMonth) + 1).map(
             (day) => (
-              <p
-                id="day"
-                data-day={day}
-                onClick={() => {
-                  const date = new Date(currentYear, currentMonth, day);
-                  setDateClicked(moment(date).format("DD/MM/YYYY"));
-                }}
-                className={
-                  selectedDate !== null
-                    ? new Date(selectedDate).getTime() ===
-                      new Date(
-                        new Date(currentYear, currentMonth, day)
-                      ).getTime()
-                      ? "day-month active"
-                      : "day-month"
-                    : null
-                }
-              >
-                {day}
-              </p>
+              <div className="day-dot">
+                <div
+                  id="day"
+                  data-day={day}
+                  x={
+                    currentMonth === new Date().getMonth() &&
+                    currentYear === new Date().getFullYear() &&
+                    day === new Date().getDate()
+                      ? "today-day"
+                      : ""
+                  }
+                  onClick={() => {
+                    const date = new Date(currentYear, currentMonth, day);
+                    setDateClicked(moment(date).format("DD/MM/YYYY"));
+                  }}
+                  className={
+                    selectedDate !== null
+                      ? new Date(selectedDate).getTime() ===
+                        new Date(
+                          new Date(currentYear, currentMonth, day)
+                        ).getTime()
+                        ? "day-month active"
+                        : "day-month"
+                      : null
+                  }
+                >
+                  {day}
+                </div>
+                <div className="dots">
+                  {categoryList.length > 0
+                    ? categoryList.map((item) => {
+                        if (item.personal) {
+                          console.log("tcka");
+                          return <div>.</div>;
+                        }
+                      })
+                    : null}
+                </div>
+              </div>
             )
           )}
           {lengthSum > 35
@@ -171,15 +205,13 @@ export const SmallCalendar = () => {
 export default SmallCalendar;
 
 const Wrapper = styled.div`
-  margin: 1.3rem;
   display: flex;
   flex-direction: column;
 
   .container {
     display: flex;
     flex-direction: column;
-    margin-right: 1.6rem;
-    margin-left: 1.6rem;
+    align-items: stretch;
   }
   .header-date-arrows {
     display: flex;
@@ -187,7 +219,7 @@ const Wrapper = styled.div`
     align-items: center;
     justify-content: space-between;
     margin-bottom: 1rem;
-    margin-top: 2rem;
+    margin-top: 0.5rem;
   }
   .arrow {
     cursor: pointer;
@@ -231,7 +263,7 @@ const Wrapper = styled.div`
     border-radius: 50%;
     transform: translate(-50%, -50%);
   }
-  .days-month p:hover::before {
+  .days-month div:hover::before {
     background: var(--mainblue-color);
   }
   .active::before {
@@ -247,6 +279,33 @@ const Wrapper = styled.div`
   }
   .inactive {
     opacity: 0.3;
+  }
+  [x="today-day"]::before {
+    position: absolute;
+    content: "";
+    height: 1.5rem;
+    width: 1.5rem;
+    top: 50%;
+    z-index: -1;
+    left: 50%;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    border: 1px solid var(--mainblue-color);
+  }
+  #week-today-day {
+    color: var(--mainblue-color);
+    font-weight: bold;
+    opacity: 1;
+  }
+
+  .day-dot {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  .dots {
+    position: absolute;
   }
 
   @media screen and (max-width: 1024px) {
