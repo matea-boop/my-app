@@ -100,6 +100,7 @@ export default Progress;
 
 const Wrapper = styled.div`
   position: absolute;
+  min-height: 20rem;
   height: 100%;
   width: 100%;
   display: grid;

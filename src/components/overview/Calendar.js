@@ -20,24 +20,20 @@ export const Calendar = () => {
     setDate(value);
   };
 
-  const getList = (value) => {
-    setList(value);
-  };
-
   return (
     <Wrapper>
       <div className="items">
         <SmallCalendar
           className="small-calendar"
           getDate={getDate}
-          categoryList={list}
+          list={list}
         />
         <div className="middle">
           <Link to="/Calendar">View Calendar</Link>
           <div className="header-date">{chosenDate}</div>
         </div>
 
-        <VerticalTimeline className="item" date={date} getList={getList} />
+        <VerticalTimeline className="item" date={date} />
       </div>
     </Wrapper>
   );
@@ -50,7 +46,8 @@ const Wrapper = styled.div`
   width: 100%;
   display: grid;
   grid-area: calendar;
-
+  min-height: 40rem;
+  min-width: 20rem;
   border-radius: 0.3rem;
   background-color: var(--sidebar-color);
 

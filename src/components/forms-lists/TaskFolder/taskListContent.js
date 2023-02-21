@@ -5,32 +5,36 @@ import axios from "axios";
 import { useAllContext } from "../../../context/indexContext";
 import Loading from "../../Loading";
 
+async function getDataFromDB() {
+  const url = "http://localhost:3001/api/tasks";
+
+  try {
+    const {
+      data: { tasks },
+    } = await axios.get(url);
+
+    return tasks;
+  } catch (error) {
+    console.log("error", error);
+    return error;
+  }
+}
+
 function TaskListContent({ page, setTotalPages }) {
   const { isModalOpen, isDeleted, isTaskChecked } = useAllContext();
   const [taskList, setTaskList] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const tasksPerPage = 5;
   const startIndex = (page - 1) * tasksPerPage;
   let todaysDate = new Date().toLocaleDateString();
   const mainList = [];
 
-  async function getDataFromDB() {
-    const url = "http://localhost:3001/api/tasks";
-
-    try {
-      const {
-        data: { tasks },
-      } = await axios.get(url);
-
-      return tasks;
-    } catch (error) {
-      console.log("error", error);
-      return error;
-    }
-  }
-
   useEffect(() => {
-    getDataFromDB().then((res) => setTaskList(res));
+    setLoading(true);
+    getDataFromDB().then((res) => {
+      setLoading(false);
+      setTaskList(res);
+    });
   }, [isModalOpen, isDeleted, isTaskChecked]);
 
   const check =

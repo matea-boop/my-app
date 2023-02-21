@@ -105,18 +105,8 @@ function TaskItem({ task }) {
     } else {
       taskChecked();
     }
-    // const newSubtasks = [];
-    // if (subtasks) {
-    //   subtasks.forEach((sub) => {
-    //     newSubtasks.push({ ...sub, subtaskStatus: !checked });
-    //   });
-    //   setSubtasks([]);
-    //   setSubtasks([...newSubtasks]);
-    // }
-
     await axios.patch(`http://localhost:3001/api/tasks/${task._id}`, {
       status: !checked,
-      // subtasks: subtasks,
     });
   };
 
@@ -284,7 +274,7 @@ const Wrapper = styled.div`
   }
   .task-title {
     font-weight: regular;
-    font-size: 0.8rem;
+    font-size: 0.7rem;
     max-width: 8rem;
     font-weight: lighter;
   }

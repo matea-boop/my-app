@@ -26,6 +26,7 @@ const Wrapper = styled.div`
   margin: var(--margin-size);
   border-radius: 0.3rem;
   height: auto;
+  min-height: 40rem;
 
   @media screen and (max-width: 1024px) {
     grid-template-columns: 18rem 14rem 1fr;

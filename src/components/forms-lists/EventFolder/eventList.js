@@ -17,6 +17,7 @@ export const EventList = ({ eventList, date, timeLine }) => {
       {selectedList.length > 0
         ? selectedList.map((event, index) => (
             <EventItem
+              className="item"
               timeLine={timeLine}
               key={index}
               title={event.title}

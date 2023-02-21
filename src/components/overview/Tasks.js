@@ -49,6 +49,7 @@ export default Tasks;
 
 const Wrapper = styled.div`
   position: absolute;
+  min-height: 20rem;
   height: 100%;
   width: 100%;
   min-width: 14rem;
@@ -70,7 +71,7 @@ const Wrapper = styled.div`
     }
 
     h1 {
-      font-size: 1rem;
+      font-size: 0.9rem;
       text-align: left;
       margin: 1.5rem 0.5rem 1.3rem 1.5rem;
       font-weight: normal;
@@ -81,7 +82,7 @@ const Wrapper = styled.div`
       border-radius: var(--border-radius);
     }
     a {
-      font-size: 0.8rem;
+      font-size: 0.7rem;
       float: right;
       margin: 1.7rem 1.7rem 1.3rem 1.7rem;
       opacity: 0.5;

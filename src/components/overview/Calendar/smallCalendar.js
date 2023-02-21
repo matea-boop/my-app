@@ -2,9 +2,10 @@ import React from "react";
 import styled from "styled-components";
 import { TfiAngleLeft } from "react-icons/tfi";
 import { TfiAngleRight } from "react-icons/tfi";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import moment from "moment/moment";
-import { useState } from "react";
+import axios from "axios";
+import { useAllContext } from "../../../context/indexContext";
 
 const activityType = [
   { id: 0, color: "var(--mainorange-color)", actName: "personal" },
@@ -12,6 +13,20 @@ const activityType = [
   { id: 2, color: "var(--maingreen-color)", actName: "meeting" },
   { id: 2, color: "var(--mainblue-color)", actName: "appointment" },
 ];
+
+async function getEventDataFromDB() {
+  const url = "http://localhost:3001/api/events";
+  try {
+    const {
+      data: { events },
+    } = await axios.get(url);
+
+    return events;
+  } catch (error) {
+    console.log("error", error);
+    return error;
+  }
+}
 
 const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const monthsOfYear = [
@@ -51,17 +66,24 @@ function range(start, end) {
   return result;
 }
 
-export const SmallCalendar = ({ getDate, categoryList }) => {
+export const SmallCalendar = ({ getDate }) => {
+  const { isEventModalOpen } = useAllContext();
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
   const [currentDay, setCurrentDay] = useState(new Date().getDate());
   const currDate = new Date(currentYear, currentMonth, currentDay);
+  const [categoryArray, setCategoryArray] = useState([]);
   const [selectedDate, setSelectedDate] = useState(
     new Date(currDate).getTime()
   );
   const [dateClicked, setDateClicked] = useState(
     moment(currDate).format("DD/MM/YYYY")
   );
+  const [eventList, setEventList] = useState([]);
+
+  useEffect(() => {
+    getEventDataFromDB().then((res) => setEventList(res));
+  }, [dateClicked, isEventModalOpen]);
 
   const firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay();
   const lastDateOfMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
@@ -97,6 +119,7 @@ export const SmallCalendar = ({ getDate, categoryList }) => {
       setCurrentYear((prev) => prev + 1);
     }
   };
+
   const prevMonth = () => {
     if (currentMonth > 0) {
       setCurrentMonth((prev) => prev - 1);
@@ -130,12 +153,15 @@ export const SmallCalendar = ({ getDate, categoryList }) => {
       <div className="container">
         <div className="days">
           {getSortedDays().map((day, i) => (
-            <p
-              className="day"
-              id={i === new Date().getDay() ? "week-today-day" : ""}
-            >
-              {day}
-            </p>
+            <div className="day-dot">
+              <p
+                className="day"
+                id={i === new Date().getDay() ? "week-today-day" : ""}
+              >
+                {day}
+              </p>
+              <div className="dots"></div>
+            </div>
           ))}
         </div>
         <div
@@ -145,7 +171,10 @@ export const SmallCalendar = ({ getDate, categoryList }) => {
           }}
         >
           {prevMonthDates.map((day) => (
-            <p className="day-month inactive">{day}</p>
+            <div className="day-dot" onClick={prevMonth}>
+              <div className="day-month inactive">{day}</div>
+              <div className="dots"></div>
+            </div>
           ))}
           {range(1, getNumberOfDaysInMonth(currentYear, currentMonth) + 1).map(
             (day) => (
@@ -178,24 +207,82 @@ export const SmallCalendar = ({ getDate, categoryList }) => {
                   {day}
                 </div>
                 <div className="dots">
-                  {categoryList.length > 0
-                    ? categoryList.map((item) => {
-                        if (item.personal) {
-                          console.log("tcka");
-                          return <div>.</div>;
+                  {activityType.map((item) => {
+                    const date = new Date(currentYear, currentMonth, day);
+                    const selectedList = [];
+                    const x =
+                      eventList && eventList.length > 0
+                        ? eventList.map((event) =>
+                            moment(event.date, "DD/MM/YYYY").format(
+                              "DD/MM/YYYY"
+                            ) === moment(date).format("DD/MM/YYYY")
+                              ? selectedList.push(event)
+                              : null
+                          )
+                        : null;
+
+                    const categories = selectedList.reduce(
+                      (itemsSoFar, { actType, title, date }) => {
+                        if (!itemsSoFar[date]) itemsSoFar[date] = [];
+                        itemsSoFar[date].push({ actType });
+                        return itemsSoFar;
+                      },
+                      {}
+                    );
+
+                    const array =
+                      categories &&
+                      categories[moment(date).format("DD/MM/YYYY")]
+                        ? [
+                            ...new Map(
+                              categories[
+                                moment(date).format("DD/MM/YYYY")
+                              ].map((m) => [m.actType, m])
+                            ).values(),
+                          ]
+                        : null;
+
+                    if (array) {
+                      return array.map((i) => {
+                        if (i.actType === item.actName) {
+                          return (
+                            <div
+                              className="dot"
+                              style={
+                                dateClicked ===
+                                  moment(date).format("DD/MM/YYYY") ||
+                                moment(date).format("DD/MM/YYYY") ===
+                                  moment().format("DD/MM/YYYY")
+                                  ? {
+                                      display: "none",
+                                    }
+                                  : {
+                                      display: "flex",
+                                      backgroundColor: `${item.color}`,
+                                    }
+                              }
+                            ></div>
+                          );
                         }
-                      })
-                    : null}
+                      });
+                    }
+                  })}
                 </div>
               </div>
             )
           )}
           {lengthSum > 35
             ? nextMonthDates.map((day) => (
-                <p className="day-month inactive">{day}</p>
+                <div className="day-dot" onClick={nextMonth}>
+                  <div className="day-month inactive">{day}</div>
+                  <div className="dots"></div>
+                </div>
               ))
             : strecthArray.map((day) => (
-                <p className="day-month inactive">{day}</p>
+                <div className="day-dot" onClick={nextMonth}>
+                  <div className="day-month inactive">{day}</div>
+                  <div className="dots"></div>
+                </div>
               ))}
         </div>
       </div>
@@ -227,7 +314,6 @@ const Wrapper = styled.div`
   .days {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    margin-bottom: 0.5rem;
   }
   .day {
     text-align: center;
@@ -247,7 +333,7 @@ const Wrapper = styled.div`
     cursor: pointer;
     width: 2.2rem;
     text-align: center;
-    padding: 0.5rem 0 0.5rem 0;
+    // padding: 0.5rem 0 0.5rem 0;
     opacity: 0.7;
     font-weight: lighter;
     font-size: 0.8rem;
@@ -279,6 +365,8 @@ const Wrapper = styled.div`
   }
   .inactive {
     opacity: 0.3;
+
+    // padding: 0.1rem 0 0.3rem 0;
   }
   [x="today-day"]::before {
     position: absolute;
@@ -303,9 +391,28 @@ const Wrapper = styled.div`
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    padding: 0.2rem 0 0.2rem 0;
+    &:hover {
+      .dots {
+        visibility: hidden;
+      }
+    }
   }
   .dots {
-    position: absolute;
+    position: relative;
+    width: 12px;
+    height: 12px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+
+  .dot {
+    height: 5px;
+    width: 5px;
+    display: flex;
+    flex-direction: column;
+    border-radius: 50%;
   }
 
   @media screen and (max-width: 1024px) {

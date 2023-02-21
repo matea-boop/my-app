@@ -110,6 +110,7 @@ export default Graph;
 const Wrapper = styled.div`
   display: grid;
   height: auto;
+  min-height: 20rem;
   grid-area: graph;
   border-radius: 0.3rem;
   background-color: var(--sidebar-color);

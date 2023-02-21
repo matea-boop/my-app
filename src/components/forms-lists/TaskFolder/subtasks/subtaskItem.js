@@ -74,24 +74,26 @@ function SubtaskItem({
     if (taskCheck) {
       setSubtaskChecked(true);
       changeSubtasks();
+      setListBoolean([...listBoolean]);
     } else {
       if (!listBoolean.includes(false)) {
         setSubtaskChecked(false);
         changeSubtasks();
+        setListBoolean([...listBoolean]);
       } else {
         if (subtaskStatus === true) {
           setSubtaskChecked(true);
         } else {
           setSubtaskChecked(false);
         }
+        setListBoolean([...listBoolean]);
       }
     }
-    setListBoolean([...listBoolean]);
   }, [taskCheck]);
 
   useEffect(() => {
     setListBoolean([...listBoolean]);
-  }, [isTaskChecked]);
+  }, [isTaskChecked, task.status]);
 
   return (
     <Wrapper style={taskCheck ? { display: "none" } : { display: "flex" }}>

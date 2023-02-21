@@ -4,13 +4,8 @@ import { useState, useRef, useEffect } from "react";
 import styled from "styled-components";
 import axios from "axios";
 import EventList from "../../forms-lists/EventFolder/eventList";
-
-const activityType = [
-  { id: 0, color: "var(--mainorange-color)", actName: "personal" },
-  { id: 1, color: "var(--mainred-color)", actName: "work/study" },
-  { id: 2, color: "var(--maingreen-color)", actName: "meeting" },
-  { id: 2, color: "var(--mainblue-color)", actName: "appointment" },
-];
+import Loading from "../../Loading";
+import { useAllContext } from "../../../context/indexContext";
 
 async function getEventDataFromDB() {
   const url = "http://localhost:3001/api/events";
@@ -26,16 +21,22 @@ async function getEventDataFromDB() {
   }
 }
 
-export const VerticalTimeline = ({ date, getList }) => {
+export const VerticalTimeline = ({ date }) => {
+  const { isEventModalOpen } = useAllContext();
   const timeLine = [];
   const selectedList = [];
+  const [loading, setLoading] = useState(true);
   const [eventList, setEventList] = useState([]);
   const [timePixel, setTimePixel] = useState(0);
   const [timeLinePosition, setTimeLinePosition] = useState(6);
 
   useEffect(() => {
-    getEventDataFromDB().then((res) => setEventList(res));
-  }, [date]);
+    setLoading(true);
+    getEventDataFromDB().then((res) => {
+      setEventList(res);
+      setLoading(false);
+    });
+  }, [date, isEventModalOpen]);
 
   const x =
     eventList && eventList.length > 0
@@ -45,8 +46,11 @@ export const VerticalTimeline = ({ date, getList }) => {
       : null;
   const sortedTimeList =
     selectedList && selectedList.length > 0
-      ? selectedList.slice(0).sort((a, b) => {
-          a.startTime.localeCompare(b.time);
+      ? selectedList.sort((a, b) => {
+          return (
+            new Date(...a.startTime.split(":").reverse()) -
+            new Date(...b.startTime.split(":").reverse())
+          );
         })
       : null;
   const firstTime = selectedList.length > 0 ? selectedList[0].startTime : null;
@@ -76,14 +80,17 @@ export const VerticalTimeline = ({ date, getList }) => {
         setTimePixel(i);
       }
     });
+  }, [firstTime]);
 
+  useEffect(() => {
     const x = timePixel - 20;
+    const y = timeLinePosition - 20;
     if (selectedList.length > 0) {
       document.getElementById("scroll").scrollTop = x;
     } else {
-      document.getElementById("scroll").scrollTop = 0;
+      document.getElementById("scroll").scrollTop = y;
     }
-  });
+  }, [timePixel, date]);
 
   useEffect(() => {
     const intervalTime = setInterval(() => {
@@ -97,16 +104,6 @@ export const VerticalTimeline = ({ date, getList }) => {
     }, 1000);
     return () => clearInterval(intervalTime);
   }, []);
-
-  const categories = selectedList.reduce((itemsSoFar, { actType, title }) => {
-    if (!itemsSoFar[actType]) itemsSoFar[actType] = [];
-    itemsSoFar[actType].push(title);
-    return itemsSoFar;
-  }, {});
-
-  useEffect(() => {
-    getList(selectedList);
-  }, [timePixel]);
 
   return (
     <Wrapper id="scroll">
@@ -124,15 +121,23 @@ export const VerticalTimeline = ({ date, getList }) => {
             })}
           </div>
         </div>
-        <div className="schedule">
-          <div className="event-boxes">
-            <EventList eventList={eventList} date={date} timeLine={timeLine} />
+        {loading ? (
+          <Loading />
+        ) : (
+          <div className="schedule">
+            <div className="event-boxes">
+              <EventList
+                eventList={eventList}
+                date={date}
+                timeLine={timeLine}
+              />
+            </div>
+            <span
+              className="line"
+              style={{ marginTop: `${timeLinePosition}px` }}
+            ></span>
           </div>
-          <span
-            className="line"
-            style={{ marginTop: `${timeLinePosition}px` }}
-          ></span>
-        </div>
+        )}
       </div>
     </Wrapper>
   );
