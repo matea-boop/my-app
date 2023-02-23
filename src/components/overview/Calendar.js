@@ -42,56 +42,56 @@ export default Calendar;
 
 const Wrapper = styled.div`
   position: absolute;
-  height: 100%;
-  width: 100%;
   display: grid;
   grid-area: calendar;
+
+  height: 100%;
+  width: 100%;
   min-height: 40rem;
   min-width: 20rem;
+
   border-radius: 0.3rem;
   background-color: var(--sidebar-color);
 
   .middle {
-    margin-top: 1.5rem;
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
+
+    margin-top: 1.5rem;
   }
 
   .header-date {
     font-weight: lighter;
   }
+
   .items {
     display: flex;
     flex-direction: column;
     align-items: stretch;
     justify-content: start;
+
     overflow: hidden;
+
     margin: 1.5rem 1.5rem 1.5rem 1.5rem;
   }
 
   a {
     position: absolute;
+
     right: 1.5rem;
-    margin-top: 1.5rem;
-    font-size: 0.8rem;
+
+    font-size: var(--text-size);
     float: right;
-    margin-bottom: 1.2rem;
     opacity: 0.5;
     font-weight: lighter;
+
+    margin-bottom: 1.2rem;
+    margin-top: 1.5rem;
+
     &:hover {
       opacity: 1;
-    }
-  }
-  @media screen and (max-width: 1024px) {
-    a {
-      font-size: 0.7rem;
-    }
-  }
-  @media screen and (max-width: 1200px) {
-    a {
-      font-size: 0.7rem;
     }
   }
 `;

@@ -84,11 +84,13 @@ export default EventItem;
 
 const Wrapper = styled.div`
   position: absolute;
-  background: var(--box-color);
-  border-radius: var(--border-radius);
-  width: 100%;
   display: flex;
   flex-direction: row;
+
+  width: 100%;
+
+  background: var(--box-color);
+  border-radius: var(--border-radius);
   box-shadow: 0px 0px 12px 12px rgba(21, 21, 21, 0.7);
 
   .event-desc {
@@ -103,37 +105,46 @@ const Wrapper = styled.div`
       display: flex;
     }
   }
+
   .shorter {
     display: flex;
     flex-direction: column;
     align-items: left;
     justify-content: center;
   }
+
   .type-line {
     position: relative;
     border-radius: 10px;
+
     margin: 0.5rem 0.8rem 0.5rem 0.5rem;
   }
+
   .event-content {
     display: flex;
     flex-direction: column;
     align-items: left;
     justify-content: center;
+
     margin: 0.8rem 0.8rem 0.8rem 0;
   }
 
   .event-time {
-    font-size: 0.7rem;
+    font-size: var(--text-size);
     font-weight: lighter;
     opacity: 0.5;
   }
+
   .event-title {
-    font-size: 0.7rem;
+    font-size: var(--text-size);
+
     padding-left: 0.6rem;
   }
+
   .event-desc {
-    font-size: 0.7rem;
+    font-size: var(--text-size);
     font-weight: lighter;
+
     padding-left: 0.5rem;
   }
 `;

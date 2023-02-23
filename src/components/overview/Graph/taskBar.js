@@ -43,30 +43,37 @@ const Wrapper = styled.div`
   align-items: center;
   flex-direction: row;
   justify-content: start;
-  gap: 1rem;
+
+  width: 100%;
+
   background-color: var(--box-color);
   border-radius: var(--border-radius);
-  width: 100%;
+
+  gap: 1rem;
 
   .svg {
     display: flex;
     align-items: center;
-
     justify-content: center;
+
     padding: 0.2rem 0 0.2rem 0.7rem;
   }
+
   h1 {
     display: flex;
     align-items: center;
     justify-content: center;
+
     font-size: 0.7rem;
     font-weight: normal;
   }
+
   .circle {
     fill: none;
     stroke: var(--text-color);
     opacity: 0.2;
   }
+
   .circle-task {
     fill: none;
     stroke: var(--mainorange-color);

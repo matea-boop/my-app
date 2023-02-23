@@ -206,8 +206,6 @@ export const AreaChartProgress = ({
             strokeLinecap="round"
             strokeWidth={3}
             className="tasks"
-            // animationDuration={800}
-            // animationEasing={"ease-in-out"}
             fill="url(#colorblue)"
             style={
               button1Clicked
@@ -222,8 +220,6 @@ export const AreaChartProgress = ({
             strokeLinecap="round"
             strokeWidth={3}
             className="notebook"
-            // animationDuration={800}
-            // animationEasing={"ease-in-out"}
             fill="url(#colororange)"
             style={
               button2Clicked
@@ -238,8 +234,6 @@ export const AreaChartProgress = ({
             strokeLinecap="round"
             strokeWidth={2}
             className="all"
-            // animationDuration={800}
-            // animationEasing={"ease-in-out"}
             fill="none"
             style={
               button3Clicked

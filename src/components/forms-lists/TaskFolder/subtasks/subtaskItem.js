@@ -122,16 +122,21 @@ const Wrapper = styled.div`
     flex-direction: row;
     align-items: center;
     justify-content: flex-start;
-    padding: 0.2rem 0rem 0.2rem 2rem;
+
     background-color: var(--body-color);
     animation: close 0.1s forwards;
+
+    padding: 0.2rem 0rem 0.2rem 2rem;
   }
+
   .subtask-title {
-    padding: 0.3rem 0.5rem 0.3rem 0.5rem;
-    font-size: 0.7rem;
+    font-size: var(--text-size);
     font-weight: lighter;
+
+    padding: 0.3rem 0.5rem 0.3rem 0.5rem;
   }
+
   .checkbox-subtasks {
-    font-size: 0.7rem;
+    font-size: var(--text-size);
   }
 `;

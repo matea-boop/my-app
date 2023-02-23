@@ -60,16 +60,20 @@ const Wrapper = styled.div`
       padding-right: 0;
     }
   }
+
   .btn-pagination {
     background: none;
     border: none;
+
     padding-right: 0.5rem;
   }
+
   .btn {
     color: var(--box-color);
     transform: scale(0.8);
     cursor: pointer;
   }
+
   .active {
     color: var(--body-color);
     cursor: pointer;

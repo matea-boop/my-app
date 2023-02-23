@@ -261,99 +261,125 @@ const Wrapper = styled.div`
   align-items: flex-start;
   justify-content: space-between;
 
-  margin-bottom: 0.3rem;
   background-color: var(--box-color);
   border-radius: var(--border-radius);
 
+  margin-bottom: 0.3rem;
+
   .task-details {
-    padding: 0.6rem 1rem 0.6rem 1rem;
     display: flex;
     align-items: center;
     justify-content: center;
+
     gap: 0.7rem;
+    padding: 0.6rem 1rem 0.6rem 1rem;
   }
+
   .task-title {
-    font-weight: regular;
-    font-size: 0.7rem;
-    max-width: 8rem;
     font-weight: lighter;
+    font-size: var(--text-size);
+
+    max-width: 8rem;
   }
+
   .icon-container {
     position: absolute;
-    right: 1rem;
     display: flex;
     align-items: center;
     justify-content: center;
+
+    right: 1rem;
+
     gap: 0.3rem;
   }
+
   .icon {
-    font-size: 1.2rem;
     display: flex;
     align-items: center;
     justify-content: center;
+
+    font-size: 1.2rem;
     cursor: pointer;
     opacity: 0.5;
+
     &:hover {
       opacity: 1;
     }
   }
+
   .relat {
     position: relative;
   }
+
   .icon-choice-container {
     position: absolute;
-    top: -1.4rem;
-    right: 1.4rem;
-    z-index: 200;
-    min-width: 5.5rem;
     display: flex;
-    opacity: 0;
-    transition: opacity 0.2s;
     flex-direction: column;
     align-items: center;
+    z-index: 200;
+
+    top: -1.4rem;
+    right: 1.4rem;
+    min-width: 5.5rem;
+
+    opacity: 0;
+    transition: opacity 0.2s;
+    animation: fade-out 0.2s forwards;
     background-color: var(--mainorange-color);
     border-radius: var(--border-radius);
-    animation: fade-out 0.2s forwards;
   }
+
   .icon-choice-container[open] {
     animation: fade-in 0.2s forwards;
     opacity: 1;
     transition: opacity 0.2s;
   }
+
   .choice {
     color: var(--box-color);
     font-size: 0.8rem;
-    margin-right: auto;
-    padding: 0.5rem;
+
     cursor: pointer;
     opacity: 0.5;
+
+    margin-right: auto;
+    padding: 0.5rem;
+
     &:hover {
       opacity: 1;
     }
+
     &:last-child {
       padding-top: 0;
     }
   }
+
   .checkbox {
     cursor: pointer;
   }
+
   .subtask-arrow {
     color: var(--text-color);
     font-size: 0.9rem;
+
     cursor: pointer;
     transition: rotate 0.2s;
     rotate: 0deg;
     opacity: 0.5;
+
     &:hover {
       opacity: 1;
     }
   }
+
   .activ {
     rotate: 180deg;
     transition: rotate 0.2s;
   }
+
   .subtask-bar-container {
     position: absolute;
+
     bottom: 0.2rem;
     width: 100%;
   }
@@ -394,42 +420,6 @@ const Wrapper = styled.div`
       transform-origin: 100% 50%;
     }
   }
-
-  @media screen and (max-width: 1024px) {
-    .task-title {
-      font-size: 0.7rem;
-    }
-  }
-  @media screen and (max-width: 1200px) {
-    .task-title {
-      font-size: 0.7rem;
-    }
-  }
 `;
 
 export default TaskItem;
-
-// useEffect(() => {
-//   console.log(listBooleanSubtasks);
-//   if (
-//     listBooleanSubtasks.length > 0 &&
-//     !listBooleanSubtasks.includes(false)
-//   ) {
-//     setChecked(true);
-//     taskChecked();
-//     const taskCompleted = async () => {
-//       console.log(checked);
-//       await axios.patch(`http://localhost:3001/api/tasks/${task._id}`, {
-//         status: !checked,
-//       });
-//     };
-//     taskCompleted();
-//   } else {
-//     setChecked(false);
-//     taskUnchecked();
-//   }
-//   if (task.status === true) {
-//     setChecked(true);
-//     taskChecked();
-//   }
-// }, [...taskList.map((sub) => sub.subtaskStatus)]);

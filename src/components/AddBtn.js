@@ -153,41 +153,51 @@ function AddButton() {
 }
 
 const Wrapper = styled.div`
-  z-index: 200;
   position: absolute;
+  z-index: 200;
+
+  width: fit-content;
+
   bottom: 4.5rem;
   right: 10.2rem;
-  width: fit-content;
 
   .edit {
     pointer-events: none;
   }
+
   .menu {
     position: absolute;
     display: flex;
     align-items: center;
     justify-content: center;
-    bottom: 0;
-    right: 0;
+
     overflow: hidden;
     cursor: pointer;
     border-radius: var(--border-radius);
+
+    bottom: 0;
+    right: 0;
   }
+
   .menu li {
     position: relative;
+
     background-color: var(--mainorange-color);
     color: var(--textdark-color);
-    left: 100%;
     transition: 1s;
     opacity: 1;
+
     padding: 1rem;
+    left: 100%;
 
     &:first-child {
       border-radius: var(--border-radius) 0 0 var(--border-radius);
     }
   }
+
   .text {
     opacity: 0.5;
+
     &:hover {
       opacity: 1;
     }
@@ -199,12 +209,14 @@ const Wrapper = styled.div`
   }
 
   .btn {
+    position: fixed;
+
     cursor: pointer;
     z-index: 300;
-    position: fixed;
+    transition: all 1s;
+
     bottom: 3.2rem;
     right: 3.2rem;
-    transition: all 1s;
   }
 
   .act {

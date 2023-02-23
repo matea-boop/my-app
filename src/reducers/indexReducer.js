@@ -44,7 +44,6 @@ const reducer = (state, action) => {
   if (action.type === EVENT_MODAL_CLOSE) {
     return { ...state, isEventModalOpen: false };
   }
-
   if (action.type === SUBTASK_STATUS_TRUE) {
     return { ...state, isSubtaskStatusChanged: true };
   }

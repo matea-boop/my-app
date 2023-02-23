@@ -21,7 +21,6 @@ export const App = () => {
         <div className="main-container">
           <Router>
             <Navbar />
-
             <AddButton />
 
             <Routes>

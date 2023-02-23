@@ -109,56 +109,72 @@ export default Graph;
 
 const Wrapper = styled.div`
   display: grid;
+  grid-area: graph;
+
   height: auto;
   min-height: 20rem;
-  grid-area: graph;
+
   border-radius: 0.3rem;
   background-color: var(--sidebar-color);
+
   .items {
     display: flex;
     align-items: center;
     flex-direction: column;
     justify-content: space-between;
   }
+
   .headers {
     display: flex;
     align-items: center;
     flex-direction: column;
     justify-content: space-between;
   }
+
   .header {
-    padding-top: 1rem;
-    font-size: 1.2rem;
     display: flex;
     font-weight: normal;
     align-items: center;
     justify-content: center;
+
+    font-size: 1.2rem;
+
+    padding-top: 1rem;
   }
+
   .motivational {
-    padding-top: 0.4rem;
-    font-size: 0.9rem;
-    font-weight: lighter;
     display: flex;
     align-items: center;
     justify-content: center;
+
+    font-size: 0.9rem;
+    font-weight: lighter;
+
+    padding-top: 0.4rem;
   }
+
   .circle {
     display: flex;
     align-items: center;
     justify-content: center;
   }
+
   .bars {
-    margin-bottom: 1rem;
-    gap: 0.2rem;
     display: flex;
     align-items: center;
     flex-direction: column;
     justify-content: space-between;
+
     width: 90%;
+
+    margin-bottom: 1rem;
+    gap: 0.2rem;
   }
+
   .task-bar {
     width: 100%;
   }
+
   .notebook-bar {
     width: 100%;
   }

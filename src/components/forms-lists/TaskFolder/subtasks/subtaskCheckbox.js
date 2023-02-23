@@ -36,9 +36,9 @@ const Wrapper = styled.div`
   justify-content: center;
 
   .checkbox {
-    font-size: 1rem;
     stroke-width: 1;
   }
+
   .done {
     display: none;
   }

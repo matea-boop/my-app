@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
-import { useDispatch } from "react-redux";
 import { v4 as uuid } from "uuid";
 import { toast } from "react-hot-toast";
 import { HiOutlineXMark } from "react-icons/hi2";
@@ -15,7 +14,6 @@ function TaskForm({ type, task, modalOpen, modalClose, isModalOpen }) {
   const [subtaskStatus, setSubtaskStatus] = useState(false);
   const [date, setDate] = useState(new Date().toLocaleDateString());
   const [valid, setValid] = useState(true);
-  const dispatch = useDispatch();
   const [taskList, setTaskList] = useState([]);
   const url = "http://localhost:3001/api/tasks";
   const formRef = useRef();
@@ -265,11 +263,13 @@ const Wrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 10;
+
   top: 0;
   left: 0;
-  z-index: 10;
   width: 100%;
   height: 100%;
+
   background: rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(5px);
   color: var(--text-color);
@@ -278,109 +278,139 @@ const Wrapper = styled.div`
   .header {
     font-size: 1.1rem;
     font-weight: bold;
+
     margin-bottom: 1.5rem;
   }
+
   .form-container {
-    // outline: 0.05rem solid var(--mainorange-color);
-    background-color: var(--sidebar-color);
-    max-width: 500px;
-    height: fit-content;
-    border-radius: inherit;
-    margin: 0 auto;
-    padding: 2rem;
-    width: 40%;
-    min-width: 300px;
     position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
+
+    width: 40%;
+    min-width: 300px;
+    max-width: 500px;
+    height: fit-content;
+
+    background-color: var(--sidebar-color);
+    border-radius: inherit;
+
+    margin: 0 auto;
+    padding: 2rem;
   }
+
   .task-form {
     width: 100%;
+
     label {
       font-size: 1rem;
     }
+
     input {
-      height: 2.7rem;
       font-size: 0.8rem;
-      margin-top: 0.5rem;
-      margin-bottom: 2rem;
+
+      height: 2.7rem;
       width: 100%;
-      padding: 1rem;
+
       border: none;
       outline: none;
       border-radius: var(--border-radius);
       background-color: var(--text-color);
+
+      padding: 1rem;
+      margin-top: 0.5rem;
+      margin-bottom: 2rem;
     }
 
     .button-container {
       width: fit-content;
+      z-index: 1000;
+
       margin: 0 auto;
-      z-index: 1000;
     }
+
     .task-btn {
-      padding: 1rem 1.5rem 1rem 1.5rem;
-      font-size: 1rem;
-      margin: 0.3rem;
       z-index: 1000;
+
+      font-size: 1rem;
       font-family: "Nunito", sans-serif;
       font-weight: bold;
-      background-color: var(--mainorange-color);
       color: var(--body-color);
+
+      background-color: var(--mainorange-color);
       border: none;
       border-radius: var(--border-radius);
       cursor: pointer;
+
+      padding: 1rem 1.5rem 1rem 1.5rem;
+      margin: 0.3rem;
     }
+
     .cancel {
       z-index: 1000;
       opacity: 0.75;
     }
   }
+
   .subtask {
     color: var(--body-color);
     font-family: "Nunito", sans-serif;
     font-size: 0.8rem;
   }
+
   input[id="notValid"] {
     outline: 2px solid red;
   }
+
   .add-subtask-container {
     display: flex;
     flex-direction: row;
     justify-content: center;
     align-items: center;
   }
+
   .btn-subtask-add {
     height: 2.7rem;
+
+    font-family: "Nunito", sans-serif;
+    font-weight: bold;
+    color: var(--body-color);
+    cursor: pointer;
+
     background: var(--mainorange-color);
     border-radius: var(--border-radius);
     border: none;
-    font-family: "Nunito", sans-serif;
-    font-weight: bold;
-    cursor: pointer;
-    color: var(--body-color);
+
     margin-top: 0.5rem;
     margin-bottom: 2rem;
     margin-left: 0.5rem;
     padding: 0 1rem 0 1rem;
   }
+
   .icons-subtask {
-    gap: 0.5rem;
     display: flex;
     justify-content: center;
     align-items: center;
+
+    gap: 0.5rem;
   }
+
   .links {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
+
     width: 100%;
+
     background-color: var(--text-color);
     border-radius: var(--border-radius);
+
     margin-bottom: 0.5rem;
     padding: 0.5rem 1rem 0.5rem 1rem;
   }
+
   .delete-subtask {
     cursor: pointer;
   }

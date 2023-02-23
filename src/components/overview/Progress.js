@@ -100,123 +100,122 @@ export default Progress;
 
 const Wrapper = styled.div`
   position: absolute;
+  display: grid;
+  grid-area: progress;
+
   min-height: 20rem;
   height: 100%;
   width: 100%;
-  display: grid;
-  grid-area: progress;
+
   border-radius: 0.3rem;
   background-color: var(--sidebar-color);
+
   .title-p {
-    color: var(--text-color);
     display: flex;
     flex-direction: row;
     justify-content: space-between;
 
+    color: var(--text-color);
+
     .title-progress {
-      font-size: 1rem;
       text-align: left;
-      margin: 1.5rem 1.5rem 0rem 1.5rem;
+
+      font-size: 1rem;
       font-weight: normal;
+
+      margin: 1.5rem 1.5rem 0rem 1.5rem;
     }
 
     a {
-      font-size: 0.8rem;
+      font-size: var(--text-size);
       float: right;
-      margin: 1.7rem 1.5rem 0rem 1.7rem;
+
       opacity: 0.5;
       font-weight: lighter;
+
+      margin: 1.7rem 1.5rem 0rem 1.7rem;
+
       &:hover {
         opacity: 1;
       }
     }
   }
+
   .buttons-area {
     display: flex;
     justify-content: space-between;
   }
 
   .buttons-area-1 {
-    font-size: 0.8rem;
+    display: flex;
+    justify-content: space-between;
+
+    font-size: var(--text-size);
     font-weight: lighter;
 
     margin-left: 1.5rem;
-    display: flex;
-
-    justify-content: space-between;
   }
+
   .item {
     display: flex;
     align-items: center;
     justify-content: space-between;
+
+    cursor: pointer;
+
     padding-right: 1rem;
     gap: 0.5rem;
-    cursor: pointer;
   }
+
   .buttons-area-2 {
-    font-size: 0.8rem;
-    gap: 1rem;
-    font-weight: lighter;
-    margin-right: 1.5rem;
     display: flex;
     justify-content: space-between;
+
+    font-size: var(--text-size);
+    font-weight: lighter;
+
+    gap: 1rem;
+    margin-right: 1.5rem;
   }
+
   .task-circle {
     color: var(--mainblue-color);
     font-size: 0.5rem;
   }
+
   .notebook-circle {
     color: var(--mainorange-color);
     font-size: 0.5rem;
   }
+
   .all-circle {
     color: var(--text-color);
     font-size: 0.5rem;
   }
+
   .week {
-    width: 4.5rem;
-    text-align: center;
     display: flex;
     justify-content: center;
     align-items: center;
+    text-align: center;
+
+    width: 4.5rem;
+
     border-radius: var(--border-radius);
     background: var(--body-color);
     cursor: pointer;
   }
+
   .month {
-    width: 4.5rem;
-    text-align: center;
     display: flex;
     justify-content: center;
     align-items: center;
+    text-align: center;
+
+    width: 4.5rem;
+
     border-radius: var(--border-radius);
     cursor: pointer;
     background: var(--body-color);
-  }
-
-  @media screen and (max-width: 1024px) {
-    .buttons-area-1 {
-      font-size: 0.7rem;
-    }
-    .buttons-area-2 {
-      font-size: 0.7rem;
-    }
-    a {
-      font-size: 0.7rem;
-    }
-  }
-  @media screen and (max-width: 1200px) {
-    .buttons-area-1 {
-      font-size: 0.7rem;
-    }
-    .buttons-area-2 {
-      font-size: 0.7rem;
-    }
-
-    .title-p {
-      a {
-        font-size: 0.7rem;
-      }
-    }
   }
 `;

@@ -46,14 +46,18 @@ export default SubtaskListContent;
 const Wrapper = styled.div`
   position: absolute;
   z-index: 100;
+
   width: 100%;
   overflow: hidden;
 
   .links {
     position: relative;
+
     width: 100%;
+
     animation: move 0.1s forwards;
   }
+
   &:last-child {
     border-radius: 0 0 var(--border-radius) var(--border-radius);
   }

@@ -50,12 +50,14 @@ const Wrapper = styled.div`
     stroke: var(--text-color);
     opacity: 0.1;
   }
+
   .circle-task {
     fill: none;
     stroke: var(--mainorange-color);
     stroke-linecap: round;
     transition: all 0.8s;
   }
+
   .circle-text {
     fill: var(--mainorange-color);
     font-weight: bold;

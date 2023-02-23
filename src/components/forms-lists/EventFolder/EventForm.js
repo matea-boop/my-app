@@ -309,11 +309,13 @@ const Wrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 10;
+
   top: 0;
   left: 0;
-  z-index: 10;
   width: 100%;
   height: 100%;
+
   background: rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(5px);
   color: var(--text-color);
@@ -322,175 +324,175 @@ const Wrapper = styled.div`
   .header {
     font-size: 1.1rem;
     font-weight: bold;
+
     margin-bottom: 1.5rem;
   }
   .form-container {
-    background-color: var(--sidebar-color);
-    max-width: 500px;
-    height: fit-content;
-    border-radius: inherit;
-    margin: 0 auto;
-    padding: 2rem;
-    width: 40%;
-    min-width: 300px;
     position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
+
+    height: fit-content;
+    width: 40%;
+    max-width: 500px;
+    min-width: 300px;
+
+    background-color: var(--sidebar-color);
+    border-radius: inherit;
+
+    margin: 0 auto;
+    padding: 2rem;
   }
   .task-form {
     width: 100%;
+
     label {
       font-size: 1rem;
     }
+
     input {
-      height: 2.7rem;
       font-size: 0.8rem;
-      margin-top: 0.5rem;
-      margin-bottom: 1.8rem;
+      height: 2.7rem;
       width: 100%;
-      padding: 1rem;
+
       border: none;
       outline: none;
       border-radius: var(--border-radius);
       background-color: var(--text-color);
+
+      margin-top: 0.5rem;
+      margin-bottom: 1.8rem;
+      padding: 1rem;
     }
+
     .task-input-date {
       margin-bottom: 0;
     }
+
     .time-start-end {
       display: flex;
       flex-direction: row;
       align-items: center;
-      gap: 0.5rem;
       justify-content: space-between;
+
+      gap: 0.5rem;
     }
+
     .button-container {
       width: fit-content;
+      z-index: 1000;
+
       margin: 0 auto;
-      z-index: 1000;
     }
+
     .task-btn {
-      padding: 1rem 1.5rem 1rem 1.5rem;
       font-size: 1rem;
-      margin: 0.3rem;
-      z-index: 1000;
       font-family: "Nunito", sans-serif;
       font-weight: bold;
-      background-color: var(--mainorange-color);
       color: var(--body-color);
+      z-index: 1000;
+
+      background-color: var(--mainorange-color);
       border: none;
       border-radius: var(--border-radius);
       cursor: pointer;
+
+      margin: 0.3rem;
+      padding: 1rem 1.5rem 1rem 1.5rem;
     }
+
     .cancel {
       z-index: 1000;
       opacity: 0.75;
     }
   }
+
   input[id="notValid"] {
     outline: 2px solid red;
   }
-  .btn-eventtype-container {
-    margin-top: 0.5rem;
-    margin-bottom: 1.5rem;
 
+  .btn-eventtype-container {
     display: flex;
     flex-wrap: wrap;
 
+    margin-top: 0.5rem;
+    margin-bottom: 1.5rem;
+
     .personal {
       flex: 1;
-      border: none;
+      color: var(--text-color);
       font-family: "Nunito", sans-serif;
+
+      border: none;
+      background-color: var(--mainorange-color);
       border-radius: var(--border-radius);
       cursor: pointer;
-      color: var(--text-color);
+
       padding: 0.3rem 1rem 0.3rem 1rem;
       margin: 0.5rem 0.5rem 0.5rem 0rem;
-      background-color: var(--mainorange-color);
     }
 
     .work {
       flex: 1;
-      border: none;
+      color: var(--text-color);
       font-family: "Nunito", sans-serif;
+
+      border: none;
       border-radius: var(--border-radius);
       cursor: pointer;
-      color: var(--text-color);
+      background-color: var(--mainred-color);
+
       padding: 0.3rem 1rem 0.3rem 1rem;
       margin: 0.5rem 0.5rem 0.5rem 0rem;
-      background-color: var(--mainred-color);
     }
 
     .meeting {
       flex: 1;
-      border: none;
+      color: var(--text-color);
       font-family: "Nunito", sans-serif;
+
+      border: none;
       border-radius: var(--border-radius);
       cursor: pointer;
-      color: var(--text-color);
+      background-color: var(--maingreen-color);
+
       padding: 0.3rem 1rem 0.3rem 1rem;
       margin: 0.5rem 0rem 0.5rem 0rem;
-      background-color: var(--maingreen-color);
     }
     .appointment {
       width: 40%;
-      border: none;
+      color: var(--text-color);
       font-family: "Nunito", sans-serif;
+
+      border: none;
       border-radius: var(--border-radius);
       cursor: pointer;
-      color: var(--text-color);
+      background-color: var(--mainblue-color);
+
       margin: 0rem 0rem 0.5rem 0rem;
       padding: 0.3rem 1rem 0.3rem 1rem;
-      background-color: var(--mainblue-color);
     }
   }
+
   .links {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
+
     width: 100%;
+
     background-color: var(--text-color);
     border-radius: var(--border-radius);
+
     margin-bottom: 0.5rem;
     padding: 0.5rem 1rem 0.5rem 1rem;
   }
+
   .delete-subtask {
     cursor: pointer;
   }
 `;
-//   return (
-//     <Wrapper>
-//       {/* <form className="task-form">
-//         <input
-//           type="text"
-//           placeholder="Add Task"
-//           value={input}
-//           name="text"
-//           className="task-input"
-//         />
-//         <button className="task-btn">Add Task</button>
-//       </form> */}
-//       <h1>EVENT</h1>
-//     </Wrapper>
-//   );
-// }
 
-// const Wrapper = styled.div`
-//   background-color: var(--mainorange-color);
-//   position: fixed;
-//   z-index: 100;
-//   top: calc(50% - 100px);
-//   left: calc(50% - (var(--right-btn-move) / 2));
-//   width: 200px;
-//   height: 200px;
-//   display: flex;
-//   justify-content: center;
-//   align-items: center;
-//   border-radius: inherit;
-//   .task-form {
-//     position: relative;
-//   }
-// `;
 export default EventForm;

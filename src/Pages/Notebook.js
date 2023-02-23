@@ -1,16 +1,26 @@
 import React from "react";
 import styled from "styled-components";
+import Notes from "../components/notebook/Notes";
+import NoteFiles from "../components/notebook/NoteFiles";
 export const Notebook = () => {
   return (
     <Wrapper>
-      <h1>Notebook</h1>
+      <Notes />
+      <NoteFiles />
     </Wrapper>
   );
 };
 export default Notebook;
 const Wrapper = styled.div`
-  margin: var(--margin-size);
-  border-radius: 0.3rem;
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+
+  min-height: 40rem;
   height: auto;
-  background-color: blue;
+
+  border-radius: 0.3rem;
+
+  margin: var(--margin-size);
+  gap: var(--margin-size);
 `;

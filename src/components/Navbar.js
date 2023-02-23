@@ -39,51 +39,67 @@ export const Navbar = () => {
 
 const SidebarMenu = styled.div`
   .sidebar {
-    width: 100%;
-    height: 100%;
     position: relative;
-    z-index: 1;
-    top: 0;
-    background-color: var(--sidebar-color);
-    overflow-x: hidden;
     display: flex;
     flex-direction: column;
     align-items: center;
+    z-index: 1;
+
+    width: 100%;
+    height: 100%;
+
+    background-color: var(--sidebar-color);
+    overflow-x: hidden;
     border-radius: 7px;
+
+    top: 0;
   }
+
   .sidebar-header {
-    padding: 2rem 0 2.5rem 0;
     display: flex;
     align-items: center;
     justify-content: space-between;
+
+    padding: 2rem 0 2.5rem 0;
+
     .blue-header {
       color: var(--mainblue-color);
     }
+
     .orange-header {
       color: var(--mainorange-color);
     }
   }
+
   li {
-    margin-bottom: 1rem;
     display: flex;
     align-items: center;
+
     transition: transform 0.3s ease-in-out;
+
+    margin-bottom: 1rem;
+
     &:hover {
       transform: translateX(0.3rem);
     }
+
     .text {
       margin: 0.12rem 0 0 0.5rem;
     }
   }
+
   a:last-child {
     position: absolute;
+
     bottom: 3.2rem;
   }
+
   .active {
     pointer-events: none;
     color: var(--text-color);
     opacity: 1;
   }
+
   @media screen and (max-width: 1024px) {
     .sidebar {
       width: 5rem;

@@ -9,8 +9,10 @@ export const Settings = () => {
 };
 export default Settings;
 const Wrapper = styled.div`
-  margin: var(--margin-size);
-  border-radius: 0.3rem;
   height: auto;
+
+  border-radius: 0.3rem;
   background-color: blue;
+
+  margin: var(--margin-size);
 `;

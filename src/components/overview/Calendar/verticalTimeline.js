@@ -90,7 +90,7 @@ export const VerticalTimeline = ({ date }) => {
     } else {
       document.getElementById("scroll").scrollTop = y;
     }
-  }, [timePixel, date]);
+  }, [timePixel, date, firstTime]);
 
   useEffect(() => {
     const intervalTime = setInterval(() => {
@@ -148,9 +148,11 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: left;
-  margin-top: 1.5rem;
+
   overflow-y: auto;
   overflow-x: hidden;
+
+  margin-top: 1.5rem;
 
   ::-webkit-scrollbar {
     width: 6px;
@@ -165,15 +167,19 @@ const Wrapper = styled.div`
     background: var(--body-color);
     border-radius: 10px;
   }
+
   .timeline {
     position: relative;
+    text-align: center;
+
     width: 13%;
     height: 100%;
-    text-align: center;
   }
+
   .timeblock {
     height: 100%;
   }
+
   .time {
     font-size: 12px;
     opacity: 0.5;
@@ -185,24 +191,31 @@ const Wrapper = styled.div`
     display: flex;
     flex-direction: row;
   }
+
   .schedule {
     position: relative;
     display: flex;
-
     justify-content: center;
+
     width: 87%;
+
     margin-left: 0.2rem;
   }
+
   .event-boxes {
     position: absolute;
     z-index: 11;
+
     top: 6px;
     width: 90%;
   }
+
   .line {
     position: absolute;
     z-index: 10;
+
     width: 100%;
+
     border: 1px solid var(--text-color);
     border-radius: 30px;
   }

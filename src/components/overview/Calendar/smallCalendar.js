@@ -72,7 +72,6 @@ export const SmallCalendar = ({ getDate }) => {
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
   const [currentDay, setCurrentDay] = useState(new Date().getDate());
   const currDate = new Date(currentYear, currentMonth, currentDay);
-  const [categoryArray, setCategoryArray] = useState([]);
   const [selectedDate, setSelectedDate] = useState(
     new Date(currDate).getTime()
   );
@@ -300,86 +299,106 @@ const Wrapper = styled.div`
     flex-direction: column;
     align-items: stretch;
   }
+
   .header-date-arrows {
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
+
     margin-bottom: 1rem;
     margin-top: 0.5rem;
   }
+
   .arrow {
     cursor: pointer;
   }
+
   .days {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
   }
+
   .day {
     text-align: center;
+
     width: 2.2rem;
+
     opacity: 0.5;
     font-weight: lighter;
-    font-size: 0.8rem;
+    font-size: var(--text-size);
     text-transform: uppercase;
   }
+
   .days-month {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
   }
+
   .day-month {
-    z-index: 1;
     position: relative;
-    cursor: pointer;
-    width: 2.2rem;
+    z-index: 1;
     text-align: center;
-    // padding: 0.5rem 0 0.5rem 0;
-    opacity: 0.7;
+
     font-weight: lighter;
-    font-size: 0.8rem;
+    font-size: var(--text-size);
+
+    width: 2.2rem;
+    opacity: 0.7;
+    cursor: pointer;
   }
+
   .day-month::before {
     position: absolute;
-    content: "";
+    z-index: -1;
+
     height: 1.5rem;
     width: 1.5rem;
     top: 50%;
-    z-index: -1;
     left: 50%;
+
     border-radius: 50%;
+    content: "";
     transform: translate(-50%, -50%);
   }
+
   .days-month div:hover::before {
     background: var(--mainblue-color);
   }
+
   .active::before {
     position: aboslute;
-    background: var(--mainblue-color);
+
     height: 1.5rem;
-    content: "";
     width: 1.5rem;
     top: 50%;
     left: 50%;
+
+    background: var(--mainblue-color);
+    content: "";
     border-radius: 50%;
     transform: translate(-50%, -50%);
   }
+
   .inactive {
     opacity: 0.3;
-
-    // padding: 0.1rem 0 0.3rem 0;
   }
+
   [x="today-day"]::before {
     position: absolute;
-    content: "";
+    z-index: -1;
+
     height: 1.5rem;
     width: 1.5rem;
     top: 50%;
-    z-index: -1;
     left: 50%;
+
+    content: "";
     border-radius: 50%;
     transform: translate(-50%, -50%);
     border: 1px solid var(--mainblue-color);
   }
+
   #week-today-day {
     color: var(--mainblue-color);
     font-weight: bold;
@@ -391,44 +410,33 @@ const Wrapper = styled.div`
     flex-direction: column;
     align-items: center;
     justify-content: center;
+
     padding: 0.2rem 0 0.2rem 0;
+
     &:hover {
       .dots {
         visibility: hidden;
       }
     }
   }
+
   .dots {
     position: relative;
-    width: 12px;
-    height: 12px;
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
+
+    width: 10px;
+    height: 10px;
   }
 
   .dot {
-    height: 5px;
-    width: 5px;
     display: flex;
     flex-direction: column;
-    border-radius: 50%;
-  }
 
-  @media screen and (max-width: 1024px) {
-    .day {
-      font-size: 0.7rem;
-    }
-    .day-month {
-      font-size: 0.7rem;
-    }
-  }
-  @media screen and (max-width: 1200px) {
-    .day {
-      font-size: 0.7rem;
-    }
-    .day-month {
-      font-size: 0.7rem;
-    }
+    height: 4px;
+    width: 4px;
+
+    border-radius: 50%;
   }
 `;

@@ -22,18 +22,20 @@ function SubtaskBar({ checked, listBoolean }) {
 export default SubtaskBar;
 
 const Wrapper = styled.div`
-  display: block;
   position: relative;
+  display: block;
 
   .full-bar {
     position: absolute;
     width: 100%;
+
     border-bottom: 0.2rem solid var(--mainorange-color);
     border-radius: var(--border-radius);
     opacity: 0.3;
   }
   .done-bar {
     position: absolute;
+
     transition: all 0.5s;
     border-bottom: 0.2rem solid var(--mainorange-color);
     border-radius: var(--border-radius);

@@ -49,19 +49,22 @@ export default Tasks;
 
 const Wrapper = styled.div`
   position: absolute;
+  grid-area: tasks;
+
   min-height: 20rem;
   height: 100%;
   width: 100%;
   min-width: 14rem;
-  grid-area: tasks;
+
   border-radius: 0.3rem;
   background-color: var(--sidebar-color);
 
   .title {
-    color: var(--text-color);
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+
+    color: var(--text-color);
 
     .title-tasks {
       display: flex;
@@ -71,41 +74,52 @@ const Wrapper = styled.div`
     }
 
     h1 {
-      font-size: 0.9rem;
       text-align: left;
-      margin: 1.5rem 0.5rem 1.3rem 1.5rem;
+
+      font-size: 0.9rem;
       font-weight: normal;
+
+      margin: 1.5rem 0.5rem 1.3rem 1.5rem;
     }
+
     .tasks-done {
-      padding: 0.2rem 0.5rem 0.2rem 0.5rem;
       background-color: var(--box-color);
       border-radius: var(--border-radius);
+
+      padding: 0.2rem 0.5rem 0.2rem 0.5rem;
     }
+
     a {
-      font-size: 0.7rem;
+      font-size: var(--text-size);
       float: right;
-      margin: 1.7rem 1.7rem 1.3rem 1.7rem;
       opacity: 0.5;
       font-weight: lighter;
+
+      margin: 1.7rem 1.7rem 1.3rem 1.7rem;
+
       &:hover {
         opacity: 1;
       }
     }
   }
+
   .task-list {
     width: 80%;
     margin: 0 auto;
   }
+
   .pagination {
     position: absolute;
-    bottom: 0.6rem;
 
+    width: fit-content;
     left: 0;
     right: 0;
+
+    bottom: 0.6rem;
     margin-left: auto;
     margin-right: auto;
-    width: fit-content;
   }
+
   @media screen and (max-width: 1024px) {
     .title {
       h1 {
@@ -114,9 +128,6 @@ const Wrapper = styled.div`
       .tasks-done {
         padding: 0.15rem 0.45rem 0.15rem 0.45rem;
         font-size: 0.9rem;
-      }
-      a {
-        font-size: 0.7rem;
       }
     }
   }

@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const tasks = require("./routes/tasks");
 const events = require("./routes/events");
+const notes = require("./routes/notes");
 const connectDB = require("./db/connect");
 const cors = require("cors");
 require("dotenv").config();
@@ -18,6 +19,7 @@ app.get("/", (req, res) => {
 
 app.use("/api/tasks", tasks);
 app.use("/api/events", events);
+app.use("/api/notes", notes);
 
 const start = async () => {
   try {
