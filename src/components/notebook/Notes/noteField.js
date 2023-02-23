@@ -10,19 +10,28 @@ import { RxTextAlignJustify } from "react-icons/rx";
 import { RxTextAlignRight } from "react-icons/rx";
 import { RxListBullet } from "react-icons/rx";
 import axios from "axios";
+import moment from "moment/moment";
 import NoteItem from "./noteItem";
 
-export const NoteField = ({ date, notesList, noteIndex }) => {
+export const NoteField = ({ date, notesList }) => {
   const [text, setText] = useState("");
   const [wordCount, setWordCount] = useState(0);
-
+  const today = moment(new Date()).format("DD/MM/YYYY");
   const url = "http://localhost:3001/api/notes";
+
+  const getText = (value) => {
+    setText(value);
+  };
+
+  const getNumberOfWords = (value) => {
+    setWordCount(value);
+  };
 
   const putDataToDB = async () => {
     const newData = {
       date: date,
       content: text,
-      numberOfStrings: wordCount,
+      numberOfWords: wordCount,
     };
 
     try {
@@ -54,22 +63,6 @@ export const NoteField = ({ date, notesList, noteIndex }) => {
     }
   };
 
-  console.log(notesList);
-  console.log(noteIndex);
-  // useEffect(() => {
-
-  //   putDataToDB();
-  // }, []);
-
-  // useEffect(() => {
-  //   const updateText = async () => {
-  //     await axios.patch(`http://localhost:3001/api/tasks/${noteID}`, {
-  //       content: text,
-  //     });
-  //   };
-  //   updateText();
-  // }, [text]);
-
   return (
     <Wrapper>
       <div className="all-btns">
@@ -84,7 +77,11 @@ export const NoteField = ({ date, notesList, noteIndex }) => {
           <RxTextAlignRight />
           <RxListBullet />
         </div>
-        <div className="save-btn" onClick={onClick}>
+        <div
+          className="save-btn"
+          onClick={onClick}
+          style={date === today ? { display: "flex" } : { display: "none" }}
+        >
           SAVE
         </div>
       </div>
@@ -92,8 +89,19 @@ export const NoteField = ({ date, notesList, noteIndex }) => {
       <div className="field">
         {notesList.length > 0
           ? notesList.map((note) => {
-              console.log(note.content);
-              return <NoteItem note={note} dateClicked={date} />;
+              if (date === note.date) {
+                return (
+                  <NoteItem
+                    note={note}
+                    date={date}
+                    getNumberOfWords={getNumberOfWords}
+                    getText={getText}
+                    text={text}
+                    notesList={notesList}
+                    wordCount={wordCount}
+                  />
+                );
+              }
             })
           : null}
       </div>
@@ -157,34 +165,24 @@ const Wrapper = styled.div`
     width: 100%;
   }
 
-  .text-field {
+  .date {
+    height: 5%;
+
+    font-size: var(--text-size);
+    color: var(--text-color);
+    font-weight: lighter;
+    opacity: 0.5;
+
+    padding: 0 2rem 0 2rem;
+  }
+
+  .content {
     height: 100%;
     width: 100%;
-
-    ::-webkit-scrollbar {
-      width: 6px;
-    }
-
-    ::-webkit-scrollbar-track {
-      background: var(--box-color);
-      border-radius: 10px;
-    }
-
-    ::-webkit-scrollbar-thumb {
-      background: var(--body-color);
-      border-radius: 10px;
-    }
-
-    resize: none;
-    border: none;
-    outline: none;
 
     color: var(--text-color);
     font-family: "Nunito", sans-serif;
     font-weight: lighter;
-
-    background-color: var(--box-color);
-    border-radius: 0 0 var(--border-radius) var(--border-radius);
 
     padding: 1rem 2rem 1rem 2rem;
   }

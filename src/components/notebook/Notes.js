@@ -24,7 +24,6 @@ async function getDataFromDB() {
 export const Notes = () => {
   const [date, setDate] = useState("");
   const [notesList, setNotesList] = useState([]);
-  const [noteIndex, setNoteIndex] = useState("");
 
   const getDate = (value) => {
     setDate(value);
@@ -32,15 +31,6 @@ export const Notes = () => {
 
   useEffect(() => {
     getDataFromDB().then((res) => setNotesList(res));
-    if (notesList) {
-      notesList.map((note) => {
-        if (note.date === date) {
-          setNoteIndex(note._id);
-        }
-      });
-    } else {
-      return;
-    }
   }, [date]);
 
   return (
@@ -48,9 +38,7 @@ export const Notes = () => {
       <div className="header-n">Notes</div>
       <NotePercentBar />
       <NoteCalendar getDate={getDate} />
-      {/* {date === moment(new Date()).format("DD/MM/YYYY") ? ( */}
-      <NoteField date={date} notesList={notesList} noteIndex={noteIndex} />
-      {/* ) : null} */}
+      <NoteField date={date} notesList={notesList} />
     </Wrapper>
   );
 };

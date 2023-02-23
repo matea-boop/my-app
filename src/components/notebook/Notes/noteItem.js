@@ -3,96 +3,62 @@ import styled from "styled-components";
 import moment from "moment/moment";
 import axios from "axios";
 
-export const NoteItem = ({ note, dateClicked }) => {
-  const [text, setText] = useState("");
-  const [wordCount, setWordCount] = useState(0);
+export const NoteItem = ({
+  note,
+  date,
+  getNumberOfWords,
+  getText,
+  text,
+  wordCount,
+  notesList,
+}) => {
   const today = moment(new Date()).format("DD/MM/YYYY");
-
-  const date = moment(dateClicked, "DD/MM/YYYY").format("dddd Do MMMM");
-  //   const url = "http://localhost:3001/api/notes";
-
-  //   const putDataToDB = async () => {
-  //     const newData = {
-  //       date: date,
-  //       content: text,
-  //       numberOfStrings: wordCount,
-  //     };
-
-  //     try {
-  //       await axios.post(url, newData, {
-  //         headers: {
-  //           Accept: "application/json",
-  //           "Content-Type": "application/json",
-  //           "Access-Control-Allow-Origin": "*",
-  //           "Access-Control-Allow-Methods": "GET,HEAD,OPTIONS,POST,PUT,PATCH",
-  //         },
-  //       });
-  //     } catch (error) {
-  //       console.log("error", error);
-  //     }
-  //   };
-
-  //   const onClick = () => {
-  //     if (notesList.length > 0) {
-  //       notesList.map((note) => {
-  //         if (note.date === date) {
-  //           return;
-  //         } else {
-  //           putDataToDB();
-  //         }
-  //       });
-  //     } else {
-  //       console.log("jes");
-  //       putDataToDB();
-  //     }
-  //   };
-
-  //   console.log(notesList);
-  //   console.log(noteIndex);
-  // useEffect(() => {
-
-  //   putDataToDB();
-  // }, []);
+  const headerDate = moment(date, "DD/MM/YYYY").format("dddd, Do MMMM YYYY");
+  const url = "http://localhost:3001/api/notes";
 
   // useEffect(() => {
+
   //   const updateText = async () => {
-  //     await axios.patch(`http://localhost:3001/api/tasks/${noteID}`, {
+  //     await axios.patch(`http://localhost:3001/api/tasks/${note._id}`, {
   //       content: text,
   //     });
   //   };
-  //   updateText();
-  // }, [text]);
+  //   if(note.date === today){
+  //     updateText();
+  //   }
 
+  // }, [text]);
+  console.log(text);
   return (
     <Wrapper>
-      <div className="date">{date}</div>
-
-      {dateClicked === today ? (
-        <textarea
-          id="text-field"
-          className="text-field"
-          name="text-field"
-          rows="4"
-          columns="50"
-          value={text}
-          onChange={(e) => {
-            setText(e.target.value);
-            setWordCount(
-              e.target.value.replace(/^\s+|\s+$/g, "").split(/\s+/).length
-            );
-          }}
-        >
-          {note.date === today ? <div>{note.content}</div> : null}
-        </textarea>
-      ) : (
-        <div className="content">
-          {dateClicked !== note.date ? (
-            <div>nema teksta taj dan</div>
-          ) : (
-            <div>{note.content}</div>
-          )}
+      {date === today ? (
+        <div>
+          <div className="date">{headerDate}</div>
+          <textarea
+            id="text-field"
+            className="text-field"
+            name="text-field"
+            rows="4"
+            columns="50"
+            value={note.date === today ? note.content : text}
+            onChange={(e) => {
+              getText(e.target.value);
+              getNumberOfWords(
+                e.target.value.replace(/^\s+|\s+$/g, "").split(/\s+/).length
+              );
+            }}
+          ></textarea>
         </div>
-      )}
+      ) : null}
+      {}
+      {date === note.date ? (
+        <div>
+          <div className="date">{headerDate}</div>
+          <div className="content">
+            <div>{note.content}</div>
+          </div>
+        </div>
+      ) : null}
     </Wrapper>
   );
 };
