@@ -132,7 +132,7 @@ function TaskForm({ type, task, modalOpen, modalClose, isModalOpen }) {
     const ddmmyyyy = /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/;
     let todaysDate = new Date().toLocaleDateString();
 
-    if (ddmmyyyy.test(date) && date >= todaysDate) {
+    if (ddmmyyyy.test(date) && date <= todaysDate) {
       setValid(true);
     } else {
       setValid(false);

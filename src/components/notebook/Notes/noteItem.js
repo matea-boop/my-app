@@ -11,52 +11,65 @@ export const NoteItem = ({
   text,
   wordCount,
   notesList,
+  onClick,
 }) => {
   const today = moment(new Date()).format("DD/MM/YYYY");
-  const headerDate = moment(date, "DD/MM/YYYY").format("dddd, Do MMMM YYYY");
-  const url = "http://localhost:3001/api/notes";
+  const headerDate = moment(note.date, "DD/MM/YYYY").format(
+    "dddd, Do MMMM YYYY"
+  );
 
-  // useEffect(() => {
-
-  //   const updateText = async () => {
-  //     await axios.patch(`http://localhost:3001/api/tasks/${note._id}`, {
-  //       content: text,
-  //     });
-  //   };
-  //   if(note.date === today){
-  //     updateText();
-  //   }
-
-  // }, [text]);
-  console.log(text);
   return (
     <Wrapper>
-      {date === today ? (
-        <div>
-          <div className="date">{headerDate}</div>
+      {date === note.date && note.date !== today ? (
+        <div style={{ height: "100%" }}>
+          <div className="percent-date">
+            <div className="date">{headerDate}</div>
+            <div className="number">
+              {note.numberOfWords > 70
+                ? 100
+                : ((note.numberOfWords / 70) * 100).toFixed()}
+              %
+            </div>
+          </div>
+
+          <div className="content">
+            <div>{note.content}</div>
+          </div>
+        </div>
+      ) : null}
+
+      {note.date === today ? (
+        <div style={{ height: "100%" }}>
+          <div className="top-field">
+            <div className="date">
+              {moment(today, "DD/MM/YYYY").format("dddd, Do MMMM YYYY")}
+            </div>
+
+            <div
+              className="save-btn"
+              onClick={onClick}
+              style={date === today ? { display: "flex" } : { display: "none" }}
+            >
+              SAVE
+            </div>
+          </div>
           <textarea
             id="text-field"
             className="text-field"
             name="text-field"
+            placeholder="Start your notes..."
             rows="4"
             columns="50"
-            value={note.date === today ? note.content : text}
+            defaultValue={note.content}
             onChange={(e) => {
-              getText(e.target.value);
+              getText(
+                e.target.value.charAt(0).toUpperCase() + e.target.value.slice(1)
+              );
               getNumberOfWords(
                 e.target.value.replace(/^\s+|\s+$/g, "").split(/\s+/).length
               );
             }}
           ></textarea>
-        </div>
-      ) : null}
-      {}
-      {date === note.date ? (
-        <div>
-          <div className="date">{headerDate}</div>
-          <div className="content">
-            <div>{note.content}</div>
-          </div>
         </div>
       ) : null}
     </Wrapper>
@@ -74,6 +87,61 @@ const Wrapper = styled.div`
   width: 100%;
 
   border-radius: var(--border-radius);
+
+  .percent-date {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    height: 5%;
+
+    font-size: var(--text-size);
+    color: var(--text-color);
+    font-weight: lighter;
+
+    padding-bottom: 1rem;
+  }
+
+  .top-field {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: row;
+
+    padding-top: 1.5rem;
+  }
+
+  .date {
+    width: 80%;
+    padding: 0 2rem 0 2rem;
+  }
+
+  .number {
+    opacity: 0.5;
+    padding: 1rem 2rem 0 2rem;
+  }
+
+  .date-x {
+    height: 5%;
+
+    font-size: var(--text-size);
+    color: var(--text-color);
+    font-weight: lighter;
+    opacity: 0.5;
+
+    padding: 0 2rem 0 2rem;
+  }
+
+  .content {
+    height: 95%;
+    width: 100%;
+
+    color: var(--text-color);
+    font-family: "Nunito", sans-serif;
+    font-weight: lighter;
+
+    padding: 1rem 2rem 1rem 2rem;
+  }
 
   .text-field {
     height: 95%;
@@ -107,25 +175,23 @@ const Wrapper = styled.div`
     padding: 1rem 2rem 1rem 2rem;
   }
 
-  .date {
-    height: 5%;
+  .save-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    width: 20%;
+    height: 100%;
 
     font-size: var(--text-size);
-    color: var(--text-color);
     font-weight: lighter;
-    opacity: 0.5;
-
-    padding: 0 2rem 0 2rem;
-  }
-
-  .content {
-    height: 100%;
-    width: 100%;
-
     color: var(--text-color);
-    font-family: "Nunito", sans-serif;
-    font-weight: lighter;
 
-    padding: 1rem 2rem 1rem 2rem;
+    cursor: pointer;
+    border-radius: var(--border-radius);
+    background-color: var(--sidebar-color);
+
+    margin-right: 2rem;
+    padding: 0.5rem 0 0.5rem 0;
   }
 `;

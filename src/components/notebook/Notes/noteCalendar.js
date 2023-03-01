@@ -6,25 +6,42 @@ import { TfiAngleRight } from "react-icons/tfi";
 
 export const NoteCalendar = ({ getDate }) => {
   const today = moment(new Date()).format("DD/MM/YYYY");
+  const today1 = moment(new Date()).format("MM/DD/YYYY");
   const [dateClicked, setDateClicked] = useState(today);
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
   const [currentDate, setCurrentDate] = useState(new Date().getDate());
   const curr = new Date();
-  const first = curr.getDate() - curr.getDay();
-  const [firstDayOfWeek, setFirstDayOfWeek] = useState(
-    new Date(currentYear, currentMonth, first).getTime()
-  );
+  // const first = curr.getDate() - curr.getDay();
+  const firstD = new Date(curr.setDate(curr.getDate() - curr.getDay()));
+  const lastD = new Date(curr.setDate(curr.getDate() - curr.getDay() + 6));
+  const [firstDayOfWeek, setFirstDayOfWeek] = useState(firstD.getTime());
   const week = [];
 
   for (let i = 0; i < 7; i++) {
     const curr = new Date();
     const first = curr.getDate() - curr.getDay();
-    const x = new Date(firstDayOfWeek).getTime();
-    week.push({
-      date: first + i,
-      time: new Date(x).getTime() + i * 24 * 60 * 60 * 1000,
-    });
+    const dayOfWeek = new Date().getDay();
+    const x = new Date(firstD).getTime();
+
+    if (firstD.getMonth() !== lastD.getMonth()) {
+      if (i < dayOfWeek) {
+        week.push({
+          date: firstD.getDate() + i,
+          time: new Date(firstDayOfWeek).getTime() + i * 24 * 60 * 60 * 1000,
+        });
+      } else {
+        week.push({
+          date: first + i,
+          time: new Date(firstDayOfWeek).getTime() + i * 24 * 60 * 60 * 1000,
+        });
+      }
+    } else {
+      week.push({
+        date: first + i,
+        time: new Date(firstDayOfWeek).getTime() + i * 24 * 60 * 60 * 1000,
+      });
+    }
   }
 
   const [currentWeek, setCurrentWeek] = useState(week);
@@ -78,8 +95,8 @@ export const NoteCalendar = ({ getDate }) => {
           return (
             <div
               className={
-                new Date(currentYear, currentMonth, currentDate).getTime() ===
-                day.time
+                moment(new Date(day.time).getTime()).format("DD/MM/YYYY") ===
+                today
                   ? "date active"
                   : "date"
               }
@@ -95,8 +112,8 @@ export const NoteCalendar = ({ getDate }) => {
                   : ""
               }
               upperDate={
-                moment(new Date(day.time).getTime()) >
-                new Date(currentYear, currentMonth, currentDate).getTime()
+                day.time >
+                new Date(currentYear, currentMonth, currentDate + 1).getTime()
                   ? "upper"
                   : ""
               }

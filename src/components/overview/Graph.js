@@ -22,10 +22,25 @@ async function getDataFromDB() {
   }
 }
 
+async function getNotesDataFromDB() {
+  const url = "http://localhost:3001/api/notes";
+  try {
+    const {
+      data: { notes },
+    } = await axios.get(url);
+
+    return notes;
+  } catch (error) {
+    console.log("error", error);
+    return error;
+  }
+}
+
 export const Graph = () => {
   let todaysDate = new Date().toLocaleDateString();
   const { isModalOpen, isDeleted, isTaskChecked } = useAllContext();
   const [taskList, setTaskList] = useState([]);
+  const [notesList, setNotesList] = useState([]);
 
   const mainList = [];
 
@@ -41,7 +56,18 @@ export const Graph = () => {
 
   useEffect(() => {
     getDataFromDB().then((res) => setTaskList(res));
+    getNotesDataFromDB().then((res) => setNotesList(res));
   }, [isModalOpen, isDeleted, isTaskChecked]);
+
+  const noteToday =
+    notesList.length > 0
+      ? notesList.filter((note) => note.date === todaysDate)
+      : null;
+  const notesDoneToday = noteToday
+    ? noteToday.map((x) => x.numberOfWords)
+    : null;
+  const notesDone = notesDoneToday ? notesDoneToday[0] : 0;
+  const notes = notesDone > 69 ? 100 : ((notesDone / 70) * 100).toFixed();
 
   const listOfcompletedTasks = mainList.filter((task) => task.status === true);
 
@@ -78,6 +104,11 @@ export const Graph = () => {
     }
   }, [uncompletedTasks]);
 
+  const all =
+    noteToday !== null
+      ? (parseInt(notes) + parseInt(tasksDone)) / 2
+      : tasksDone;
+
   return (
     <Wrapper>
       <div className="items">
@@ -91,14 +122,14 @@ export const Graph = () => {
         </div>
 
         <div className="circle">
-          <CircuralProgress percentage={tasksDone} circleWidth="160" />
+          <CircuralProgress percentage={all} circleWidth="160" />
         </div>
         <div className="bars">
           <div className="task-bar">
             <TaskBar completedTasks={tasksDone} circleWidth="27" />
           </div>
           <div className="notebook-bar">
-            <NotebookBar circleWidth="27" />
+            <NotebookBar notesDone={notesDone} circleWidth="27" />
           </div>
         </div>
       </div>

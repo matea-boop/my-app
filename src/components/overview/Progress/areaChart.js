@@ -13,6 +13,7 @@ import styled from "styled-components";
 import moment from "moment/moment";
 import axios from "axios";
 import { useAllContext } from "../../../context/indexContext";
+import { da } from "date-fns/locale";
 
 async function getDataProgressFromDB() {
   const url = "http://localhost:3001/api/tasks/ProgressStatistics";
@@ -25,7 +26,19 @@ async function getDataProgressFromDB() {
     return error;
   }
 }
+async function getNoteDataFromDB() {
+  const url = "http://localhost:3001/api/notes";
+  try {
+    const {
+      data: { notes },
+    } = await axios.get(url);
 
+    return notes;
+  } catch (error) {
+    console.log("error", error);
+    return error;
+  }
+}
 export const AreaChartProgress = ({
   button1Clicked,
   button2Clicked,
@@ -35,6 +48,7 @@ export const AreaChartProgress = ({
 }) => {
   const { isModalOpen, isDeleted, isTaskChecked } = useAllContext();
   const [progressList, setProgressList] = useState([]);
+  const [noteList, setNoteList] = useState([]);
   const [data, setData] = useState([]);
   let todaysDate = new Date().toLocaleDateString();
   const mainList = [];
@@ -49,20 +63,10 @@ export const AreaChartProgress = ({
 
   useEffect(() => {
     getDataProgressFromDB().then((res) => setProgressList(res));
-    // if (weekButton) {
-    //   setData(weekData);
-    // } else {
-    //   setData(monthData);
-    // }
+    getNoteDataFromDB().then((res) => setNoteList(res));
   }, [isModalOpen, isDeleted, isTaskChecked]);
 
-  // useEffect(() => {
-  //   if (weekButton) {
-  //     setData(weekData);
-  //   } else {
-  //     setData(monthData);
-  //   }
-  // }, [progressList, weekButton, monthButton]);
+  console.log(noteList);
 
   const current = moment();
   let n = 7;
@@ -182,13 +186,57 @@ export const AreaChartProgress = ({
   const weekData = [...new Map(wtestData.map((m) => [m.id, m])).values()];
   const monthData = [...new Map(mtestData.map((m) => [m.id, m])).values()];
 
+  const finalWeekData = [];
+  const indexList = [];
+  const b =
+    weekData && weekData.length > 0
+      ? weekData.map((week) => {
+          const exists = noteList.find((note, i) => note.date === week.date);
+          if (exists) {
+            return {
+              ...week,
+              notebook: noteList
+                .map((note, i) =>
+                  note.date === week.date
+                    ? note.numberOfWords > 69
+                      ? 100
+                      : ((note.numberOfWords / 70) * 100).toFixed()
+                    : 0
+                )
+                .filter(Boolean),
+            };
+          } else {
+            return { ...week, notebook: [0] };
+          }
+        })
+      : null;
+
+  const a =
+    monthData && monthData.length > 0
+      ? monthData.map((month) => {
+          const exists = noteList.find((note, i) => note.date === month.date);
+          if (exists) {
+            return {
+              ...month,
+              notebook: noteList
+                .map((note, i) =>
+                  note.date === month.date
+                    ? note.numberOfWords > 69
+                      ? 100
+                      : ((note.numberOfWords / 70) * 100).toFixed()
+                    : 0
+                )
+                .filter(Boolean),
+            };
+          } else {
+            return { ...month, notebook: [0] };
+          }
+        })
+      : null;
   return (
     <Wrapper>
       <ResponsiveContainer width="99%" height={200}>
-        <AreaChart
-          data={monthButton ? monthData : weekData}
-          margin={{ right: 30, top: 30 }}
-        >
+        <AreaChart data={monthButton ? a : b} margin={{ right: 30, top: 30 }}>
           <defs>
             <linearGradient id="colorblue" x1="0" y1="0" x2="0" y2="1">
               <stop offset="10%" stopColor="#405eff" stopOpacity={0.9} />
@@ -214,33 +262,20 @@ export const AreaChartProgress = ({
             }
           />
           <Area
-            dataKey="notebook"
+            dataKey="notebook[0]"
             type="monotone"
             stroke="#eca542"
             strokeLinecap="round"
-            strokeWidth={3}
+            strokeWidth={2}
             className="notebook"
-            fill="url(#colororange)"
+            fill="none"
             style={
               button2Clicked
                 ? { opacity: "1", transition: "all 0.2s" }
                 : { opacity: "0", transition: "all 0.2s" }
             }
           />
-          <Area
-            dataKey="allProgress"
-            type="monotone"
-            stroke="#e8f4fa"
-            strokeLinecap="round"
-            strokeWidth={2}
-            className="all"
-            fill="none"
-            style={
-              button3Clicked
-                ? { opacity: "1", transition: "all 0.2s" }
-                : { opacity: "0", transition: "all 0.2s" }
-            }
-          />
+
           <XAxis
             dataKey={monthButton ? "date" : "name"}
             interval={0}
@@ -277,7 +312,6 @@ export const AreaChartProgress = ({
               <CustomToolTip
                 button1Clicked={button1Clicked}
                 button2Clicked={button2Clicked}
-                button3Clicked={button3Clicked}
               />
             }
           />
@@ -319,7 +353,6 @@ function CustomToolTip({
   label,
   button1Clicked,
   button2Clicked,
-  button3Clicked,
 }) {
   if (active) {
     let todaysDate = new Date().toLocaleDateString();
@@ -332,15 +365,7 @@ function CustomToolTip({
           </p>
         </div>
         {button1Clicked ? (
-          <p
-            style={
-              button2Clicked || button3Clicked
-                ? {
-                    display: "none",
-                  }
-                : { display: "flex" }
-            }
-          >
+          <p>
             {payload[0].payload.all === "No"
               ? payload[0].payload.date === new Date().toLocaleDateString()
                 ? `${payload[0].payload.all} tasks assigned today`
@@ -349,18 +374,11 @@ function CustomToolTip({
           </p>
         ) : null}
         {button2Clicked ? (
-          <p
-            style={
-              button1Clicked || button3Clicked
-                ? {
-                    display: "none",
-                  }
-                : { display: "flex" }
-            }
-          >{`${payload[1].value.toFixed()}% notebook `}</p>
-        ) : null}
-        {button3Clicked ? (
-          <p>{`${payload[2].value.toFixed()}% assignments done`}</p>
+          <p>
+            {payload[1].value === 0
+              ? "No notes written"
+              : `${payload[1].value}% notes written `}
+          </p>
         ) : null}
       </div>
     );

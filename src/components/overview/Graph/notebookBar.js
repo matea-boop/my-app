@@ -1,11 +1,12 @@
 import React from "react";
 import styled from "styled-components";
 
-export const NotebookBar = ({ circleWidth }) => {
+export const NotebookBar = ({ circleWidth, notesDone }) => {
   const radius = circleWidth / 2.2;
-  const dashArray = 0;
-  const dashOffset = 0;
-
+  const notes = notesDone > 69 ? 100 : ((notesDone / 70) * 100).toFixed();
+  const dashArray = radius * Math.PI * 2;
+  const dashOffset = dashArray - (dashArray * notes) / 100;
+  console.log(dashOffset);
   return (
     <Wrapper>
       <div className="svg">
@@ -75,8 +76,6 @@ const Wrapper = styled.div`
   }
 
   .circle-notebook {
-    display: none;
-
     fill: none;
     stroke: var(--mainorange-color);
     stroke-linecap: round;

@@ -13,11 +13,31 @@ import axios from "axios";
 import moment from "moment/moment";
 import NoteItem from "./noteItem";
 
-export const NoteField = ({ date, notesList }) => {
+export const NoteField = ({ date, notesList, getWords }) => {
   const [text, setText] = useState("");
   const [wordCount, setWordCount] = useState(0);
+  const [noteIndex, setNoteIndex] = useState("");
+  const [change, setChange] = useState(false);
   const today = moment(new Date()).format("DD/MM/YYYY");
   const url = "http://localhost:3001/api/notes";
+
+  const dateList = [];
+
+  const x =
+    notesList.length > 0
+      ? notesList.map((note) => {
+          dateList.push(note.date);
+        })
+      : null;
+
+  useEffect(() => {
+    const y =
+      notesList.length > 0
+        ? notesList.map((note) => {
+            return note.date === today ? setNoteIndex(note._id) : null;
+          })
+        : null;
+  });
 
   const getText = (value) => {
     setText(value);
@@ -49,49 +69,43 @@ export const NoteField = ({ date, notesList }) => {
   };
 
   const onClick = () => {
-    if (notesList.length > 0) {
-      notesList.map((note) => {
-        if (note.date === date) {
-          return;
-        } else {
-          putDataToDB();
-        }
+    setChange(!change);
+    const updateText = async () => {
+      await axios.patch(`http://localhost:3001/api/notes/${noteIndex}`, {
+        content: text,
+        numberOfWords: wordCount,
       });
+    };
+    if (dateList.length > 0 && notesList.length > 0) {
+      if (dateList.includes(date)) {
+        if (date === today) {
+          updateText();
+        }
+        console.log("ne moze");
+        return;
+      } else {
+        console.log("moze");
+        putDataToDB();
+      }
     } else {
       console.log("jes");
       putDataToDB();
     }
   };
 
+  useEffect(() => {
+    getWords(wordCount);
+  }, [text, wordCount]);
+
   return (
     <Wrapper>
-      <div className="all-btns">
-        <div className="buttons">
-          <RxFontBold />
-          <RxUnderline />
-          <RxStrikethrough />
-          <RxFontItalic />
-          <RxTextAlignLeft />
-          <RxTextAlignCenter />
-          <RxTextAlignJustify />
-          <RxTextAlignRight />
-          <RxListBullet />
-        </div>
-        <div
-          className="save-btn"
-          onClick={onClick}
-          style={date === today ? { display: "flex" } : { display: "none" }}
-        >
-          SAVE
-        </div>
-      </div>
-
       <div className="field">
         {notesList.length > 0
           ? notesList.map((note) => {
               if (date === note.date) {
                 return (
                   <NoteItem
+                    onClick={onClick}
                     note={note}
                     date={date}
                     getNumberOfWords={getNumberOfWords}
@@ -104,6 +118,65 @@ export const NoteField = ({ date, notesList }) => {
               }
             })
           : null}
+        {date === today && !dateList.includes(date) ? (
+          <div style={{ height: "100%" }}>
+            <div className="top-field">
+              <div className="date">
+                {moment(today, "DD/MM/YYYY").format("dddd, Do MMMM YYYY")}
+              </div>
+              <div className="all-btns">
+                {/* <div className="buttons">
+          <RxFontBold />
+          <RxUnderline />
+          <RxStrikethrough />
+          <RxFontItalic />
+          <RxTextAlignLeft />
+          <RxTextAlignCenter />
+          <RxTextAlignJustify />
+          <RxTextAlignRight />
+          <RxListBullet />
+        </div> */}
+                <div
+                  className="save-btn"
+                  onClick={onClick}
+                  style={
+                    date === today ? { display: "flex" } : { display: "none" }
+                  }
+                >
+                  SAVE
+                </div>
+              </div>
+            </div>
+            <textarea
+              id="text-field"
+              className="text-field"
+              name="text-field"
+              placeholder="Start your notes..."
+              rows="4"
+              columns="50"
+              value={text}
+              onChange={(e) => {
+                setText(
+                  e.target.value.charAt(0).toUpperCase() +
+                    e.target.value.slice(1)
+                );
+                setWordCount(
+                  e.target.value.replace(/^\s+|\s+$/g, "").split(/\s+/).length
+                );
+              }}
+            ></textarea>
+          </div>
+        ) : null}
+        {dateList.length > 0 && !dateList.includes(date) && date !== today ? (
+          <div>
+            <div className="date">
+              {moment(date, "DD/MM/YYYY").format("dddd, Do MMMM YYYY")}
+            </div>
+            <div className="content">
+              <div>No notes taken on this day.</div>
+            </div>
+          </div>
+        ) : null}
       </div>
     </Wrapper>
   );
@@ -139,7 +212,7 @@ const Wrapper = styled.div`
     align-items: center;
 
     width: 20%;
-    height: 50%;
+    height: 100%;
 
     font-size: var(--text-size);
     font-weight: lighter;
@@ -148,21 +221,64 @@ const Wrapper = styled.div`
     cursor: pointer;
     border-radius: var(--border-radius);
     background-color: var(--sidebar-color);
+
+    margin-right: 2rem;
+    padding: 0.5rem 0 0.5rem 0;
   }
-  .buttons {
+
+  // .buttons {
+  //   display: block;
+
+  //   width: 80%;
+
+  //   color: var(--text-color);
+  //   opacity: 0.5;
+  // }
+
+  .top-field {
     display: flex;
-    justify-content: space-evenly;
+    justify-content: space-between;
     align-items: center;
+    flex-direction: row;
 
-    width: 80%;
-
-    color: var(--text-color);
-    opacity: 0.5;
+    padding-top: 1.5rem;
   }
 
   .field {
-    height: 90%;
+    height: 100%;
     width: 100%;
+  }
+
+  .text-field {
+    height: 95%;
+    width: 100%;
+
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--box-color);
+      border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--body-color);
+      border-radius: 10px;
+    }
+
+    resize: none;
+    border: none;
+    outline: none;
+
+    color: var(--text-color);
+    font-family: "Nunito", sans-serif;
+    font-weight: lighter;
+
+    background-color: var(--box-color);
+    border-radius: 0 0 var(--border-radius) var(--border-radius);
+
+    padding: 1rem 2rem 1rem 2rem;
   }
 
   .date {

@@ -23,22 +23,38 @@ async function getDataFromDB() {
 
 export const Notes = () => {
   const [date, setDate] = useState("");
+  const [words, setWords] = useState(0);
   const [notesList, setNotesList] = useState([]);
+  const today = moment(new Date()).format("DD/MM/YYYY");
 
   const getDate = (value) => {
     setDate(value);
   };
+  const getWords = (value) => {
+    setWords(value);
+  };
 
   useEffect(() => {
     getDataFromDB().then((res) => setNotesList(res));
-  }, [date]);
+  }, [date, notesList]);
+
+  useEffect(() => {
+    const x =
+      notesList.length > 0
+        ? notesList.map((note) => {
+            if (note.date === today) {
+              return setWords(note.numberOfWords);
+            }
+          })
+        : null;
+  }, [notesList]);
 
   return (
     <Wrapper>
       <div className="header-n">Notes</div>
-      <NotePercentBar />
+      <NotePercentBar wordCount={words} date={date} />
       <NoteCalendar getDate={getDate} />
-      <NoteField date={date} notesList={notesList} />
+      <NoteField date={date} notesList={notesList} getWords={getWords} />
     </Wrapper>
   );
 };

@@ -7,7 +7,6 @@ import { BsFillCircleFill } from "react-icons/bs";
 export const Progress = () => {
   const [button1Clicked, setButton1Clicked] = useState(true);
   const [button2Clicked, setButton2Clicked] = useState(false);
-  const [button3Clicked, setButton3Clicked] = useState(false);
 
   const [weekButton, setWeekButton] = useState(true);
   const [monthButton, setMonthButton] = useState(false);
@@ -17,9 +16,6 @@ export const Progress = () => {
   };
   const handleClick2 = () => {
     setButton2Clicked(!button2Clicked);
-  };
-  const handleClick3 = () => {
-    setButton3Clicked(!button3Clicked);
   };
 
   const weekClick = () => {
@@ -59,14 +55,6 @@ export const Progress = () => {
             <BsFillCircleFill className="notebook-circle" />
             <p>Notebook</p>
           </div>
-          <div
-            className="item"
-            onClick={handleClick3}
-            style={button3Clicked ? { opacity: "1" } : { opacity: "0.5" }}
-          >
-            <BsFillCircleFill className="all-circle" />
-            <p>All</p>
-          </div>
         </div>
         <div className="buttons-area-2">
           <div
@@ -89,7 +77,6 @@ export const Progress = () => {
         className="areaChart"
         button1Clicked={button1Clicked}
         button2Clicked={button2Clicked}
-        button3Clicked={button3Clicked}
         monthButton={monthButton}
         weekButton={weekButton}
       />
