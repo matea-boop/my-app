@@ -41,7 +41,6 @@ function SubtaskItem({
     // subtaskStatusUpdate();
     if (listBoolean.length > 0 && !listBoolean.includes(false)) {
       setTaskChecked(true);
-      taskChecked();
       const taskCompleted = async () => {
         await axios.patch(`http://localhost:3001/api/tasks/${task._id}`, {
           status: !taskCheck,
@@ -56,7 +55,6 @@ function SubtaskItem({
         });
       };
       taskCompleted();
-      taskUnchecked();
     }
     setListBoolean([...listBoolean]);
   }, [subtaskChecked]);
@@ -72,12 +70,10 @@ function SubtaskItem({
     };
 
     if (taskCheck) {
-      setSubtaskChecked(true);
       changeSubtasks();
       setListBoolean([...listBoolean]);
     } else {
       if (!listBoolean.includes(false)) {
-        setSubtaskChecked(false);
         changeSubtasks();
         setListBoolean([...listBoolean]);
       } else {
@@ -86,7 +82,6 @@ function SubtaskItem({
         } else {
           setSubtaskChecked(false);
         }
-        setListBoolean([...listBoolean]);
       }
     }
   }, [taskCheck]);

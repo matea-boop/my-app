@@ -66,8 +66,6 @@ export const AreaChartProgress = ({
     getNoteDataFromDB().then((res) => setNoteList(res));
   }, [isModalOpen, isDeleted, isTaskChecked]);
 
-  console.log(noteList);
-
   const current = moment();
   let n = 7;
   let x = 30;
@@ -191,7 +189,10 @@ export const AreaChartProgress = ({
   const b =
     weekData && weekData.length > 0
       ? weekData.map((week) => {
-          const exists = noteList.find((note, i) => note.date === week.date);
+          const exists =
+            noteList.length > 0
+              ? noteList.find((note, i) => note.date === week.date)
+              : null;
           if (exists) {
             return {
               ...week,
@@ -214,7 +215,10 @@ export const AreaChartProgress = ({
   const a =
     monthData && monthData.length > 0
       ? monthData.map((month) => {
-          const exists = noteList.find((note, i) => note.date === month.date);
+          const exists =
+            noteList.length > 0
+              ? noteList.find((note, i) => note.date === month.date)
+              : null;
           if (exists) {
             return {
               ...month,
@@ -296,6 +300,8 @@ export const AreaChartProgress = ({
           />
           <YAxis
             dataKey="percent"
+            type="number"
+            domain={[0, 100]}
             axisLine={false}
             interval={0}
             tickLine={false}
@@ -377,7 +383,7 @@ function CustomToolTip({
           <p>
             {payload[1].value === 0
               ? "No notes written"
-              : `${payload[1].value}% notes written `}
+              : `${payload[1].value}% notes written that day`}
           </p>
         ) : null}
       </div>

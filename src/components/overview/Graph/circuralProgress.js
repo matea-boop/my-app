@@ -6,6 +6,7 @@ export const CircuralProgress = ({ percentage, circleWidth }) => {
   const dashArray = radius * Math.PI * 2;
   const dashOffset = dashArray - (dashArray * percentage) / 100;
   const roundNumber = percentage === 0 ? 0 : Math.round(percentage);
+
   return (
     <Wrapper>
       <svg

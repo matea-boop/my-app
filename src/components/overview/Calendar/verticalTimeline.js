@@ -90,7 +90,7 @@ export const VerticalTimeline = ({ date }) => {
     } else {
       document.getElementById("scroll").scrollTop = y;
     }
-  }, [timePixel, date, firstTime]);
+  }, [timePixel, date, firstTime, timeLinePosition]);
 
   useEffect(() => {
     const intervalTime = setInterval(() => {
@@ -204,7 +204,7 @@ const Wrapper = styled.div`
 
   .event-boxes {
     position: absolute;
-    z-index: 11;
+    z-index: 2;
 
     top: 6px;
     width: 90%;
@@ -212,7 +212,7 @@ const Wrapper = styled.div`
 
   .line {
     position: absolute;
-    z-index: 10;
+    z-index: 1;
 
     width: 100%;
 

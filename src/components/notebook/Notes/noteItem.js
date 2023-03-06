@@ -21,7 +21,7 @@ export const NoteItem = ({
   return (
     <Wrapper>
       {date === note.date && note.date !== today ? (
-        <div style={{ height: "100%" }}>
+        <div style={{ height: "100%" }} className="content-field">
           <div className="percent-date">
             <div className="date">{headerDate}</div>
             <div className="number">
@@ -94,12 +94,13 @@ const Wrapper = styled.div`
     justify-content: space-between;
 
     height: 5%;
+    width: 100%;
 
     font-size: var(--text-size);
     color: var(--text-color);
     font-weight: lighter;
 
-    padding-bottom: 1rem;
+    padding: 0.5rem 2rem 0 0;
   }
 
   .top-field {
@@ -111,25 +112,23 @@ const Wrapper = styled.div`
     padding-top: 1.5rem;
   }
 
+  .content-field {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: column;
+
+    padding-top: 1.5rem;
+  }
+
   .date {
     width: 80%;
-    padding: 0 2rem 0 2rem;
+    padding: 0 2rem 0 0;
   }
 
   .number {
     opacity: 0.5;
-    padding: 1rem 2rem 0 2rem;
-  }
-
-  .date-x {
-    height: 5%;
-
-    font-size: var(--text-size);
-    color: var(--text-color);
-    font-weight: lighter;
-    opacity: 0.5;
-
-    padding: 0 2rem 0 2rem;
+    padding: 0rem 0 0 2rem;
   }
 
   .content {
@@ -137,6 +136,7 @@ const Wrapper = styled.div`
     width: 100%;
 
     color: var(--text-color);
+    font-size: var(--text-size);
     font-family: "Nunito", sans-serif;
     font-weight: lighter;
 
@@ -166,6 +166,7 @@ const Wrapper = styled.div`
     outline: none;
 
     color: var(--text-color);
+    font-size: var(--text-size);
     font-family: "Nunito", sans-serif;
     font-weight: lighter;
 

@@ -124,27 +124,15 @@ export const NoteField = ({ date, notesList, getWords }) => {
               <div className="date">
                 {moment(today, "DD/MM/YYYY").format("dddd, Do MMMM YYYY")}
               </div>
-              <div className="all-btns">
-                {/* <div className="buttons">
-          <RxFontBold />
-          <RxUnderline />
-          <RxStrikethrough />
-          <RxFontItalic />
-          <RxTextAlignLeft />
-          <RxTextAlignCenter />
-          <RxTextAlignJustify />
-          <RxTextAlignRight />
-          <RxListBullet />
-        </div> */}
-                <div
-                  className="save-btn"
-                  onClick={onClick}
-                  style={
-                    date === today ? { display: "flex" } : { display: "none" }
-                  }
-                >
-                  SAVE
-                </div>
+
+              <div
+                className="save-btn"
+                onClick={onClick}
+                style={
+                  date === today ? { display: "flex" } : { display: "none" }
+                }
+              >
+                SAVE
               </div>
             </div>
             <textarea
@@ -168,11 +156,11 @@ export const NoteField = ({ date, notesList, getWords }) => {
           </div>
         ) : null}
         {dateList.length > 0 && !dateList.includes(date) && date !== today ? (
-          <div>
-            <div className="date">
+          <div className="top-field-no-content">
+            <div className="date-no-content">
               {moment(date, "DD/MM/YYYY").format("dddd, Do MMMM YYYY")}
             </div>
-            <div className="content">
+            <div className="text-field">
               <div>No notes taken on this day.</div>
             </div>
           </div>
@@ -197,15 +185,6 @@ const Wrapper = styled.div`
 
   margin-bottom: 1.5rem;
 
-  .all-btns {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-
-    width: 80%;
-    height: 10%;
-  }
-
   .save-btn {
     display: flex;
     justify-content: center;
@@ -226,20 +205,24 @@ const Wrapper = styled.div`
     padding: 0.5rem 0 0.5rem 0;
   }
 
-  // .buttons {
-  //   display: block;
+  .top-field-no-content {
+    display: flex;
 
-  //   width: 80%;
+    align-items: left;
+    flex-direction: column;
 
-  //   color: var(--text-color);
-  //   opacity: 0.5;
-  // }
+    width: 100%;
+
+    padding-top: 1.5rem;
+  }
 
   .top-field {
     display: flex;
     justify-content: space-between;
     align-items: center;
     flex-direction: row;
+
+    width: 100%;
 
     padding-top: 1.5rem;
   }
@@ -250,7 +233,7 @@ const Wrapper = styled.div`
   }
 
   .text-field {
-    height: 95%;
+    height: 90%;
     width: 100%;
 
     ::-webkit-scrollbar {
@@ -272,6 +255,7 @@ const Wrapper = styled.div`
     outline: none;
 
     color: var(--text-color);
+    font-size: var(--text-size);
     font-family: "Nunito", sans-serif;
     font-weight: lighter;
 
@@ -282,8 +266,6 @@ const Wrapper = styled.div`
   }
 
   .date {
-    height: 5%;
-
     font-size: var(--text-size);
     color: var(--text-color);
     font-weight: lighter;
@@ -292,11 +274,21 @@ const Wrapper = styled.div`
     padding: 0 2rem 0 2rem;
   }
 
+  .date-no-content {
+    font-size: var(--text-size);
+    color: var(--text-color);
+    font-weight: lighter;
+    opacity: 0.5;
+
+    padding: 0.5rem 2rem 0 2rem;
+  }
+
   .content {
-    height: 100%;
+    height: 95%;
     width: 100%;
 
     color: var(--text-color);
+    font-size: var(--text-size);
     font-family: "Nunito", sans-serif;
     font-weight: lighter;
 

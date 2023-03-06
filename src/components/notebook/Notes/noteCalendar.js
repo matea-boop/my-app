@@ -23,9 +23,10 @@ export const NoteCalendar = ({ getDate }) => {
     const first = curr.getDate() - curr.getDay();
     const dayOfWeek = new Date().getDay();
     const x = new Date(firstD).getTime();
+    const firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay();
 
     if (firstD.getMonth() !== lastD.getMonth()) {
-      if (i < dayOfWeek) {
+      if (i < firstDayOfMonth) {
         week.push({
           date: firstD.getDate() + i,
           time: new Date(firstDayOfWeek).getTime() + i * 24 * 60 * 60 * 1000,

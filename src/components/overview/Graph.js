@@ -41,6 +41,7 @@ export const Graph = () => {
   const { isModalOpen, isDeleted, isTaskChecked } = useAllContext();
   const [taskList, setTaskList] = useState([]);
   const [notesList, setNotesList] = useState([]);
+  const [index, setIndex] = useState(0);
 
   const mainList = [];
 
@@ -80,7 +81,6 @@ export const Graph = () => {
   const completedTasks = listOfcompletedTasks.length;
   const tasksDone =
     completedTasks === 0 ? 0 : (completedTasks / mainListLength) * 100;
-  const [index, setIndex] = useState(0);
 
   useEffect(() => {
     if (completedTasks === 0 && uncompletedTasks === 0) {
@@ -102,12 +102,12 @@ export const Graph = () => {
     } else if (tasksDone === 100) {
       setIndex(8);
     }
-  }, [uncompletedTasks]);
+  }, [tasksDone]);
 
   const all =
-    noteToday !== null
+    notesDone && notesDone !== undefined
       ? (parseInt(notes) + parseInt(tasksDone)) / 2
-      : tasksDone;
+      : tasksDone / 2;
 
   return (
     <Wrapper>

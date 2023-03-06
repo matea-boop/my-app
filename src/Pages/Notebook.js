@@ -1,12 +1,12 @@
 import React from "react";
 import styled from "styled-components";
 import Notes from "../components/notebook/Notes";
-import NoteFiles from "../components/notebook/NoteFiles";
+import NotesFiles from "../components/notebook/NotesFiles";
 export const Notebook = () => {
   return (
     <Wrapper>
       <Notes />
-      <NoteFiles />
+      <NotesFiles />
     </Wrapper>
   );
 };

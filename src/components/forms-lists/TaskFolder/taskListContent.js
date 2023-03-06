@@ -3,7 +3,6 @@ import TaskItem from "./taskListItem";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useAllContext } from "../../../context/indexContext";
-import Loading from "../../Loading";
 
 async function getDataFromDB() {
   const url = "http://localhost:3001/api/tasks";
@@ -20,19 +19,16 @@ async function getDataFromDB() {
   }
 }
 
-function TaskListContent({ page, setTotalPages }) {
+function TaskListContent({ page, setTotalPages, type }) {
   const { isModalOpen, isDeleted, isTaskChecked } = useAllContext();
   const [taskList, setTaskList] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const tasksPerPage = 5;
+  const tasksPerPage = type === "mainTask" ? 12 : 5;
   const startIndex = (page - 1) * tasksPerPage;
   let todaysDate = new Date().toLocaleDateString();
   const mainList = [];
 
   useEffect(() => {
-    setLoading(true);
     getDataFromDB().then((res) => {
-      setLoading(false);
       setTaskList(res);
     });
   }, [isModalOpen, isDeleted, isTaskChecked]);
@@ -57,9 +53,6 @@ function TaskListContent({ page, setTotalPages }) {
 
   return (
     <div>
-      {/* {loading ? (
-        <Loading />
-      ) : ( */}
       <div style={{ position: "absolute", width: "80%" }}>
         {" "}
         {selectedTasks && selectedTasks.length > 0 ? (
@@ -87,7 +80,6 @@ function TaskListContent({ page, setTotalPages }) {
           </div>
         )}
       </div>
-      {/* )} */}
     </div>
   );
 }

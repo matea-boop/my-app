@@ -10,8 +10,10 @@ import {
   TASK_UNCHECKED,
   EVENT_MODAL_OPEN,
   EVENT_MODAL_CLOSE,
-  SUBTASK_STATUS_FALSE,
-  SUBTASK_STATUS_TRUE,
+  FILE_DELETED,
+  FILE_NOT_DELETED,
+  FILE_MODAL_CLOSE,
+  FILE_MODAL_OPEN,
 } from "../constants/actions";
 import React, { useContext, useReducer } from "react";
 
@@ -22,6 +24,8 @@ const initialState = {
   isDeleted: false,
   isTaskChecked: false,
   isSubtaskStatusChanged: false,
+  isFileDeleted: false,
+  isFileModalOpen: false,
 };
 
 const AllContext = React.createContext();
@@ -71,6 +75,20 @@ export const AddBtnProvider = ({ children }) => {
     dispatch({ type: TASK_UNCHECKED });
   };
 
+  const fileDeleted = () => {
+    dispatch({ type: FILE_DELETED });
+  };
+  const fileNotDeleted = () => {
+    dispatch({ type: FILE_NOT_DELETED });
+  };
+
+  const fileModalOpen = () => {
+    dispatch({ type: FILE_MODAL_OPEN });
+  };
+  const fileModalClose = () => {
+    dispatch({ type: FILE_MODAL_CLOSE });
+  };
+
   return (
     <AllContext.Provider
       value={{
@@ -87,6 +105,10 @@ export const AddBtnProvider = ({ children }) => {
         eventModalClose,
         subtaskStatusChangedFalse,
         subtaskStatusChangedTrue,
+        fileDeleted,
+        fileNotDeleted,
+        fileModalClose,
+        fileModalOpen,
       }}
     >
       {children}

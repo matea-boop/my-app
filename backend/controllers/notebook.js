@@ -23,7 +23,7 @@ const getSingleNote = async (req, res) => {
     const { id: notebookID } = req.params;
     const notebook = await Notebook.findOne({ _id: notebookID });
     if (!notebook) {
-      return res.status(404).json({ msg: `No task width id of ${notebookID}` });
+      return res.status(404).json({ msg: `No note width id of ${notebookID}` });
     }
     res.status(200).json({ note: notebook });
   } catch (error) {
@@ -43,7 +43,7 @@ const updateNote = async (req, res) => {
       }
     );
     if (!notebook) {
-      return res.status(404).json({ msg: `No task width id of ${notebookID}` });
+      return res.status(404).json({ msg: `No note width id of ${notebookID}` });
     }
     res.status(200).json({ task: notebook });
   } catch (error) {

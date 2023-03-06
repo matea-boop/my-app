@@ -51,7 +51,7 @@ function TaskItem({ task }) {
 
   useEffect(() => {
     getDataFromDB().then((res) => setTaskList(res));
-  }, [openMenu, clicked, isTaskChecked, task]);
+  }, [openMenu, isTaskChecked, clicked, subtaskArrow]);
 
   useEffect(() => {
     let handler = (event) => {
@@ -170,9 +170,8 @@ function TaskItem({ task }) {
                   : { display: "none" }
               }
               className={
-                subtaskArrow
-                  ? // && !checked
-                    "subtask-arrow activ"
+                subtaskArrow && !checked
+                  ? "subtask-arrow activ"
                   : "subtask-arrow"
               }
               onClick={arrowClick}

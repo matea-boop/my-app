@@ -23,7 +23,7 @@ const getSingleEvent = async (req, res) => {
     const { id: eventID } = req.params;
     const event = await Event.findOne({ _id: eventID });
     if (!event) {
-      return res.status(404).json({ msg: `No task width id of ${eventID}` });
+      return res.status(404).json({ msg: `No event width id of ${eventID}` });
     }
     res.status(200).json({ event });
   } catch (error) {
@@ -39,7 +39,7 @@ const updateEvent = async (req, res) => {
       runValidators: true,
     });
     if (!event) {
-      return res.status(404).json({ msg: `No task width id of ${eventID}` });
+      return res.status(404).json({ msg: `No event width id of ${eventID}` });
     }
     res.status(200).json({ event });
   } catch (error) {
@@ -52,7 +52,7 @@ const deleteEvent = async (req, res) => {
     const { id: eventID } = req.params;
     const event = await Event.findOneAndDelete({ _id: eventID });
     if (!event) {
-      return res.status(404).json({ msg: `No task width id of ${eventID}` });
+      return res.status(404).json({ msg: `No event width id of ${eventID}` });
     }
     res.status(200).json({ event });
   } catch (error) {

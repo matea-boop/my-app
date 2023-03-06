@@ -14,7 +14,6 @@ function TaskForm({ type, task, modalOpen, modalClose, isModalOpen }) {
   const [subtaskStatus, setSubtaskStatus] = useState(false);
   const [date, setDate] = useState(new Date().toLocaleDateString());
   const [valid, setValid] = useState(true);
-  const [taskList, setTaskList] = useState([]);
   const url = "http://localhost:3001/api/tasks";
   const formRef = useRef();
 

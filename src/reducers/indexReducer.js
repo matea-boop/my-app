@@ -11,6 +11,10 @@ import {
   EVENT_MODAL_OPEN,
   SUBTASK_STATUS_FALSE,
   SUBTASK_STATUS_TRUE,
+  FILE_DELETED,
+  FILE_NOT_DELETED,
+  FILE_MODAL_CLOSE,
+  FILE_MODAL_OPEN,
 } from "../constants/actions";
 
 const reducer = (state, action) => {
@@ -49,6 +53,19 @@ const reducer = (state, action) => {
   }
   if (action.type === SUBTASK_STATUS_FALSE) {
     return { ...state, isSubtaskStatusChanged: false };
+  }
+
+  if (action.type === FILE_DELETED) {
+    return { ...state, isFileDeleted: true };
+  }
+  if (action.type === FILE_NOT_DELETED) {
+    return { ...state, isFileDeleted: false };
+  }
+  if (action.type === FILE_MODAL_CLOSE) {
+    return { ...state, isFileModalOpen: false };
+  }
+  if (action.type === FILE_MODAL_OPEN) {
+    return { ...state, isFileModalOpen: true };
   }
 };
 

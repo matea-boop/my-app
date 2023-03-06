@@ -77,6 +77,7 @@ const Wrapper = styled.div`
 
     height: 8%;
 
+    color: var(--text-color);
     font-size: 1.2rem;
   }
 `;
