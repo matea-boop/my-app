@@ -19,19 +19,21 @@ async function getDataFromDB() {
   }
 }
 
-function TaskListContent({ page, setTotalPages, type }) {
+function TaskListContent({ page, setTotalPages, type, formOpen, doneType }) {
   const { isModalOpen, isDeleted, isTaskChecked } = useAllContext();
   const [taskList, setTaskList] = useState([]);
-  const tasksPerPage = type === "mainTask" ? 12 : 5;
+  const tasksPerPage = type === "mainTask" ? 10 : 5;
   const startIndex = (page - 1) * tasksPerPage;
   let todaysDate = new Date().toLocaleDateString();
   const mainList = [];
+
+  const listHeight = type === "mainTask" ? 100 : 70;
 
   useEffect(() => {
     getDataFromDB().then((res) => {
       setTaskList(res);
     });
-  }, [isModalOpen, isDeleted, isTaskChecked]);
+  }, [isModalOpen, isDeleted, isTaskChecked, formOpen]);
 
   const check =
     taskList.length > 0
@@ -53,12 +55,19 @@ function TaskListContent({ page, setTotalPages, type }) {
 
   return (
     <div>
-      <div style={{ position: "absolute", width: "80%" }}>
+      <div
+        style={{
+          position: "absolute",
+          width: "80%",
+          height: `${listHeight}%`,
+        }}
+      >
         {" "}
         {selectedTasks && selectedTasks.length > 0 ? (
           selectedTasks.map((task) => {
             return task.date === todaysDate ? (
               <TaskItem
+                type={type}
                 key={task.id}
                 task={task}
                 status={task.status}

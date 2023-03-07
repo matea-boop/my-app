@@ -19,6 +19,9 @@ function AddButton() {
     isEventModalOpen,
     eventModalOpen,
     eventModalClose,
+    isHabitModalOpen,
+    habitModalOpen,
+    habitModalClose,
   } = useAllContext();
   // const [modalOpen, setModalOpen] = useState(false);
   const [getId, setGetId] = useState("");
@@ -54,7 +57,14 @@ function AddButton() {
       id: 3,
       text: "Habit",
       url: "/AddHabit",
-      element: <HabitForm />,
+      element: (
+        <HabitForm
+          type="add"
+          isHabitModalOpen={isHabitModalOpen}
+          habitModalClose={habitModalClose}
+          habitModalOpen={habitModalOpen}
+        />
+      ),
     },
     {
       id: 4,
@@ -123,6 +133,7 @@ function AddButton() {
                   addBtnClose();
                   modalOpen();
                   eventModalOpen();
+                  habitModalOpen();
                 }}
                 style={
                   getId !== "" ? { opacity: "0", transition: " 0s" } : null
@@ -134,7 +145,7 @@ function AddButton() {
           })}
         </ul>
 
-        {isModalOpen || isEventModalOpen ? (
+        {isModalOpen || isEventModalOpen || isHabitModalOpen ? (
           <div>
             {linksAddBtn.map(({ id, element }) => {
               if (getId === id) {

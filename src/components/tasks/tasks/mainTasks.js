@@ -3,12 +3,13 @@ import styled from "styled-components";
 import { useState } from "react";
 import TaskListContent from "../../forms-lists/TaskFolder/taskListContent";
 import TaskPagination from "../../forms-lists/TaskFolder/taskPagination";
-import TasksDone from "../../forms-lists/TaskFolder/tasksDone";
-import { Link } from "react-router-dom";
-import { useAllContext } from "../../../context/indexContext";
-export const MainTasks = () => {
-  const { modalOpen, modalClose } = useAllContext();
+import TaskPercentBar from "./taskPercentBar";
+import TaskForm from "../../forms-lists/TaskFolder/taskReducer/taskForm";
+import TasksSorted from "./tasksSorted";
 
+export const MainTasks = () => {
+  const [doneType, setDoneType] = useState("all");
+  const [formOpen, setFormOpen] = useState(false);
   const [totalPages, setTotalPages] = useState(0);
   const [page, setPage] = useState(1);
   const [pageActive, setPageActive] = useState(page);
@@ -21,21 +22,32 @@ export const MainTasks = () => {
     <Wrapper>
       <div className="title-row">
         <div className="title">Tasks</div>
-        <div className="tasks-done">
-          <TasksDone />
-        </div>
       </div>
-      <div className="progress">todays progres</div>
+      <div className="progress">
+        <TaskPercentBar />
+      </div>
       <div className="finished-left-list">
-        <div className="tasks-left">left</div>
-        <div className="tasks-finished">done</div>
+        <div className="tasks" onClick={() => setDoneType("all")}>
+          <p>All</p>
+          <TasksSorted type="all" />
+        </div>
+        <div className="tasks" onClick={() => setDoneType("left")}>
+          <p>Left to do</p>
+          <TasksSorted type="left" />
+        </div>
+        <div className="tasks" onClick={() => setDoneType("done")}>
+          <p>Done</p>
+          <TasksSorted type="done" />
+        </div>
       </div>
       <div className="task-list">
         <TaskListContent
+          doneType={doneType}
           type="mainTask"
           page={page}
           totalPages={totalPages}
           setTotalPages={setTotalPages}
+          formOpen={formOpen}
         />
       </div>
       <div className="pagination">
@@ -46,9 +58,17 @@ export const MainTasks = () => {
         />
       </div>
 
-      <div className="btn-add" to="/Tasks" onClick={() => modalOpen()}>
+      <div
+        className="btn-add"
+        onClick={() => {
+          setFormOpen(true);
+        }}
+      >
         Add new
       </div>
+      {formOpen ? (
+        <TaskForm type="add" isModalOpen={formOpen} modalClose={setFormOpen} />
+      ) : null}
     </Wrapper>
   );
 };
@@ -69,10 +89,11 @@ const Wrapper = styled.div`
     font-size: var(--text-size);
     opacity: 0.5;
     font-weight: lighter;
+    cursor: pointer;
 
     right: 10%;
 
-    bottom: 0.6rem;
+    bottom: 3%;
 
     &:hover {
       opacity: 1;
@@ -84,6 +105,7 @@ const Wrapper = styled.div`
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    align-items: center;
 
     height: 6%;
     width: 80%;
@@ -93,10 +115,12 @@ const Wrapper = styled.div`
 
   .progress {
     position: absolute;
+    display: flex;
+    align-items: center;
 
     height: 6%;
-    width: 80%;
-    left: 10%;
+    width: 90%;
+    left: 5%;
     top: 8%;
   }
 
@@ -105,6 +129,7 @@ const Wrapper = styled.div`
     display: flex;
     flex-direction: row;
     justify-content: center;
+    align-items: center;
 
     height: 6%;
     width: 80%;
@@ -121,26 +146,32 @@ const Wrapper = styled.div`
 
       margin-right: 0.5rem;
     }
-
-    .tasks-done {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background-color: var(--box-color);
-      border-radius: var(--border-radius);
-
-      height: 40%;
-
-      padding: 0.2rem 0.5rem 0.2rem 0.5rem;
-    }
   }
 
   .task-list {
     position: absolute;
     width: 100%;
+    height: 70%;
 
-    top: 18%;
+    top: 20%;
     left: 10%;
+  }
+
+  .tasks {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+
+    cursor: pointer;
+
+    p {
+      font-size: var(--text-size);
+      opacity: 0.5;
+      font-weight: lighter;
+
+      padding-right: 0.5rem;
+    }
   }
 
   .pagination {
@@ -151,7 +182,7 @@ const Wrapper = styled.div`
     left: 0;
     right: 0;
 
-    bottom: 0.6rem;
+    bottom: 3%;
     margin-left: auto;
     margin-right: auto;
   }

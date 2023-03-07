@@ -64,6 +64,7 @@ const Wrapper = styled.div`
     flex-direction: row;
     justify-content: space-between;
 
+    height: 20%;
     color: var(--text-color);
 
     .title-tasks {
@@ -105,6 +106,7 @@ const Wrapper = styled.div`
 
   .task-list {
     width: 80%;
+    height: 70%;
     margin: 0 auto;
   }
 
@@ -112,10 +114,11 @@ const Wrapper = styled.div`
     position: absolute;
 
     width: fit-content;
+    height: 9%;
     left: 0;
     right: 0;
 
-    bottom: 0.6rem;
+    bottom: 1%;
     margin-left: auto;
     margin-right: auto;
   }

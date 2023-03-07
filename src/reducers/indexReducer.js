@@ -15,6 +15,8 @@ import {
   FILE_NOT_DELETED,
   FILE_MODAL_CLOSE,
   FILE_MODAL_OPEN,
+  HABIT_MODAL_CLOSE,
+  HABIT_MODAL_OPEN,
 } from "../constants/actions";
 
 const reducer = (state, action) => {
@@ -54,7 +56,6 @@ const reducer = (state, action) => {
   if (action.type === SUBTASK_STATUS_FALSE) {
     return { ...state, isSubtaskStatusChanged: false };
   }
-
   if (action.type === FILE_DELETED) {
     return { ...state, isFileDeleted: true };
   }
@@ -66,6 +67,12 @@ const reducer = (state, action) => {
   }
   if (action.type === FILE_MODAL_OPEN) {
     return { ...state, isFileModalOpen: true };
+  }
+  if (action.type === HABIT_MODAL_CLOSE) {
+    return { ...state, isHabitModalOpen: false };
+  }
+  if (action.type === HABIT_MODAL_OPEN) {
+    return { ...state, isHabitModalOpen: true };
   }
 };
 

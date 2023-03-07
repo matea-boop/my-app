@@ -24,7 +24,7 @@ async function getDataFromDB() {
   }
 }
 
-function TaskItem({ task }) {
+function TaskItem({ task, type }) {
   const {
     isDeleted,
     isSubtaskStatusChanged,
@@ -41,6 +41,7 @@ function TaskItem({ task }) {
   const [clicked, setClicked] = useState("");
   const [subtaskArrow, setSubtaskArrow] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
+
   let choiceRef = useRef();
   let divRef = useRef();
   let subtaskRef = useRef();
@@ -48,6 +49,9 @@ function TaskItem({ task }) {
   let list = [];
   task.subtasks.forEach((sub) => list.push(sub.subtaskStatus));
   const [listBooleanSubtasks, setListBooleanSubtasks] = useState([...list]);
+
+  const itemHeight = type === "mainTask" ? 8.5 : 17;
+  const itemOpacity = checked ? 0.5 : 1;
 
   useEffect(() => {
     getDataFromDB().then((res) => setTaskList(res));
@@ -142,7 +146,8 @@ function TaskItem({ task }) {
 
   return (
     <Wrapper
-      style={checked ? { opacity: "0.5" } : { opacity: "1" }}
+      id={type === "mainTask" ? "main" : "task"}
+      style={{ height: `${itemHeight}%`, opacity: `${itemOpacity}` }}
       ref={divRef}
     >
       <div className="task-details">
@@ -263,7 +268,7 @@ const Wrapper = styled.div`
   background-color: var(--box-color);
   border-radius: var(--border-radius);
 
-  margin-bottom: 0.3rem;
+  margin-bottom: 3%;
 
   .task-details {
     display: flex;
