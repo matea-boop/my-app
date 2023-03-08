@@ -17,6 +17,8 @@ import {
   FILE_MODAL_OPEN,
   HABIT_MODAL_CLOSE,
   HABIT_MODAL_OPEN,
+  HABIT_CLICKED,
+  HABIT_UNCLICKED,
 } from "../constants/actions";
 
 const reducer = (state, action) => {
@@ -73,6 +75,12 @@ const reducer = (state, action) => {
   }
   if (action.type === HABIT_MODAL_OPEN) {
     return { ...state, isHabitModalOpen: true };
+  }
+  if (action.type === HABIT_CLICKED) {
+    return { ...state, isHabitClicked: true };
+  }
+  if (action.type === HABIT_UNCLICKED) {
+    return { ...state, isHabitClicked: false };
   }
 };
 

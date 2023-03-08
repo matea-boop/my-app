@@ -83,6 +83,7 @@ function TaskListContent({ page, setTotalPages, type, formOpen, doneType }) {
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
+              marginTop: "1rem",
             }}
           >
             No tasks assigned for today

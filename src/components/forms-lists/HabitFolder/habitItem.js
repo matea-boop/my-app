@@ -30,51 +30,83 @@ async function getHabitDataFromDB() {
   }
 }
 
-function HabitItem({ habit }) {
-  const { isHabitModalOpen, habitModalOpen, habitModalClose } = useAllContext();
+function HabitItem({ habit, formOpen }) {
+  const {
+    isHabitModalOpen,
+    habitModalOpen,
+    habitModalClose,
+    isHabitClicked,
+    habitClicked,
+    habitUnclicked,
+  } = useAllContext();
 
   const [habitList, setHabitList] = useState([]);
   const [openMenu, setOpenMenu] = useState(false);
+  const [listBooleanLength, setListBooleanLength] = useState(
+    habit.checkboxes.filter((day) => day.clicked !== false).length
+  );
   const [checked, setChecked] = useState(false);
-  const [index, setIndex] = useState();
+
+  const habitWidth = listBooleanLength
+    ? ((listBooleanLength / habit.target) * 100).toFixed()
+    : 0;
 
   useEffect(() => {
     getHabitDataFromDB().then((res) => setHabitList(res));
-  }, [isHabitModalOpen]);
+  }, [isHabitModalOpen, formOpen, checked, listBooleanLength]);
 
-  //   useEffect(() => {
-  //     let handler = (event) => {
-  //       if (divRef.current.contains(event.target)) {
-  //         setClicked(task._id);
-  //       }
-  //     };
-  //     document.addEventListener("mousedown", handler);
-  //     return () => {
-  //       setClicked("");
-  //       document.removeEventListener("mousedown", handler);
-  //     };
-  //   }, []);
+  const handleCheck = async (dayIndex) => {
+    habitClicked();
+    const habitItem0 =
+      habitList.length > 0
+        ? habitList.filter((item) => item._id === habit._id)
+        : null;
+    const habitItem = habitItem0 ? habitItem0[0] : null;
+    const habitCheckboxesArray = habitItem ? habitItem.checkboxes : [];
 
-  //   useEffect(() => {
-  //     if (task.status === true) {
-  //       setChecked(true);
-  //       taskChecked();
-  //     } else {
-  //       setChecked(false);
-  //       taskUnchecked();
-  //     }
-  //   }, [task.status]);
+    const dayItem =
+      habitCheckboxesArray && habitCheckboxesArray.length > 0
+        ? habitCheckboxesArray[dayIndex]
+        : null;
+    const clickedBoolean = dayItem ? dayItem.clicked : null;
+    const newArr = habitCheckboxesArray
+      ? habitCheckboxesArray.map((day, index) => {
+          if (index === dayIndex) {
+            return { ...day, clicked: !clickedBoolean };
+          } else {
+            return day;
+          }
+        })
+      : [];
 
-  // const handleCheck = async () => {
-  //   setChecked(!checked);
-  //   await axios.patch(`http://localhost:3001/api/habit/${habit._id}`, {
-  //     status: !checked,
-  //   });
-  // };
+    const listBoolean = habit.checkboxes.filter((day) => day.clicked !== false)
+      .length;
+    console.log(newArr);
+    //ne gledaj habitarray nego newarr
+    setListBooleanLength(listBoolean);
 
-  //   useEffect(() =>{
+    console.log(listBoolean);
+    console.log(habit.target);
+    console.log(dayItem.clicked);
+    console.log(listBooleanLength);
 
-  //   }, [checked])
+    console.log(habitCheckboxesArray);
+    if (listBoolean === habit.target) {
+      console.log("mj");
+    }
+
+    if (listBoolean < habit.target) {
+      try {
+        await axios.patch(`http://localhost:3001/api/habits/${habit._id}`, {
+          checkboxes: newArr,
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
+    habitUnclicked();
+  };
 
   const deleteFromDB = async (idToDelete) => {
     // context za delete i not deleted
@@ -92,7 +124,14 @@ function HabitItem({ habit }) {
         <div className="corner">
           <div className="target">
             <div className="grey-bar"></div>
-            <div className="orange-green-bar"></div>
+            <div
+              className="orange-green-bar"
+              style={
+                habitWidth >= 100
+                  ? { width: "100%", backgroundColor: "var(--maingreen-color)" }
+                  : { width: `${habitWidth}%` }
+              }
+            ></div>
             <div className="target-number">Target 0/{habit.target}</div>
           </div>
           <div className="icon">
@@ -100,21 +139,29 @@ function HabitItem({ habit }) {
           </div>
         </div>
       </div>
-      <div className="checkboxes">
-        {weekDays.length > 0
-          ? weekDays.map((week, index) => {
+      <div
+        className="checkboxes"
+        onClick={() => {
+          setChecked(!checked);
+        }}
+      >
+        {habit.checkboxes.length > 0
+          ? habit.checkboxes.map((check, dayIndex) => {
               return (
                 <div
                   className="day"
-                  style={!week.clicked ? { opacity: "0.3" } : { opacity: "1" }}
+                  style={check.clicked ? { opacity: "1" } : { opacity: "0.3" }}
                   onClick={() => {
-                    setChecked(!checked);
-                    setIndex(index);
+                    handleCheck(dayIndex);
                   }}
                 >
-                  <p className="day-name">{week.day}</p>
+                  <p className="day-name">{check.day}</p>
                   <div className="day-box">
-                    <FiSquare style={{ strokeWidth: "1" }} />
+                    {!check.clicked ? (
+                      <FiSquare style={{ strokeWidth: "1" }} />
+                    ) : (
+                      <FiCheckSquare style={{ strokeWidth: "1" }} />
+                    )}
                   </div>
                 </div>
               );
@@ -199,7 +246,7 @@ const Wrapper = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 15;
+    z-index: 10;
 
     width: 100%;
 
@@ -210,9 +257,9 @@ const Wrapper = styled.div`
 
   .orange-green-bar {
     position: absolute;
-    width: 50%;
+
     height: 80%;
-    z-index: 10;
+    z-index: 5;
 
     background-color: var(--mainblue-color);
     border-radius: 1rem;

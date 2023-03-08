@@ -5,6 +5,16 @@ import { toast } from "react-hot-toast";
 import { IconContext } from "react-icons";
 import axios from "axios";
 
+const weekDays = [
+  { day: "MON", clicked: false },
+  { day: "TUE", clicked: false },
+  { day: "WED", clicked: false },
+  { day: "THU", clicked: false },
+  { day: "FRI", clicked: false },
+  { day: "SAT", clicked: false },
+  { day: "SUN", clicked: false },
+];
+
 function HabitForm({
   type,
   task,
@@ -50,6 +60,7 @@ function HabitForm({
       id: uuid(),
       title: title,
       target: target,
+      checkboxes: weekDays,
     };
 
     try {

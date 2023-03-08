@@ -1,5 +1,7 @@
 const mongoose = require("mongoose");
 
+const CheckboxSchema = new mongoose.Schema({});
+
 const HabitSchema = new mongoose.Schema(
   {
     target: {
@@ -7,6 +9,9 @@ const HabitSchema = new mongoose.Schema(
     },
     title: {
       type: String,
+    },
+    checkboxes: {
+      type: Array,
     },
   },
   { timestamps: true }

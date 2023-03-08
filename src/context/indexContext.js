@@ -16,6 +16,8 @@ import {
   FILE_MODAL_OPEN,
   HABIT_MODAL_CLOSE,
   HABIT_MODAL_OPEN,
+  HABIT_UNCLICKED,
+  HABIT_CLICKED,
 } from "../constants/actions";
 import React, { useContext, useReducer } from "react";
 
@@ -29,6 +31,7 @@ const initialState = {
   isFileDeleted: false,
   isFileModalOpen: false,
   isHabitModalOpen: false,
+  isHabitClicked: false,
 };
 
 const AllContext = React.createContext();
@@ -99,6 +102,13 @@ export const AddBtnProvider = ({ children }) => {
     dispatch({ type: HABIT_MODAL_CLOSE });
   };
 
+  const habitClicked = () => {
+    dispatch({ type: HABIT_CLICKED });
+  };
+  const habitUnclicked = () => {
+    dispatch({ type: HABIT_UNCLICKED });
+  };
+
   return (
     <AllContext.Provider
       value={{
@@ -121,6 +131,8 @@ export const AddBtnProvider = ({ children }) => {
         fileModalOpen,
         habitModalClose,
         habitModalOpen,
+        habitClicked,
+        habitUnclicked,
       }}
     >
       {children}

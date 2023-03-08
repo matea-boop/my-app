@@ -26,6 +26,7 @@ export const MainHabits = () => {
       </div>
       <div className="habit-list">
         <HabitList
+          formOpen={formOpen}
           page={page}
           totalPages={totalPages}
           setTotalPages={setTotalPages}

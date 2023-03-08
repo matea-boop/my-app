@@ -19,8 +19,13 @@ async function getHabitDataFromDB() {
   }
 }
 
-function HabitList({ page, setTotalPages }) {
-  const { isHabitModalOpen, habitModalOpen, habitModalClose } = useAllContext();
+function HabitList({ page, setTotalPages, formOpen }) {
+  const {
+    isHabitModalOpen,
+    habitModalOpen,
+    habitModalClose,
+    isHabitClicked,
+  } = useAllContext();
   const [habitList, setHabitList] = useState([]);
   const habitsPerPage = 8;
   const startIndex = (page - 1) * habitsPerPage;
@@ -29,7 +34,7 @@ function HabitList({ page, setTotalPages }) {
     getHabitDataFromDB().then((res) => {
       setHabitList(res);
     });
-  }, [isHabitModalOpen]);
+  }, [isHabitModalOpen, formOpen, isHabitClicked]);
 
   const selectedHabits =
     habitList.length > 0
@@ -52,7 +57,7 @@ function HabitList({ page, setTotalPages }) {
         {" "}
         {selectedHabits && selectedHabits.length > 0 ? (
           selectedHabits.map((habit) => {
-            return <HabitItem habit={habit} />;
+            return <HabitItem habit={habit} formOpen={formOpen} />;
           })
         ) : (
           <div
