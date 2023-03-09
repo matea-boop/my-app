@@ -53,7 +53,6 @@ export const MainHabits = () => {
     setTargetsDone(value);
   };
 
-  console.log(targetsDone);
   return (
     <Wrapper>
       <div className="title-row">

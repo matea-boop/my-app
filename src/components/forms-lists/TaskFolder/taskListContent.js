@@ -19,7 +19,15 @@ async function getDataFromDB() {
   }
 }
 
-function TaskListContent({ page, setTotalPages, type, formOpen, doneType }) {
+function TaskListContent({
+  page,
+  setTotalPages,
+  type,
+  formOpen,
+  doneType,
+  completedTasksList,
+  incompletedTasksList,
+}) {
   const { isModalOpen, isDeleted, isTaskChecked } = useAllContext();
   const [taskList, setTaskList] = useState([]);
   const tasksPerPage = type === "mainTask" ? 10 : 5;
@@ -49,6 +57,19 @@ function TaskListContent({ page, setTotalPages, type, formOpen, doneType }) {
       ? mainList.slice(startIndex, startIndex + tasksPerPage)
       : [];
 
+  const list =
+    doneType === "all" && selectedTasks.length > 0
+      ? selectedTasks
+      : doneType === "left" &&
+        incompletedTasksList &&
+        incompletedTasksList.length > 0
+      ? incompletedTasksList
+      : doneType === "done" &&
+        completedTasksList &&
+        completedTasksList.length > 0
+      ? completedTasksList
+      : [];
+
   useEffect(() => {
     setTotalPages(Math.ceil(mainList.length / tasksPerPage));
   }, [mainList]);
@@ -63,8 +84,8 @@ function TaskListContent({ page, setTotalPages, type, formOpen, doneType }) {
         }}
       >
         {" "}
-        {selectedTasks && selectedTasks.length > 0 ? (
-          selectedTasks.map((task) => {
+        {list && list.length > 0 ? (
+          list.map((task) => {
             return task.date === todaysDate ? (
               <TaskItem
                 type={type}

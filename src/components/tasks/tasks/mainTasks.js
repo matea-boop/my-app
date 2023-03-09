@@ -7,6 +7,8 @@ import TaskPercentBar from "./taskPercentBar";
 import TaskForm from "../../forms-lists/TaskFolder/taskReducer/taskForm";
 import TasksSorted from "./tasksSorted";
 import { useAllContext } from "../../../context/indexContext";
+import axios from "axios";
+import { useEffect } from "react";
 
 async function getDataFromDB() {
   const url = "http://localhost:3001/api/tasks";
@@ -27,15 +29,45 @@ export const MainTasks = () => {
   const [doneType, setDoneType] = useState("all");
   const [formOpen, setFormOpen] = useState(false);
   const [totalPages, setTotalPages] = useState(0);
-  const [allTasks, setAllTasks] = useState(0);
-  const [doneTasks, setDoneTasks] = useState(0);
+  let todaysDate = new Date().toLocaleDateString();
   const [page, setPage] = useState(1);
   const [pageActive, setPageActive] = useState(page);
+  const [taskList, setTaskList] = useState([]);
 
   const handleClick = (num) => {
     setPage(num);
     setPageActive(num);
   };
+
+  const mainList =
+    taskList && taskList.length > 0
+      ? taskList.filter((task) => task.date === todaysDate)
+      : [];
+
+  const completedTasks =
+    mainList && mainList.length > 0
+      ? mainList.filter((task) => task.status !== false).length
+      : 0;
+
+  const completedTasksList =
+    mainList && mainList.length > 0
+      ? mainList.filter((task) => task.status === true)
+      : [];
+
+  const incompletedTasks =
+    mainList && mainList.length > 0
+      ? mainList.filter((task) => task.status !== true).length
+      : 0;
+
+  const incompletedTasksList =
+    mainList && mainList.length > 0
+      ? mainList.filter((task) => task.status === false)
+      : [];
+  const allTasks = mainList.length;
+
+  useEffect(() => {
+    getDataFromDB().then((res) => setTaskList(res));
+  }, [isModalOpen, isDeleted, isTaskChecked]);
 
   return (
     <Wrapper>
@@ -43,24 +75,53 @@ export const MainTasks = () => {
         <div className="title">Tasks</div>
       </div>
       <div className="progress">
-        <TaskPercentBar />
+        <TaskPercentBar completedTasks={completedTasks} allTasks={allTasks} />
       </div>
       <div className="finished-left-list">
-        <div className="tasks" onClick={() => setDoneType("all")}>
+        <div
+          className="tasks"
+          onClick={() => setDoneType("all")}
+          style={doneType === "all" ? { opacity: "1" } : { opacity: "0.5" }}
+        >
           <p>All</p>
-          <TasksSorted type="all" />
+          <TasksSorted
+            type="all"
+            completedTasks={completedTasks}
+            allTasks={allTasks}
+            incompletedTasks={incompletedTasks}
+          />
         </div>
-        <div className="tasks" onClick={() => setDoneType("left")}>
+        <div
+          className="tasks"
+          onClick={() => setDoneType("left")}
+          style={doneType === "left" ? { opacity: "1" } : { opacity: "0.5" }}
+        >
           <p>Left to do</p>
-          <TasksSorted type="left" />
+          <TasksSorted
+            type="left"
+            completedTasks={completedTasks}
+            allTasks={allTasks}
+            incompletedTasks={incompletedTasks}
+          />
         </div>
-        <div className="tasks" onClick={() => setDoneType("done")}>
+        <div
+          className="tasks"
+          onClick={() => setDoneType("done")}
+          style={doneType === "done" ? { opacity: "1" } : { opacity: "0.5" }}
+        >
           <p>Done</p>
-          <TasksSorted type="done" />
+          <TasksSorted
+            type="done"
+            completedTasks={completedTasks}
+            allTasks={allTasks}
+            incompletedTasks={incompletedTasks}
+          />
         </div>
       </div>
       <div className="task-list">
         <TaskListContent
+          completedTasksList={completedTasksList}
+          incompletedTasksList={incompletedTasksList}
           doneType={doneType}
           type="mainTask"
           page={page}
@@ -186,7 +247,7 @@ const Wrapper = styled.div`
 
     p {
       font-size: var(--text-size);
-      opacity: 0.5;
+
       font-weight: lighter;
 
       padding-right: 0.5rem;
