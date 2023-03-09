@@ -5,6 +5,7 @@ import axios from "axios";
 import { FiSquare } from "react-icons/fi";
 import { HiEllipsisVertical } from "react-icons/hi2";
 import { FiCheckSquare } from "react-icons/fi";
+import HabitForm from "./HabitForm";
 
 const weekDays = [
   { day: "MON", clicked: false },
@@ -42,10 +43,27 @@ function HabitItem({ habit, formOpen }) {
 
   const [habitList, setHabitList] = useState([]);
   const [openMenu, setOpenMenu] = useState(false);
+  const [editHabitModalOpen, setEditHabitModalOpen] = useState(false);
   const [listBooleanLength, setListBooleanLength] = useState(
     habit.checkboxes.filter((day) => day.clicked !== false).length
   );
   const [checked, setChecked] = useState(false);
+  var curr = new Date();
+  const today = curr.getDay();
+  const choiceRef = useRef();
+
+  useEffect(() => {
+    let handler = (event) => {
+      if (!choiceRef.current.contains(event.target)) {
+        setOpenMenu(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handler);
+    return () => {
+      document.removeEventListener("mousedown", handler);
+    };
+  }, []);
 
   const habitWidth = listBooleanLength
     ? ((listBooleanLength / habit.target) * 100).toFixed()
@@ -53,59 +71,75 @@ function HabitItem({ habit, formOpen }) {
 
   useEffect(() => {
     getHabitDataFromDB().then((res) => setHabitList(res));
-  }, [isHabitModalOpen, formOpen, checked, listBooleanLength]);
+  }, [
+    isHabitModalOpen,
+    formOpen,
+    checked,
+    listBooleanLength,
+    editHabitModalOpen,
+  ]);
 
   const handleCheck = async (dayIndex) => {
-    habitClicked();
-    const habitItem0 =
-      habitList.length > 0
-        ? habitList.filter((item) => item._id === habit._id)
-        : null;
-    const habitItem = habitItem0 ? habitItem0[0] : null;
-    const habitCheckboxesArray = habitItem ? habitItem.checkboxes : [];
+    if (dayIndex >= today - 1) {
+      habitClicked();
+      const habitItem0 =
+        habitList.length > 0
+          ? habitList.filter((item) => item._id === habit._id)
+          : null;
+      const habitItem = habitItem0 ? habitItem0[0] : null;
+      const habitCheckboxesArray = habitItem ? habitItem.checkboxes : [];
 
-    const dayItem =
-      habitCheckboxesArray && habitCheckboxesArray.length > 0
-        ? habitCheckboxesArray[dayIndex]
-        : null;
-    const clickedBoolean = dayItem ? dayItem.clicked : null;
-    const newArr = habitCheckboxesArray
-      ? habitCheckboxesArray.map((day, index) => {
-          if (index === dayIndex) {
-            return { ...day, clicked: !clickedBoolean };
-          } else {
-            return day;
-          }
-        })
-      : [];
+      const dayItem =
+        habitCheckboxesArray && habitCheckboxesArray.length > 0
+          ? habitCheckboxesArray[dayIndex]
+          : null;
+      const clickedBoolean = dayItem ? dayItem.clicked : null;
+      const newArr = habitCheckboxesArray
+        ? habitCheckboxesArray.map((day, index) => {
+            if (index === dayIndex) {
+              return { ...day, clicked: !clickedBoolean };
+            } else {
+              return day;
+            }
+          })
+        : [];
 
-    const listBoolean = habit.checkboxes.filter((day) => day.clicked !== false)
-      .length;
-    console.log(newArr);
-    //ne gledaj habitarray nego newarr
-    setListBooleanLength(listBoolean);
+      const listBoolean = newArr
+        ? newArr.filter((day) => day.clicked !== false).length
+        : 0;
 
-    console.log(listBoolean);
-    console.log(habit.target);
-    console.log(dayItem.clicked);
-    console.log(listBooleanLength);
+      setListBooleanLength(listBoolean);
 
-    console.log(habitCheckboxesArray);
-    if (listBoolean === habit.target) {
-      console.log("mj");
-    }
-
-    if (listBoolean < habit.target) {
-      try {
-        await axios.patch(`http://localhost:3001/api/habits/${habit._id}`, {
-          checkboxes: newArr,
-        });
-      } catch (error) {
-        console.log(error);
+      if (listBoolean <= habit.target && dayIndex >= today - 1) {
+        try {
+          await axios.patch(`http://localhost:3001/api/habits/${habit._id}`, {
+            checkboxes: newArr,
+          });
+        } catch (error) {
+          console.log(error);
+        }
       }
-    }
 
-    habitUnclicked();
+      if (listBoolean >= habit.target) {
+        try {
+          await axios.patch(`http://localhost:3001/api/habits/${habit._id}`, {
+            status: true,
+          });
+        } catch (error) {
+          console.log(error);
+        }
+      } else {
+        try {
+          await axios.patch(`http://localhost:3001/api/habits/${habit._id}`, {
+            status: false,
+          });
+        } catch (error) {
+          console.log(error);
+        }
+      }
+
+      habitUnclicked();
+    }
   };
 
   const deleteFromDB = async (idToDelete) => {
@@ -118,7 +152,7 @@ function HabitItem({ habit, formOpen }) {
   };
 
   return (
-    <Wrapper>
+    <Wrapper style={habit.status ? { opacity: "0.5" } : { opacity: "1" }}>
       <div className="top-row">
         <p className="title">{habit.title}</p>
         <div className="corner">
@@ -128,14 +162,49 @@ function HabitItem({ habit, formOpen }) {
               className="orange-green-bar"
               style={
                 habitWidth >= 100
-                  ? { width: "100%", backgroundColor: "var(--maingreen-color)" }
+                  ? {
+                      width: "100%",
+                      backgroundColor: "var(--maingreen-color)",
+                      opacity: "1",
+                    }
                   : { width: `${habitWidth}%` }
               }
             ></div>
-            <div className="target-number">Target 0/{habit.target}</div>
+            <div className="target-number">
+              {" "}
+              {listBooleanLength > habit.target
+                ? listBooleanLength - 1
+                : listBooleanLength}
+              /{habit.target}
+            </div>
           </div>
-          <div className="icon">
-            <HiEllipsisVertical />
+          <div className="icon-box" ref={choiceRef}>
+            <div className="icon">
+              {" "}
+              <HiEllipsisVertical
+                onClick={() => {
+                  setOpenMenu(!openMenu);
+                }}
+              />
+            </div>
+            <div
+              className="icon-choice-container"
+              {...(openMenu ? { open: openMenu } : null)}
+            >
+              <div className="choice" role="button">
+                Delete habit
+              </div>
+              <div
+                className="choice"
+                onClick={() => {
+                  setOpenMenu(false);
+                  setEditHabitModalOpen(true);
+                }}
+                role="button"
+              >
+                Edit habit
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -169,15 +238,14 @@ function HabitItem({ habit, formOpen }) {
           : null}
       </div>
 
-      {/* kasnije za edit 
-      {editModalOpen ? (
-        <TaskForm
+      {editHabitModalOpen ? (
+        <HabitForm
           type="edit"
-          task={task}
-          isModalOpen={editModalOpen}
-          modalClose={setEditModalOpen}
+          habit={habit}
+          isHabitModalOpen={editHabitModalOpen}
+          habitModalClose={setEditHabitModalOpen}
         />
-      ) : null} */}
+      ) : null}
     </Wrapper>
   );
 }
@@ -246,7 +314,7 @@ const Wrapper = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 10;
+    z-index: 6;
 
     width: 100%;
 
@@ -259,12 +327,12 @@ const Wrapper = styled.div`
     position: absolute;
 
     height: 80%;
-    z-index: 5;
+    z-index: 3;
 
     background-color: var(--mainblue-color);
     border-radius: 1rem;
 
-    opacity: 0.5;
+    opacity: 0.3;
   }
 
   .checkboxes {
@@ -302,7 +370,10 @@ const Wrapper = styled.div`
     stroke-width: 1;
     font-weight: lighter;
   }
-  .icon {
+
+  .icon-box {
+    z-index: 8;
+    position: relative;
     display: flex;
 
     align-items: center;
@@ -311,10 +382,104 @@ const Wrapper = styled.div`
     height: 1rem;
     font-size: 1rem;
 
-    opacity: 0.5;
+    opacity: 1;
 
     margin-left: 0.5rem;
     cursor: pointer;
+  }
+
+  .icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 1.2rem;
+    cursor: pointer;
+    opacity: 0.5;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+
+  .icon-choice-container {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 200;
+
+    top: -1.4rem;
+    right: 1.4rem;
+    min-width: 5.5rem;
+
+    opacity: 0;
+    transition: opacity 0.2s;
+    animation: fade-out 0.2s forwards;
+    background-color: var(--mainorange-color);
+    border-radius: var(--border-radius);
+  }
+
+  .icon-choice-container[open] {
+    animation: fade-in 0.2s forwards;
+    opacity: 1;
+    transition: opacity 0.2s;
+  }
+
+  .choice {
+    color: var(--box-color);
+    font-size: 0.8rem;
+
+    cursor: pointer;
+    opacity: 0.5;
+
+    margin-right: auto;
+    padding: 0.5rem;
+
+    &:hover {
+      opacity: 1;
+    }
+
+    &:last-child {
+      padding-top: 0;
+    }
+  }
+
+  @keyframes fade-in {
+    0% {
+      clip-path: polygon(100% 50%, 100% 50%, 100% 50%, 100% 50%);
+      transform: scale(0);
+    }
+    50% {
+      clip-path: polygon(0 0, 100% 40%, 100% 60%, 0% 100%);
+      transform: scale(0.5);
+    }
+    75% {
+      clip-path: polygon(0 0, 100% 20%, 100% 80%, 0% 100%);
+      transform: scale(0.7);
+    }
+    100% {
+      clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
+      transform: scale(1);
+    }
+  }
+  @keyframes fade-out {
+    100% {
+      clip-path: polygon(100% 50%, 100% 50%, 100% 50%, 100% 50%);
+      transform: scale(0);
+      transform-origin: 100% 50%;
+    }
+    75% {
+      clip-path: polygon(0 0, 100% 40%, 100% 60%, 0% 100%);
+    }
+    50% {
+      clip-path: polygon(0 0, 100% 20%, 100% 80%, 0% 100%);
+    }
+    0% {
+      clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
+      transform: scale(1);
+      transform-origin: 100% 50%;
+    }
   }
 `;
 

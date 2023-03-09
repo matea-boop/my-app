@@ -6,11 +6,29 @@ import TaskPagination from "../../forms-lists/TaskFolder/taskPagination";
 import TaskPercentBar from "./taskPercentBar";
 import TaskForm from "../../forms-lists/TaskFolder/taskReducer/taskForm";
 import TasksSorted from "./tasksSorted";
+import { useAllContext } from "../../../context/indexContext";
+
+async function getDataFromDB() {
+  const url = "http://localhost:3001/api/tasks";
+  try {
+    const {
+      data: { tasks },
+    } = await axios.get(url);
+
+    return tasks;
+  } catch (error) {
+    console.log("error", error);
+    return error;
+  }
+}
 
 export const MainTasks = () => {
+  const { isModalOpen, isDeleted, isTaskChecked } = useAllContext();
   const [doneType, setDoneType] = useState("all");
   const [formOpen, setFormOpen] = useState(false);
   const [totalPages, setTotalPages] = useState(0);
+  const [allTasks, setAllTasks] = useState(0);
+  const [doneTasks, setDoneTasks] = useState(0);
   const [page, setPage] = useState(1);
   const [pageActive, setPageActive] = useState(page);
 
@@ -18,6 +36,7 @@ export const MainTasks = () => {
     setPage(num);
     setPageActive(num);
   };
+
   return (
     <Wrapper>
       <div className="title-row">

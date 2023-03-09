@@ -3,8 +3,8 @@ import { useState } from "react";
 import { useEffect } from "react";
 import styled from "styled-components";
 
-export const HabitPercentBar = () => {
-  const percentage = 10;
+export const HabitPercentBar = ({ targetSumAll, targetsDone }) => {
+  const percentage = (targetsDone / targetSumAll) * 100;
   return (
     <Wrapper>
       <div className="text">Habit progress this week</div>

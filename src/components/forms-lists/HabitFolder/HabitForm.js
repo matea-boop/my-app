@@ -4,6 +4,7 @@ import { v4 as uuid } from "uuid";
 import { toast } from "react-hot-toast";
 import { IconContext } from "react-icons";
 import axios from "axios";
+import moment from "moment/moment";
 
 const weekDays = [
   { day: "MON", clicked: false },
@@ -17,16 +18,25 @@ const weekDays = [
 
 function HabitForm({
   type,
-  task,
+  habit,
   habitModalOpen,
   habitModalClose,
   isHabitModalOpen,
 }) {
   const [title, setTitle] = useState("");
   const [target, setTarget] = useState("");
+  const [valid, setValid] = useState(true);
   const [date, setDate] = useState(new Date().toLocaleDateString());
   const url = "http://localhost:3001/api/habits";
   const formRef = useRef();
+
+  var curr = new Date();
+
+  var first = curr.getDate() - curr.getDay() + 1;
+  var last = first + 6;
+
+  const firstDay = moment(new Date(curr.setDate(first))).format("DD/MM/YYYY");
+  const lastDay = moment(new Date(curr.setDate(last))).format("DD/MM/YYYY");
 
   useEffect(() => {
     const handler = (event) => {
@@ -44,16 +54,15 @@ function HabitForm({
     };
   }, []);
 
-  // useEffect(() => {
-  //   if (type === "edit" && task) {
-  //     setTitle(task.title);
-  //     setSubtasks(task.subtasks);
-  //     setDate(task.date);
-  //   } else {
-  //     setTitle("");
-  //     setSubtasks([]);
-  //   }
-  // }, [type, modalOpen]);
+  useEffect(() => {
+    if (type === "edit" && habit) {
+      setTitle(habit.title);
+      setTarget(habit.target);
+    } else {
+      setTitle("");
+      setTarget("");
+    }
+  }, [type, isHabitModalOpen]);
 
   const putDataToDB = async () => {
     const newData = {
@@ -61,6 +70,9 @@ function HabitForm({
       title: title,
       target: target,
       checkboxes: weekDays,
+      weekStart: firstDay,
+      weekEnd: lastDay,
+      status: false,
     };
 
     try {
@@ -84,7 +96,7 @@ function HabitForm({
       toast.error("Habit title cannot be empty!");
       return;
     }
-    if (target === "") {
+    if (target === "" && !valid) {
       toast.error("Habit title cannot be empty!");
       return;
     }
@@ -94,26 +106,38 @@ function HabitForm({
       toast.success("Habit added successfully!");
       habitModalClose();
     }
-    // if (type === "edit") {
-    //   if (task.title !== title) {
-    //     await axios.patch(`http://localhost:3001/api/tasks/${task._id}`, {
-    //       title: title,
-    //     });
-    //     habitModalClose()
-    //     toast.success("Task Edited Successfully!");
-    //   } else if (habit.date !== date && valid) {
-    //     await axios.patch(`http://localhost:3001/api/tasks/${task._id}`, {
-    //       date: date,
-    //     });
-    //     modalClose();
-    //     toast.success("Task edited successfully!");
-    //   } else {
-    //     toast.error("No changes made...");
-    //   }
-    // }
+    if (type === "edit") {
+      if (habit.title !== title) {
+        await axios.patch(`http://localhost:3001/api/habits/${habit._id}`, {
+          title: title,
+          checkboxes: weekDays,
+        });
+        habitModalClose();
+        toast.success("Task Edited Successfully!");
+      } else if (habit.target !== target) {
+        await axios.patch(`http://localhost:3001/api/habits/${habit._id}`, {
+          target: target,
+          checkboxes: weekDays,
+        });
+        habitModalClose();
+        toast.success("Task edited successfully!");
+      } else {
+        toast.error("No changes made...");
+      }
+    }
 
     habitModalClose();
   };
+
+  useEffect(() => {
+    const targetTest = /^([\D]*[1-7]){1,7}[\D]*$|^[^0]\d{1,6}$/;
+
+    if (targetTest.test(target) || target === "") {
+      setValid(true);
+    } else {
+      setValid(false);
+    }
+  }, [target]);
 
   return (
     <IconContext.Provider
@@ -152,10 +176,12 @@ function HabitForm({
                   }
                 />
 
-                <label htmlFor="time">Target</label>
+                <label htmlFor="target">Target</label>
 
                 <input
+                  id={valid ? "valid" : "notValid"}
                   type="text"
+                  maxLength="1"
                   placeholder="1-7"
                   name="target"
                   className="target"
@@ -235,6 +261,10 @@ const Wrapper = styled.div`
       font-size: 1rem;
     }
 
+    input[id="notValid"] {
+      outline: 2px solid red;
+    }
+
     input {
       font-size: 0.8rem;
 
@@ -243,6 +273,7 @@ const Wrapper = styled.div`
 
       border: none;
       outline: none;
+      color: var(--sidebar-color);
       border-radius: var(--border-radius);
       background-color: var(--text-color);
 

@@ -13,6 +13,16 @@ const HabitSchema = new mongoose.Schema(
     checkboxes: {
       type: Array,
     },
+    weekStart: {
+      type: String,
+    },
+    weekEnd: {
+      type: String,
+    },
+    status: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true }
 );

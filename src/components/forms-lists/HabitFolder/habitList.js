@@ -19,7 +19,7 @@ async function getHabitDataFromDB() {
   }
 }
 
-function HabitList({ page, setTotalPages, formOpen }) {
+function HabitList({ page, setTotalPages, formOpen, getTargetsDone }) {
   const {
     isHabitModalOpen,
     habitModalOpen,
@@ -34,7 +34,35 @@ function HabitList({ page, setTotalPages, formOpen }) {
     getHabitDataFromDB().then((res) => {
       setHabitList(res);
     });
-  }, [isHabitModalOpen, formOpen, isHabitClicked]);
+    getTargetsDone(targetSumDone);
+  }, [isHabitModalOpen, formOpen, isHabitClicked, habitList]);
+
+  const habitCheckboxesArray =
+    habitList && habitList.length > 0
+      ? habitList.map((habit) => {
+          return habit.checkboxes;
+        })
+      : [];
+  const habitClickedArray =
+    habitCheckboxesArray && habitCheckboxesArray.length > 0
+      ? habitCheckboxesArray.map((item) =>
+          item.map((i) => {
+            return i.clicked;
+          })
+        )
+      : [];
+
+  const habitArrayBoolean =
+    habitClickedArray && habitClickedArray.length > 0
+      ? habitClickedArray.map((item) => {
+          return item.filter((i) => i === true).length;
+        })
+      : [];
+
+  const targetSumDone = habitArrayBoolean.reduce(
+    (total, current) => (total = total + parseInt(current)),
+    0
+  );
 
   const selectedHabits =
     habitList.length > 0

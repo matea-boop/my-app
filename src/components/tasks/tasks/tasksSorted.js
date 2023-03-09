@@ -18,7 +18,7 @@ async function getDataFromDB() {
   }
 }
 
-export const TasksSorted = ({ type }) => {
+export const TasksSorted = ({ type, getDoneTasks, getAllTasks }) => {
   let todaysDate = new Date().toLocaleDateString();
   const { isModalOpen, isDeleted, isTaskChecked } = useAllContext();
   const [taskList, setTaskList] = useState([]);
@@ -34,15 +34,19 @@ export const TasksSorted = ({ type }) => {
         })
       : null;
 
-  useEffect(() => {
-    getDataFromDB().then((res) => setTaskList(res));
-  }, [isModalOpen, isDeleted, isTaskChecked]);
-
   const incompletedTasks = mainList.filter((task) => task.status !== true)
     .length;
   const completedTasks = mainList.filter((task) => task.status !== false)
     .length;
   const allTasks = mainList.length;
+
+  useEffect(() => {
+    getDataFromDB().then((res) => setTaskList(res));
+    if (allTasks && completedTasks) {
+      getAllTasks(allTasks);
+      getDoneTasks(completedTasks);
+    }
+  }, [isModalOpen, isDeleted, isTaskChecked]);
 
   return (
     <Wrapper>

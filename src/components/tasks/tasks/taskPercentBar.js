@@ -3,8 +3,8 @@ import { useState } from "react";
 import { useEffect } from "react";
 import styled from "styled-components";
 
-export const TaskPercentBar = () => {
-  const percentage = 10;
+export const TaskPercentBar = ({ allTasks, doneTasks }) => {
+  const percentage = (doneTasks / allTasks) * 100;
   return (
     <Wrapper>
       <div className="text">Task progress today</div>

@@ -5,24 +5,65 @@ import HabitForm from "../../forms-lists/HabitFolder/HabitForm";
 import HabitList from "../../forms-lists/HabitFolder/habitList";
 import HabitPercentBar from "./habitPercentBar";
 import HabitPagination from "./habitPagination";
+import { useAllContext } from "../../../context/indexContext";
+import { useEffect } from "react";
+import axios from "axios";
+
+async function getHabitDataFromDB() {
+  const url = "http://localhost:3001/api/habits";
+
+  try {
+    const {
+      data: { habits },
+    } = await axios.get(url);
+
+    return habits;
+  } catch (error) {
+    console.log("error", error);
+    return error;
+  }
+}
 
 export const MainHabits = () => {
+  const { isHabitModalOpen } = useAllContext();
   const [totalPages, setTotalPages] = useState(0);
+  const [habitList, setHabitList] = useState([]);
   const [formOpen, setFormOpen] = useState(false);
+  const [targetsDone, setTargetsDone] = useState(0);
   const [page, setPage] = useState(1);
   const [pageActive, setPageActive] = useState(page);
+
+  useEffect(() => {
+    getHabitDataFromDB().then((res) => {
+      setHabitList(res);
+    });
+  }, [isHabitModalOpen]);
+
+  const targetSumAll = habitList.reduce(
+    (total, current) => (total = total + parseInt(current.target)),
+    0
+  );
 
   const handleClick = (num) => {
     setPage(num);
     setPageActive(num);
   };
+
+  const getTargetsDone = (value) => {
+    setTargetsDone(value);
+  };
+
+  console.log(targetsDone);
   return (
     <Wrapper>
       <div className="title-row">
         <div className="title">Habits</div>
       </div>
       <div className="progress">
-        <HabitPercentBar />
+        <HabitPercentBar
+          targetSumAll={targetSumAll}
+          targetsDone={targetsDone}
+        />
       </div>
       <div className="habit-list">
         <HabitList
@@ -30,6 +71,7 @@ export const MainHabits = () => {
           page={page}
           totalPages={totalPages}
           setTotalPages={setTotalPages}
+          getTargetsDone={getTargetsDone}
         />
       </div>
       <div className="pagination">
