@@ -29,6 +29,7 @@ export const Tasks = () => {
       </div>
       <div className="task-list">
         <TaskListContent
+          ovType="overviewTasks"
           page={page}
           totalPages={totalPages}
           setTotalPages={setTotalPages}

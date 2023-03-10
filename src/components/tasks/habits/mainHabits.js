@@ -164,8 +164,10 @@ const Wrapper = styled.div`
 
   .btn-add {
     position: absolute;
+    display: flex;
+    align-items: center;
 
-    height: 4%;
+    height: 6%;
     width: fit-content;
 
     font-size: var(--text-size);
@@ -175,7 +177,7 @@ const Wrapper = styled.div`
 
     right: 10%;
 
-    bottom: 3%;
+    top: 2%;
 
     &:hover {
       opacity: 1;

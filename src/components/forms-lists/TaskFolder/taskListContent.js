@@ -23,6 +23,7 @@ function TaskListContent({
   page,
   setTotalPages,
   type,
+  ovType,
   formOpen,
   doneType,
   completedTasksList,
@@ -58,7 +59,8 @@ function TaskListContent({
       : [];
 
   const list =
-    doneType === "all" && selectedTasks.length > 0
+    (doneType === "all" || ovType === "overviewTasks") &&
+    selectedTasks.length > 0
       ? selectedTasks
       : doneType === "left" &&
         incompletedTasksList &&

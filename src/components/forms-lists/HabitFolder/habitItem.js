@@ -39,6 +39,9 @@ function HabitItem({ habit, formOpen }) {
     isHabitClicked,
     habitClicked,
     habitUnclicked,
+    isHabitDeleted,
+    habitDeleted,
+    habitNotDeleted,
   } = useAllContext();
 
   const [habitList, setHabitList] = useState([]);
@@ -77,6 +80,7 @@ function HabitItem({ habit, formOpen }) {
     checked,
     listBooleanLength,
     editHabitModalOpen,
+    isHabitDeleted,
   ]);
 
   const handleCheck = async (dayIndex) => {
@@ -143,12 +147,14 @@ function HabitItem({ habit, formOpen }) {
   };
 
   const deleteFromDB = async (idToDelete) => {
-    // context za delete i not deleted
+    habitDeleted();
     try {
+      habitNotDeleted();
       await axios.delete(`http://localhost:3001/api/habits/${idToDelete}`);
     } catch (error) {
       console.log(error);
     }
+    setOpenMenu(false);
   };
 
   return (
@@ -178,7 +184,15 @@ function HabitItem({ habit, formOpen }) {
               /{habit.target}
             </div>
           </div>
-          <div className="icon-box" ref={choiceRef}>
+          <div
+            className="icon-box"
+            ref={choiceRef}
+            style={
+              habitWidth >= 100
+                ? { pointerEvents: "none" }
+                : { pointerEvents: "auto" }
+            }
+          >
             <div className="icon">
               {" "}
               <HiEllipsisVertical
@@ -191,7 +205,14 @@ function HabitItem({ habit, formOpen }) {
               className="icon-choice-container"
               {...(openMenu ? { open: openMenu } : null)}
             >
-              <div className="choice" role="button">
+              <div
+                className="choice"
+                role="button"
+                onClick={() => {
+                  deleteFromDB(habit._id);
+                  setOpenMenu(false);
+                }}
+              >
                 Delete habit
               </div>
               <div
@@ -328,6 +349,7 @@ const Wrapper = styled.div`
 
     height: 80%;
     z-index: 3;
+    transition: all 0.3s;
 
     background-color: var(--mainblue-color);
     border-radius: 1rem;

@@ -9,10 +9,10 @@ const DeadlineSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    date: {
+    deadlineTime: {
       type: String,
     },
-    deadlineTime: {
+    deadlineDate: {
       type: String,
     },
     description: {

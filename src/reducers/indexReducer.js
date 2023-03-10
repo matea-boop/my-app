@@ -19,6 +19,10 @@ import {
   HABIT_MODAL_OPEN,
   HABIT_CLICKED,
   HABIT_UNCLICKED,
+  HABIT_DELETED,
+  HABIT_NOT_DELETED,
+  DEADLINE_MODAL_OPEN,
+  DEADLINE_MODAL_CLOSE,
 } from "../constants/actions";
 
 const reducer = (state, action) => {
@@ -81,6 +85,18 @@ const reducer = (state, action) => {
   }
   if (action.type === HABIT_UNCLICKED) {
     return { ...state, isHabitClicked: false };
+  }
+  if (action.type === HABIT_DELETED) {
+    return { ...state, isHabitDeleted: true };
+  }
+  if (action.type === HABIT_NOT_DELETED) {
+    return { ...state, isHabitDeleted: false };
+  }
+  if (action.type === DEADLINE_MODAL_OPEN) {
+    return { ...state, isDeadlineModalOpen: true };
+  }
+  if (action.type === DEADLINE_MODAL_CLOSE) {
+    return { ...state, isDeadlineModalOpen: false };
   }
 };
 

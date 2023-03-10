@@ -25,6 +25,7 @@ function HabitList({ page, setTotalPages, formOpen, getTargetsDone }) {
     habitModalOpen,
     habitModalClose,
     isHabitClicked,
+    isHabitDeleted,
   } = useAllContext();
   const [habitList, setHabitList] = useState([]);
   const habitsPerPage = 8;
@@ -35,7 +36,7 @@ function HabitList({ page, setTotalPages, formOpen, getTargetsDone }) {
       setHabitList(res);
     });
     getTargetsDone(targetSumDone);
-  }, [isHabitModalOpen, formOpen, isHabitClicked, habitList]);
+  }, [isHabitModalOpen, formOpen, isHabitClicked, habitList, isHabitDeleted]);
 
   const habitCheckboxesArray =
     habitList && habitList.length > 0
