@@ -87,7 +87,7 @@ export const MainHabits = () => {
           setFormOpen(true);
         }}
       >
-        Add new
+        Add Habit
       </div>
       {formOpen ? (
         <HabitForm

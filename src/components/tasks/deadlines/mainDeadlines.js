@@ -43,7 +43,7 @@ export const MainDeadlines = () => {
           setFormOpen(true);
         }}
       >
-        Add new
+        Add Deadline
       </div>
       {formOpen ? (
         <DeadlineForm

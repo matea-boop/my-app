@@ -144,7 +144,7 @@ export const MainTasks = () => {
           setFormOpen(true);
         }}
       >
-        Add new
+        Add Task
       </div>
       {formOpen ? (
         <TaskForm type="add" isModalOpen={formOpen} modalClose={setFormOpen} />
