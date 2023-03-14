@@ -5,25 +5,40 @@ import { toast } from "react-hot-toast";
 import axios from "axios";
 import { v4 as uuid } from "uuid";
 import moment from "moment/moment";
+import { useAllContext } from "../../../context/indexContext";
 
 function DeadlineForm({
   type,
+  deadline,
   isDeadlineModalOpen,
   deadlineModalOpen,
   deadlineModalClose,
 }) {
+  const { deadlineChanged, deadlineNotChanged } = useAllContext();
   const [title, setTitle] = useState("");
   const [valid, setValid] = useState(true);
   const [timeValid, setTimeValid] = useState(true);
   const [date, setDate] = useState(new Date().toLocaleDateString());
   const [time, setTime] = useState("");
-
   const [status, setStatus] = useState(false);
-
   const [description, setDescription] = useState("");
 
   const url = "http://localhost:3001/api/deadlines";
   const formRef = useRef();
+
+  useEffect(() => {
+    if (type === "edit" && deadline) {
+      setTitle(deadline.title);
+      setDate(deadline.deadlineDate);
+      setTime(deadline.deadlineTime);
+      setDescription(deadline.description);
+    } else {
+      setTitle("");
+      setDate("");
+      setTime("");
+      setDescription("");
+    }
+  }, [type, isDeadlineModalOpen]);
 
   const putDataToDB = async () => {
     const newData = {
@@ -67,7 +82,7 @@ function DeadlineForm({
 
   useEffect(() => {
     const ddmmyyyy = /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/;
-    let todaysDate = new Date().toLocaleDateString();
+    let todaysDate = moment(new Date()).format("DD/MM/YYYY");
 
     if (ddmmyyyy.test(date) && date >= todaysDate) {
       setValid(true);
@@ -86,7 +101,7 @@ function DeadlineForm({
     }
   }, [time]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     let todaysDate = new Date().toLocaleDateString();
     let todaysTime = moment().format("HH:mm");
@@ -109,6 +124,50 @@ function DeadlineForm({
       putDataToDB();
       toast.success("Deadline added successfully!");
       deadlineModalClose();
+    }
+
+    if (type === "edit") {
+      deadlineChanged();
+      if (deadline.title !== title) {
+        await axios.patch(
+          `http://localhost:3001/api/deadlines/${deadline._id}`,
+          {
+            title: title,
+          }
+        );
+        deadlineModalClose();
+        toast.success("Deadline Edited Successfully!");
+      } else if (deadline.description !== description) {
+        await axios.patch(
+          `http://localhost:3001/api/deadlines/${deadline._id}`,
+          {
+            description: description,
+          }
+        );
+        deadlineModalClose();
+        toast.success("Deadline Edited Successfully!");
+      } else if (deadline.deadlineDate !== date && valid) {
+        await axios.patch(
+          `http://localhost:3001/api/deadlines/${deadline._id}`,
+          {
+            deadlineDate: date,
+          }
+        );
+        deadlineModalClose();
+        toast.success("Deadline Edited Successfully!");
+      } else if (deadline.deadlineTime !== date && timeValid) {
+        await axios.patch(
+          `http://localhost:3001/api/deadlines/${deadline._id}`,
+          {
+            deadlineTime: time,
+          }
+        );
+        deadlineModalClose();
+        toast.success("Deadline Edited Successfully!");
+      } else {
+        toast.error("No changes made...");
+      }
+      deadlineNotChanged();
     }
   };
 

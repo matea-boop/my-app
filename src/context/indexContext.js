@@ -22,22 +22,33 @@ import {
   HABIT_NOT_DELETED,
   DEADLINE_MODAL_OPEN,
   DEADLINE_MODAL_CLOSE,
+  DEADLINE_DELETED,
+  DEADLINE_NOT_DELETED,
+  DEADLINE_EDITED,
+  DEADLINE_NOT_EDITED,
 } from "../constants/actions";
 import React, { useContext, useReducer } from "react";
 
 const initialState = {
   isBtnOpen: false,
   isModalOpen: false,
+
   isEventModalOpen: false,
+
   isDeleted: false,
   isTaskChecked: false,
   isSubtaskStatusChanged: false,
+
   isFileDeleted: false,
   isFileModalOpen: false,
+
   isHabitModalOpen: false,
   isHabitClicked: false,
   isHabitDeleted: false,
+
   isDeadlineModalOpen: false,
+  isDeadlineChanged: false,
+  isDeadlineDeleted: false,
 };
 
 const AllContext = React.createContext();
@@ -128,7 +139,18 @@ export const AddBtnProvider = ({ children }) => {
   const deadlineModalClose = () => {
     dispatch({ type: DEADLINE_MODAL_CLOSE });
   };
-
+  const deadlineDeleted = () => {
+    dispatch({ type: DEADLINE_DELETED });
+  };
+  const deadlineNotDeleted = () => {
+    dispatch({ type: DEADLINE_NOT_DELETED });
+  };
+  const deadlineChanged = () => {
+    dispatch({ type: DEADLINE_EDITED });
+  };
+  const deadlineNotChanged = () => {
+    dispatch({ type: DEADLINE_NOT_EDITED });
+  };
   return (
     <AllContext.Provider
       value={{
@@ -157,6 +179,10 @@ export const AddBtnProvider = ({ children }) => {
         habitNotDeleted,
         deadlineModalClose,
         deadlineModalOpen,
+        deadlineDeleted,
+        deadlineNotDeleted,
+        deadlineChanged,
+        deadlineNotChanged,
       }}
     >
       {children}

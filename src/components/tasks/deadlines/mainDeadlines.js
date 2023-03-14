@@ -29,7 +29,6 @@ export const MainDeadlines = () => {
         />
       </div>
       <div className="pagination">
-        mjau
         {/* <HabitPagination
           totalPages={totalPages}
           handleClick={handleClick}
@@ -43,7 +42,7 @@ export const MainDeadlines = () => {
           setFormOpen(true);
         }}
       >
-        Add Deadline
+        Add New
       </div>
       {formOpen ? (
         <DeadlineForm
@@ -90,10 +89,10 @@ const Wrapper = styled.div`
   .deadline-list {
     position: absolute;
 
-    height: 75%;
+    height: 80%;
     width: 100%;
     left: 10%;
-    top: 17%;
+    top: 10%;
   }
 
   .pagination {

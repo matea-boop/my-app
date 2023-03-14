@@ -23,6 +23,10 @@ import {
   HABIT_NOT_DELETED,
   DEADLINE_MODAL_OPEN,
   DEADLINE_MODAL_CLOSE,
+  DEADLINE_DELETED,
+  DEADLINE_NOT_DELETED,
+  DEADLINE_EDITED,
+  DEADLINE_NOT_EDITED,
 } from "../constants/actions";
 
 const reducer = (state, action) => {
@@ -97,6 +101,18 @@ const reducer = (state, action) => {
   }
   if (action.type === DEADLINE_MODAL_CLOSE) {
     return { ...state, isDeadlineModalOpen: false };
+  }
+  if (action.type === DEADLINE_DELETED) {
+    return { ...state, isDeadlineDeleted: true };
+  }
+  if (action.type === DEADLINE_NOT_DELETED) {
+    return { ...state, isDeadlineDeleted: false };
+  }
+  if (action.type === DEADLINE_EDITED) {
+    return { ...state, isDeadlineChanged: true };
+  }
+  if (action.type === DEADLINE_NOT_EDITED) {
+    return { ...state, isDeadlineChanged: false };
   }
 };
 

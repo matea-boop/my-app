@@ -25,11 +25,11 @@ export const App = () => {
 
             <Routes>
               <Route exact path="/*" element={<Overview />}></Route>
-              <Route exact path="/Calendar" element={<Calendar />}></Route>
-              <Route exact path="/Notebook" element={<Notebook />}></Route>
-              <Route exact path="/Tasks" element={<Tasks />}></Route>
-              <Route exact path="/Statistics" element={<Statistics />}></Route>
-              <Route exact path="/Settings" element={<Settings />}></Route>
+              <Route path="/Calendar" element={<Calendar />}></Route>
+              <Route path="/Notebook" element={<Notebook />}></Route>
+              <Route path="/Tasks" element={<Tasks />}></Route>
+              <Route path="/Statistics" element={<Statistics />}></Route>
+              <Route path="/Settings" element={<Settings />}></Route>
             </Routes>
           </Router>
         </div>

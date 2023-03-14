@@ -1,15 +1,15 @@
-import moment from "moment/moment";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import styled from "styled-components";
 import { TfiAngleLeft } from "react-icons/tfi";
 import { TfiAngleRight } from "react-icons/tfi";
+import { MdCalendarViewWeek } from "react-icons/md";
+import { MdCalendarViewMonth } from "react-icons/md";
+import { useState } from "react";
+import moment from "moment";
 
-export const NoteCalendar = ({ getDate }) => {
-  const today = moment(new Date()).format("DD/MM/YYYY");
-  const [dateClicked, setDateClicked] = useState(today);
+export const WeekCalendar = ({ getType, type }) => {
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
-  const [currentDate, setCurrentDate] = useState(new Date().getDate());
   const curr = new Date();
   const firstD = new Date(curr.setDate(curr.getDate() - curr.getDay()));
   const lastD = new Date(curr.setDate(curr.getDate() - curr.getDay() + 6));
@@ -79,106 +79,97 @@ export const NoteCalendar = ({ getDate }) => {
     setCurrentWeek(currWeek);
   };
 
-  useEffect(() => {
-    getDate(dateClicked);
-    console.log(dateClicked);
-  }, [dateClicked]);
-
+  console.log(currentWeek);
   return (
     <Wrapper>
-      <TfiAngleLeft className="arrow" onClick={prevWeek} />
-      <div className="dates">
-        {currentWeek.map((day) => {
-          return (
-            <div
-              className={
-                moment(new Date(day.time).getTime()).format("DD/MM/YYYY") ===
-                today
-                  ? "date active"
-                  : "date"
-              }
-              onClick={() =>
-                setDateClicked(
-                  moment(new Date(day.time).getTime()).format("DD/MM/YYYY")
-                )
-              }
-              id={
-                moment(new Date(day.time).getTime()).format("DD/MM/YYYY") ===
-                dateClicked
-                  ? "act"
-                  : ""
-              }
-              upperDate={
-                day.time >
-                new Date(currentYear, currentMonth, currentDate + 1).getTime()
-                  ? "upper"
-                  : ""
-              }
-            >
-              <div>{moment(new Date(day.time).getTime()).format("ddd")}</div>
-              <div>{day.date}</div>
-            </div>
-          );
-        })}
+      <div className="top-container">
+        <div className="header-date-arrows">
+          <TfiAngleLeft className="arrow" onClick={prevWeek} />
+          <div className="title">
+            {currentWeek && currentWeek.length > 0 ? currentWeek[0].date : null}
+            . -&nbsp;
+            {currentWeek && currentWeek.length > 0 ? currentWeek[6].date : null}
+            . &nbsp;of {moment(new Date(curr)).format("MMMM")}
+          </div>
+          <TfiAngleRight className="arrow" onClick={nextWeek} />
+        </div>
+        <div className="week-month-view">
+          <MdCalendarViewWeek
+            style={
+              type === "week"
+                ? { color: "var(--mainblue-color)", cursor: "pointer" }
+                : { color: "var(--text-color)", cursor: "pointer" }
+            }
+            onClick={() => getType("week")}
+          />
+          <MdCalendarViewMonth
+            style={
+              type === "month"
+                ? { color: "var(--mainblue-color)", cursor: "pointer" }
+                : { color: "var(--text-color)", cursor: "pointer" }
+            }
+            onClick={() => getType("month")}
+          />
+        </div>
       </div>
-      <TfiAngleRight className="arrow" onClick={nextWeek} />
+      <div className="top-line"></div>
     </Wrapper>
   );
 };
-export default NoteCalendar;
-
+export default WeekCalendar;
 const Wrapper = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  position: relative;
+  height: 100%;
+  width: 100%;
 
-  height: 8%;
-  width: 90%;
+  border-radius: 0.3rem;
+  background-color: var(--sidebar-color);
 
-  .dates {
+  .top-container {
+    position: aboslute;
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between;
 
-    width: 90%;
+    width: 100%;
+    height: 15%;
 
-    padding: 0 1rem 0 1rem;
+    padding-left: 2rem;
+    padding-right: 2rem;
   }
 
-  .date {
+  .header-date-arrows {
     display: flex;
-    flex-direction: column;
-    justify-content: center;
+    flex-direction: row;
     align-items: center;
-    text-align: center;
+    justify-content: space-between;
 
-    font-size: var(--text-size);
-    text-transform: uppercase;
-    font-weight: lighter;
-    color: var(--text-color);
-    cursor: pointer;
-    opacity: 0.5;
+    width: 40%;
   }
 
   .arrow {
     cursor: pointer;
-    width: 5%;
   }
 
-  .active {
-    color: var(--mainorange-color);
-    font-weight: bold;
-    opacity: 1;
+  .top-line {
+    border: 1px solid var(--text-color);
+    width: 100%;
+    opacity: 0.5;
+    position: absolute;
   }
 
-  #act {
-    opacity: 1;
-    color: var(--mainorange-color);
-  }
+  .week-month-view {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
 
-  [upperDate="upper"] {
-    opacity: 0.3;
-    pointer-events: none;
+    width: 8%;
+    font-size: 2rem;
+
+    margin-bottom: 1rem;
+    margin-top: 0.5rem;
+    margin-right: 1rem;
   }
 `;

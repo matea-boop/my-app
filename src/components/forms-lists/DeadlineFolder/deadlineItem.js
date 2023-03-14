@@ -2,9 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { useAllContext } from "../../../context/indexContext";
 import axios from "axios";
-import { FiSquare } from "react-icons/fi";
 import { HiEllipsisVertical } from "react-icons/hi2";
-import { FiCheckSquare } from "react-icons/fi";
 import DeadlineForm from "./DeadlineForm";
 
 async function getDeadlineDataFromDB() {
@@ -22,7 +20,12 @@ async function getDeadlineDataFromDB() {
 }
 
 function DeadlineItem({ deadline }) {
-  const { isDeadlineModalOpen } = useAllContext();
+  const {
+    isDeadlineModalOpen,
+    isDeadlineDeleted,
+    deadlineDeleted,
+    deadlineNotDeleted,
+  } = useAllContext();
 
   const [deadlineList, setDeadlineList] = useState([]);
   const [openMenu, setOpenMenu] = useState(false);
@@ -32,38 +35,35 @@ function DeadlineItem({ deadline }) {
   const today = curr.getDay();
   const choiceRef = useRef();
 
-  //   useEffect(() => {
-  //     let handler = (event) => {
-  //       if (!choiceRef.current.contains(event.target)) {
-  //         setOpenMenu(false);
-  //       }
-  //     };
+  useEffect(() => {
+    let handler = (event) => {
+      if (!choiceRef.current.contains(event.target)) {
+        setOpenMenu(false);
+      }
+    };
 
-  //     document.addEventListener("mousedown", handler);
-  //     return () => {
-  //       document.removeEventListener("mousedown", handler);
-  //     };
-  //   }, []);
+    document.addEventListener("mousedown", handler);
+    return () => {
+      document.removeEventListener("mousedown", handler);
+    };
+  }, []);
 
   useEffect(() => {
     getDeadlineDataFromDB().then((res) => setDeadlineList(res));
-  }, [isDeadlineModalOpen]);
+  }, [isDeadlineModalOpen, isDeadlineDeleted]);
 
-  //   const deleteFromDB = async (idToDelete) => {
-
-  //     try {
-
-  //       await axios.delete(`http://localhost:3001/api/habits/${idToDelete}`);
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-
-  //   };
+  const deleteFromDB = async (idToDelete) => {
+    deadlineDeleted();
+    try {
+      await axios.delete(`http://localhost:3001/api/deadlines/${idToDelete}`);
+    } catch (error) {
+      console.log(error);
+    }
+    deadlineNotDeleted();
+  };
 
   return (
-    <Wrapper
-    // style={habit.status ? { opacity: "0.5" } : { opacity: "1" }}
-    >
+    <Wrapper>
       <div
         className="type-line"
         style={{ border: `2px solid var(--mainblue-color)` }}
@@ -72,12 +72,47 @@ function DeadlineItem({ deadline }) {
         <p className="title">{deadline.title}</p>
       </div>
 
+      <div className="icon-container">
+        <div ref={choiceRef} className="relat">
+          <div className="icon">
+            {" "}
+            <HiEllipsisVertical onClick={() => setOpenMenu(!openMenu)} />
+          </div>
+
+          <div
+            className="icon-choice-container"
+            {...(openMenu ? { open: openMenu } : null)}
+          >
+            <div
+              className="choice"
+              onClick={() => {
+                setOpenMenu(false);
+                deleteFromDB(deadline._id);
+              }}
+              role="button"
+            >
+              Delete
+            </div>
+            <div
+              className="choice"
+              onClick={() => {
+                setOpenMenu(false);
+                setEditDeadlineModalOpen(true);
+              }}
+              role="button"
+            >
+              Edit
+            </div>
+          </div>
+        </div>
+      </div>
+
       {editDeadlineModalOpen ? (
         <DeadlineForm
           type="edit"
           deadline={deadline}
-          isHabitModalOpen={editDeadlineModalOpen}
-          habitModalClose={setEditDeadlineModalOpen}
+          isDeadlineModalOpen={editDeadlineModalOpen}
+          deadlineModalClose={setEditDeadlineModalOpen}
         />
       ) : null}
     </Wrapper>
@@ -96,7 +131,7 @@ const Wrapper = styled.div`
 
   margin-bottom: 3%;
 
-  height: 13%;
+  height: 8%;
   width: 100%;
 
   .type-line {
@@ -113,7 +148,7 @@ const Wrapper = styled.div`
     justify-content: space-between;
     width: 90%;
 
-    padding: 0 0.5rem 0.5rem 1rem;
+    padding-left: 1rem;
   }
 
   .title {
@@ -122,12 +157,21 @@ const Wrapper = styled.div`
     color: var(--text-color);
   }
 
-  .icon {
+  .icon-container {
+    position: absolute;
     display: flex;
     align-items: center;
     justify-content: center;
 
+    right: 10%;
+
     font-size: 1.2rem;
+  }
+
+  .icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     cursor: pointer;
     opacity: 0.5;
 

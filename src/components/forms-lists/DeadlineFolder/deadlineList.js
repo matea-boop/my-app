@@ -24,6 +24,8 @@ function DeadlineList({}) {
     isDeadlineModalOpen,
     deadlineModalOpen,
     deadlineModalClose,
+    isDeadlineChanged,
+    isDeadlineDeleted,
   } = useAllContext();
   const [deadlineList, setDeadlineList] = useState([]);
   const habitsPerPage = 8;
@@ -34,7 +36,7 @@ function DeadlineList({}) {
     getDeadlineDataFromDB().then((res) => {
       setDeadlineList(res);
     });
-  }, [isDeadlineModalOpen]);
+  }, [isDeadlineModalOpen, isDeadlineChanged, isDeadlineDeleted]);
   console.log(deadlineList);
   const selectedDeadlines =
     deadlineList && deadlineList.length > 0
