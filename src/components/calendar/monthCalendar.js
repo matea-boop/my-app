@@ -8,6 +8,7 @@ import { useState } from "react";
 import axios from "axios";
 import moment from "moment/moment";
 import { useAllContext } from "../../context/indexContext";
+import TodayDay from "./todayDay";
 
 const daysOfWeek = [
   "Sunday",
@@ -71,7 +72,14 @@ async function getEventDataFromDB() {
   }
 }
 
-export const MonthCalendar = ({ getType, type }) => {
+export const MonthCalendar = ({
+  getType,
+  type,
+  getDate,
+
+  incompletedTasks,
+  selectedEventList,
+}) => {
   const { isEventModalOpen } = useAllContext();
   const [eventList, setEventList] = useState([]);
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
@@ -141,6 +149,10 @@ export const MonthCalendar = ({ getType, type }) => {
     }
   };
 
+  useEffect(() => {
+    getDate(dateClicked);
+  }, [dateClicked]);
+
   return (
     <Wrapper>
       <div className="top-container">
@@ -153,14 +165,19 @@ export const MonthCalendar = ({ getType, type }) => {
         </div>
         <div className="week-month-view">
           <MdCalendarViewWeek
+            className="icon"
             style={
               type === "week"
-                ? { color: "var(--mainblue-color)", cursor: "pointer" }
+                ? {
+                    color: "var(--mainblue-color)",
+                    cursor: "pointer",
+                  }
                 : { color: "var(--text-color)", cursor: "pointer" }
             }
             onClick={() => getType("week")}
           />
           <MdCalendarViewMonth
+            className="icon"
             style={
               type === "month"
                 ? { color: "var(--mainblue-color)", cursor: "pointer" }
@@ -170,7 +187,8 @@ export const MonthCalendar = ({ getType, type }) => {
           />
         </div>
       </div>
-      <div className="top-line"></div>
+
+      {/* <div className="motnh-today-container"> */}
       <div className="main-container">
         <div className="days">
           {getSortedDays().map((day, i) => (
@@ -191,7 +209,6 @@ export const MonthCalendar = ({ getType, type }) => {
         >
           {prevMonthDates.map((day) => (
             <div className="day-dot" id="inactive-line" onClick={prevMonth}>
-              <div className="day-line"></div>
               <div className="day-month inactive">{day}</div>
               {/* <div className="dots"></div> */}
             </div>
@@ -201,17 +218,6 @@ export const MonthCalendar = ({ getType, type }) => {
               <div
                 id="day"
                 data-day={day}
-                x={
-                  currentMonth === new Date().getMonth() &&
-                  currentYear === new Date().getFullYear() &&
-                  day === new Date().getDate() &&
-                  dateClicked !==
-                    moment(new Date(currentYear, currentMonth, day)).format(
-                      "DD/MM/YYYY"
-                    )
-                    ? "today-day"
-                    : ""
-                }
                 className={
                   selectedDate !== null
                     ? currentMonth === new Date().getMonth() &&
@@ -231,30 +237,6 @@ export const MonthCalendar = ({ getType, type }) => {
                   setDateClicked(moment(date).format("DD/MM/YYYY"));
                 }}
               >
-                <div
-                  style={
-                    currentMonth === new Date().getMonth() &&
-                    currentYear === new Date().getFullYear() &&
-                    day === new Date().getDate()
-                      ? { borderTop: "1px solid var(--mainorange-color)" }
-                      : new Date(selectedDate).getTime() ===
-                        new Date(
-                          new Date(currentYear, currentMonth, day)
-                        ).getTime()
-                      ? { borderTop: "1px solid var(--mainblue-color)" }
-                      : { borderTop: "1px solid var(--text-color)" }
-                  }
-                  className={
-                    selectedDate !== null
-                      ? new Date(selectedDate).getTime() ===
-                        new Date(
-                          new Date(currentYear, currentMonth, day)
-                        ).getTime()
-                        ? "day-line active-line"
-                        : "day-line "
-                      : null
-                  }
-                ></div>
                 <div className="day-month">{day}</div>
                 <div className="event-list">
                   {eventList && eventList.length > 0
@@ -324,20 +306,26 @@ export const MonthCalendar = ({ getType, type }) => {
           {lengthSum > 35
             ? nextMonthDates.map((day) => (
                 <div className="day-dot" id="inactive-line" onClick={nextMonth}>
-                  <div className="day-line"></div>
                   <div className="day-month inactive">{day}</div>
                   {/* <div className="dots"></div> */}
                 </div>
               ))
             : strecthArray.map((day) => (
                 <div className="day-dot" id="inactive-line" onClick={nextMonth}>
-                  <div className="day-line"></div>
                   <div className="day-month inactive">{day}</div>
                   <div className="dots"></div>
                 </div>
               ))}
         </div>
       </div>
+      {/* <div className="today-day">
+          <TodayDay
+            date={dateClicked}
+            incompletedTasks={incompletedTasks}
+            selectedEventList={selectedEventList}
+          />
+        </div> */}
+      {/* </div> */}
     </Wrapper>
   );
 };
@@ -355,17 +343,10 @@ const Wrapper = styled.div`
     opacity: 0.3;
   }
 
-  // [x="today-day"] {
-  //   position: absolute;
-  //   // z-index: -1;
-
-  //   // height: 100%;
-  //   // width: 100%;
-
-  //   // content: "";
-
-  //   border-top: 1px solid var(--mainblue-color);
-  // }
+  .icon {
+    stroke-width: 1;
+    stroke: var(--sidebar-color);
+  }
 
   .event-list {
     position: absolute;
@@ -395,7 +376,7 @@ const Wrapper = styled.div`
     width: 1.2rem;
 
     border-radius: 50%;
-    background-color: rgba(232, 244, 250, 0);
+    background-color: rgba(232, 244, 250, 0.1);
   }
 
   .event-title {
@@ -405,7 +386,7 @@ const Wrapper = styled.div`
   }
 
   #week-today-day {
-    color: var(--mainblue-color);
+    color: var(--mainorange-color);
     font-weight: bold;
     opacity: 1;
   }
@@ -422,6 +403,8 @@ const Wrapper = styled.div`
 
     padding-left: 2rem;
     padding-right: 2rem;
+
+    border-bottom: 1px solid rgba(232, 244, 250, 0.5);
   }
 
   .header-date-arrows {
@@ -435,13 +418,6 @@ const Wrapper = styled.div`
 
   .arrow {
     cursor: pointer;
-  }
-
-  .top-line {
-    border: 1px solid var(--text-color);
-    width: 100%;
-    opacity: 0.5;
-    position: absolute;
   }
 
   .week-month-view {
@@ -459,15 +435,33 @@ const Wrapper = styled.div`
     margin-right: 1rem;
   }
 
+  .motnh-today-container {
+    position: absolute;
+    display: flex;
+    flex-direction: row;
+    align-items: space-between;
+
+    width: 98%;
+    height: 80%;
+    left: 2%;
+    top: 18%;
+  }
+  .today-day {
+    position: absolute;
+    width: 30%;
+    height: 100%;
+    right: 0;
+  }
+
   .main-container {
     position: aboslute;
     display: flex;
     flex-direction: column;
     align-items: space-between;
 
-    width: 90%;
+    width: 98%;
     height: 80%;
-    left: 5%;
+    left: 2%;
     top: 18%;
 
     background-color: var(--sidebar-color);
@@ -493,6 +487,7 @@ const Wrapper = styled.div`
     opacity: 1;
 
     font-size: 0.8rem;
+    font-weight: lighter;
     text-transform: uppercase;
   }
   .days-month {
@@ -528,10 +523,9 @@ const Wrapper = styled.div`
     height: 100%;
     width: 100%;
 
-    background: linear-gradient(
-      rgba(64, 94, 255, 0.4) 10%,
-      rgba(255, 255, 255, 0) 100%
-    );
+    border-radius: var(--border-radius);
+
+    background: rgba(64, 94, 255, 0.4);
 
     content: "";
   }
@@ -542,10 +536,9 @@ const Wrapper = styled.div`
     height: 100%;
     width: 100%;
 
-    background: linear-gradient(
-      rgba(236, 165, 66, 0.4) 10%,
-      rgba(255, 255, 255, 0) 100%
-    );
+    border-radius: var(--border-radius);
+
+    background: rgba(236, 165, 66, 0.4);
 
     content: "";
   }
@@ -573,22 +566,9 @@ const Wrapper = styled.div`
 
     height: 95%;
     width: 90%;
+    border-radius: var(--border-radius);
+    background-color: var(--box-color);
 
     cursor: pointer;
-  }
-
-  .day-line {
-    z-index: 1;
-    position: absolute;
-
-    border-top: 1px solid var(--text-color);
-    opacity: 0.5;
-
-    width: 100%;
-    top: 0;
-  }
-
-  .active-line {
-    border-top: 1px solid var(--mainorange-color);
   }
 `;

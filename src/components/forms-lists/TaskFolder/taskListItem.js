@@ -147,7 +147,19 @@ function TaskItem({ task, type }) {
   return (
     <Wrapper
       id={type === "mainTask" ? "main" : "task"}
-      style={{ height: `${itemHeight}%`, opacity: `${itemOpacity}` }}
+      style={
+        type === "main-calendar"
+          ? {
+              backgroundColor: "rgba(64, 94, 255, 0.2)",
+              height: "50%",
+              opacity: `${itemOpacity}`,
+            }
+          : {
+              backgroundColor: "var(--box-color)",
+              height: `${itemHeight}%`,
+              opacity: `${itemOpacity}`,
+            }
+      }
       ref={divRef}
     >
       <div className="task-details">
@@ -268,7 +280,13 @@ const Wrapper = styled.div`
   background-color: var(--box-color);
   border-radius: var(--border-radius);
 
+  width: 100%;
+
   margin-bottom: 3%;
+
+  #main-calendar {
+    background-color: var(--sidebar-color);
+  }
 
   .task-details {
     display: flex;

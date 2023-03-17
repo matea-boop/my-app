@@ -27,6 +27,10 @@ import {
   DEADLINE_NOT_DELETED,
   DEADLINE_EDITED,
   DEADLINE_NOT_EDITED,
+  EVENT_DELETED,
+  EVENT_NOT_DELETED,
+  EVENT_EDITED,
+  EVENT_NOT_EDITED,
 } from "../constants/actions";
 
 const reducer = (state, action) => {
@@ -59,6 +63,18 @@ const reducer = (state, action) => {
   }
   if (action.type === EVENT_MODAL_CLOSE) {
     return { ...state, isEventModalOpen: false };
+  }
+  if (action.type === EVENT_DELETED) {
+    return { ...state, isEventDeleted: true };
+  }
+  if (action.type === EVENT_NOT_DELETED) {
+    return { ...state, isEventDeleted: false };
+  }
+  if (action.type === EVENT_EDITED) {
+    return { ...state, isEventChanged: true };
+  }
+  if (action.type === EVENT_NOT_EDITED) {
+    return { ...state, isEventChanged: false };
   }
   if (action.type === SUBTASK_STATUS_TRUE) {
     return { ...state, isSubtaskStatusChanged: true };

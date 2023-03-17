@@ -5,13 +5,16 @@ import { toast } from "react-hot-toast";
 import axios from "axios";
 import { v4 as uuid } from "uuid";
 import moment from "moment/moment";
+import { useAllContext } from "../../../context/indexContext";
 
 function EventForm({
   type,
+  event,
   isEventModalOpen,
   eventModalOpen,
   eventModalClose,
 }) {
+  const { eventChanged, eventNotChanged } = useAllContext();
   const [typeChosen, setTypeChosen] = useState("");
   const [title, setTitle] = useState("");
   const [valid, setValid] = useState(true);
@@ -51,6 +54,22 @@ function EventForm({
       console.log("error", error);
     }
   };
+
+  useEffect(() => {
+    if (type === "edit" && event) {
+      setTitle(event.title);
+      setTypeChosen(event.actType);
+      setStartTime(event.startTime);
+      setEndTime(event.endTime);
+      setDescription(event.description);
+    } else {
+      setTitle("");
+      setTypeChosen("");
+      setStartTime("");
+      setEndTime("");
+      setDescription("");
+    }
+  }, [type, isEventModalOpen]);
 
   useEffect(() => {
     const handler = (event) => {
@@ -95,7 +114,7 @@ function EventForm({
     }
   }, [startTime, endTime, date]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     let todaysDate = new Date().toLocaleDateString();
     let todaysTime = moment().format("HH:mm");
@@ -133,6 +152,34 @@ function EventForm({
       toast.success("Event added successfully!");
       eventModalClose();
     }
+
+    if (type === "edit") {
+      eventNotChanged();
+      if (
+        event.startTime !== startTime ||
+        event.endTime !== endTime ||
+        event.title !== title ||
+        event.actType !== typeChosen ||
+        event.date !== date ||
+        event.description !== description
+      ) {
+        await axios.patch(`http://localhost:3001/api/events/${event._id}`, {
+          startTime: startTime,
+          endTime: endTime,
+          title: title,
+          actType: typeChosen,
+          date: date,
+          description: description,
+        });
+
+        toast.success("Event edited successfully!");
+      } else {
+        toast.error("No changes made...");
+      }
+    }
+    eventModalClose();
+
+    eventChanged();
   };
 
   return (

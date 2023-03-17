@@ -1,11 +1,11 @@
 import moment from "moment/moment";
 import React from "react";
 import { useState, useEffect } from "react";
-import { HiEllipsisVertical } from "react-icons/hi2";
 import styled from "styled-components";
-import { useAllContext } from "../../../context/indexContext";
+import { useAllContext } from "../../context/indexContext";
+import { HiEllipsisVertical } from "react-icons/hi2";
+import EventForm from "../forms-lists/EventFolder/EventForm";
 import axios from "axios";
-import EventForm from "./EventForm";
 import { useRef } from "react";
 
 const activityType = [
@@ -16,31 +16,22 @@ const activityType = [
 ];
 
 export const EventItem = ({
-  title,
-  date,
   event,
-  startTime,
-  endTime,
-  actType,
-  description,
   timeLine,
+  type,
+  getHover,
+  getEvent,
+  getTopMargin,
+  getColor,
 }) => {
-  const {
-    eventModalClose,
-    isEventDeleted,
-    eventDeleted,
-    eventNotDeleted,
-    isEventChanged,
-    eventChanged,
-    eventNotChanged,
-  } = useAllContext();
+  const { eventDeleted, eventNotDeleted } = useAllContext();
   const [openMenu, setOpenMenu] = useState(false);
   const [editEventModalOpen, setEditEventModalOpen] = useState(false);
   const [color, setColor] = useState("");
   const [hover, setHover] = useState(false);
   const [pixel, setPixel] = useState(0);
   const timeDifference = moment
-    .utc(moment(endTime, "HH:mm").diff(moment(startTime, "HH:mm")))
+    .utc(moment(event.endTime, "HH:mm").diff(moment(event.startTime, "HH:mm")))
     .format("HH:mm");
   const timeInPixels = moment.duration(timeDifference).asMinutes();
 
@@ -61,16 +52,30 @@ export const EventItem = ({
 
   useEffect(() => {
     activityType.map((type) =>
-      type.actName === actType ? setColor(type.color) : null
+      type.actName === event.actType ? setColor(type.color) : null
     );
     if (timeLine && timeLine.length > 0) {
       timeLine.map((time, index) => {
-        if (time === startTime) {
+        if (time === event.startTime) {
           setPixel(index);
         }
       });
     }
   }, [timeInPixels]);
+
+  useEffect(() => {
+    const top = pixel - 100 + 6 + timeInPixels / 2;
+    getEvent(event);
+    getHover(hover);
+    getTopMargin(top);
+    getColor(color);
+  }, [hover]);
+
+  useEffect(() => {
+    if (openMenu || editEventModalOpen) {
+      setHover(false);
+    }
+  }, [openMenu, hover, editEventModalOpen]);
 
   const deleteFromDB = async (idToDelete) => {
     eventDeleted();
@@ -89,39 +94,46 @@ export const EventItem = ({
       onMouseOver={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
       style={
-        hover && description !== "" && timeInPixels < 80
+        type === "week-calendar"
           ? {
-              minHeight: "40px",
-              height: `${timeInPixels + 30}px`,
-              marginTop: `${pixel}px`,
-              transition: "all 0.2s",
-            }
-          : {
+              position: "absolute",
               minHeight: "40px",
               height: `${timeInPixels}px`,
-              marginTop: `${pixel}px`,
+              marginTop: `${pixel + 6}px`,
+              marginLeft: "0.2rem",
+              marginRight: "0.2rem",
+              background: "var(--box-color)",
+              border: "2px solid var(--sidebar-color)",
+
+              width: "calc(100% / 7)",
+              // transition: "all 0.2s",
+            }
+          : {
+              position: "absolute",
+              height: "20%",
+              width: "100%",
+              marginBottom: "0.3rem",
+              background: "rgba(236, 165, 66, 0.2)",
             }
       }
     >
-      <div className="type-line" style={{ border: `2px solid ${color}` }}></div>
+      <div
+        className="type-line"
+        style={
+          type === "week-calendar"
+            ? { border: `2px solid ${color}` }
+            : { border: `2px solid var(--text-color)` }
+        }
+      ></div>
       <div className="event-content">
-        <div
-          className="shorter"
-          style={
-            timeInPixels < 40
-              ? { flexDirection: "row" }
-              : { flexDirection: "column" }
-          }
-        >
+        <div className="shorter">
           <div className="event-time">
-            {startTime} - {endTime}
+            {event.startTime} - {event.endTime}
           </div>
-          <div className="event-title">{title}</div>
-        </div>
-        <div className={description !== "" ? "event-desc" : ""}>
-          {description}
+          <div className="event-title">{event.title}</div>
         </div>
       </div>
+
       <div className="icon-box" ref={choiceRef}>
         <div className="icon">
           {" "}
@@ -173,19 +185,18 @@ export const EventItem = ({
 export default EventItem;
 
 const Wrapper = styled.div`
-  position: absolute;
   display: flex;
   flex-direction: row;
   align-items: center;
 
-  width: 100%;
-
-  background: var(--box-color);
   border-radius: var(--border-radius);
-  box-shadow: 0px 0px 12px 12px rgba(21, 21, 21, 0.7);
 
   .event-desc {
     display: none;
+  }
+
+  .type-line {
+    height: 80%;
   }
 
   &:hover {
@@ -208,8 +219,6 @@ const Wrapper = styled.div`
     position: relative;
     border-radius: 10px;
 
-    height: 80%;
-
     margin: 0.5rem 0.8rem 0.5rem 0.5rem;
   }
 
@@ -223,7 +232,7 @@ const Wrapper = styled.div`
   }
 
   .event-time {
-    font-size: var(--text-size);
+    font-size: 0.6rem;
     font-weight: lighter;
     opacity: 0.5;
   }

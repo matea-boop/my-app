@@ -20,6 +20,7 @@ export const EventList = ({ eventList, date, timeLine }) => {
               className="item"
               timeLine={timeLine}
               key={index}
+              event={event}
               title={event.title}
               date={event.date}
               startTime={event.startTime}

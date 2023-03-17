@@ -113,14 +113,14 @@ function HabitForm({
           checkboxes: weekDays,
         });
         habitModalClose();
-        toast.success("Task Edited Successfully!");
+        toast.success("Habit Edited Successfully!");
       } else if (habit.target !== target) {
         await axios.patch(`http://localhost:3001/api/habits/${habit._id}`, {
           target: target,
           checkboxes: weekDays,
         });
         habitModalClose();
-        toast.success("Task edited successfully!");
+        toast.success("Habit edited successfully!");
       } else {
         toast.error("No changes made...");
       }

@@ -22,7 +22,7 @@ async function getEventDataFromDB() {
 }
 
 export const VerticalTimeline = ({ date }) => {
-  const { isEventModalOpen } = useAllContext();
+  const { isEventModalOpen, isEventDeleted, isEventChanged } = useAllContext();
   const timeLine = [];
   const selectedList = [];
   const [loading, setLoading] = useState(true);
@@ -36,7 +36,7 @@ export const VerticalTimeline = ({ date }) => {
       setEventList(res);
       setLoading(false);
     });
-  }, [date, isEventModalOpen]);
+  }, [date, isEventModalOpen, isEventDeleted, isEventChanged]);
 
   const x =
     eventList && eventList.length > 0

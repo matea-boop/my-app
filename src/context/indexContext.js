@@ -26,6 +26,9 @@ import {
   DEADLINE_NOT_DELETED,
   DEADLINE_EDITED,
   DEADLINE_NOT_EDITED,
+  EVENT_EDITED,
+  EVENT_NOT_EDITED,
+  EVENT_DELETED,
 } from "../constants/actions";
 import React, { useContext, useReducer } from "react";
 
@@ -34,6 +37,8 @@ const initialState = {
   isModalOpen: false,
 
   isEventModalOpen: false,
+  isEventChanged: false,
+  isEventDeleted: false,
 
   isDeleted: false,
   isTaskChecked: false,
@@ -89,6 +94,20 @@ export const AddBtnProvider = ({ children }) => {
   };
   const eventModalClose = () => {
     dispatch({ type: EVENT_MODAL_CLOSE });
+  };
+
+  const eventChanged = () => {
+    dispatch({ type: EVENT_EDITED });
+  };
+  const eventNotChanged = () => {
+    dispatch({ type: EVENT_NOT_EDITED });
+  };
+
+  const eventDeleted = () => {
+    dispatch({ type: EVENT_DELETED });
+  };
+  const eventNotDeleted = () => {
+    dispatch({ type: EVENT_NOT_EDITED });
   };
 
   const subtaskStatusChangedTrue = () => {
@@ -183,6 +202,10 @@ export const AddBtnProvider = ({ children }) => {
         deadlineNotDeleted,
         deadlineChanged,
         deadlineNotChanged,
+        eventChanged,
+        eventNotChanged,
+        eventDeleted,
+        eventNotDeleted,
       }}
     >
       {children}
