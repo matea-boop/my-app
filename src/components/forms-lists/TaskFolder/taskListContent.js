@@ -107,6 +107,7 @@ function TaskListContent({
               alignItems: "center",
               justifyContent: "center",
               marginTop: "1rem",
+              color: "var(--text-color)",
             }}
           >
             No tasks assigned for today

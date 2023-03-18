@@ -180,9 +180,9 @@ const Wrapper = styled.div`
 
   width: 100%;
 
-  background: var(--box-color);
+  background: var(--body-color);
   border-radius: var(--border-radius);
-  box-shadow: 0px 0px 12px 12px rgba(21, 21, 21, 0.7);
+  box-shadow: 0px 0px 7px -4px rgba(0, 0, 0, 1);
 
   .event-desc {
     display: none;

@@ -154,6 +154,9 @@ const Wrapper = styled.div`
     grid-template-rows: 3rem auto;
     grid-gap: 0.5rem;
 
+    box-shadow: 0px 0px 7px -4px rgba(0, 0, 0, 1);
+    border-radius: var(--border-radius);
+
     height: 100%;
   }
 
@@ -201,7 +204,7 @@ const Wrapper = styled.div`
     outline: none;
     border-radius: var(--border-radius);
     font-family: "Nunito", sans-serif;
-    background-color: var(--body-color);
+    background-color: var(--sidebar-color);
 
     margin: 0.5rem;
     padding: 1rem;

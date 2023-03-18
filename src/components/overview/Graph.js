@@ -145,8 +145,9 @@ const Wrapper = styled.div`
   height: auto;
   min-height: 20rem;
 
-  border-radius: 0.3rem;
+  border-radius: var(--border-radius);
   background-color: var(--sidebar-color);
+  box-shadow: 0px 0px 26px -20px rgba(0, 0, 0, 1);
 
   .items {
     display: flex;
@@ -169,6 +170,7 @@ const Wrapper = styled.div`
     justify-content: center;
 
     font-size: 1.2rem;
+    color: var(--text-color);
 
     padding-top: 1rem;
   }
@@ -180,6 +182,7 @@ const Wrapper = styled.div`
 
     font-size: 0.9rem;
     font-weight: lighter;
+    color: var(--text-color);
 
     padding-top: 0.4rem;
   }

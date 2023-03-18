@@ -57,13 +57,15 @@ const Wrapper = styled.div`
   width: 100%;
   min-width: 14rem;
 
-  border-radius: 0.3rem;
+  border-radius: var(--border-radius);
   background-color: var(--sidebar-color);
+  box-shadow: 0px 0px 26px -20px rgba(0, 0, 0, 1);
 
   .title {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    align-items: center;
 
     height: 20%;
     color: var(--text-color);
@@ -73,15 +75,17 @@ const Wrapper = styled.div`
       align-items: center;
       flex-direction: row;
       justify-content: space-between;
+      margin: 1.5rem 0.5rem 1.3rem 1.5rem;
     }
 
     h1 {
-      text-align: left;
+      display: flex;
+      align-items: center;
 
       font-size: 0.9rem;
       font-weight: normal;
 
-      margin: 1.5rem 0.5rem 1.3rem 1.5rem;
+      padding-right: 0.5rem;
     }
 
     .tasks-done {

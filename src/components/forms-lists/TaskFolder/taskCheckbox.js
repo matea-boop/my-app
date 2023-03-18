@@ -1,20 +1,20 @@
 import React from "react";
 import styled from "styled-components";
-import { FiSquare } from "react-icons/fi";
-import { FiCheckSquare } from "react-icons/fi";
+import { FiCircle } from "react-icons/fi";
+import { FiCheckCircle } from "react-icons/fi";
 import { useAllContext } from "../../../context/indexContext";
 
 function Checkbox({ checked, handleCheck }) {
   return (
     <Wrapper>
-      <FiSquare
+      <FiCircle
         className="checkbox"
         style={checked ? { display: "none" } : { diyplay: "flex" }}
         onClick={() => {
           handleCheck();
         }}
       />
-      <FiCheckSquare
+      <FiCheckCircle
         className="checkbox done"
         style={checked ? { display: "flex" } : { diyplay: "none" }}
         onClick={() => {
@@ -35,6 +35,7 @@ const Wrapper = styled.div`
   .checkbox {
     font-size: 1.4rem;
     stroke-width: 1;
+    color: var(--text-color);
   }
   .done {
     display: none;

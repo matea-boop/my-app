@@ -164,6 +164,9 @@ const Wrapper = styled.div`
   .arrow {
     cursor: pointer;
     width: 5%;
+
+    color: var(--text-color);
+    opacity: 0.8;
   }
 
   .active {

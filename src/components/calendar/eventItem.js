@@ -102,8 +102,10 @@ export const EventItem = ({
               marginTop: `${pixel + 6}px`,
               marginLeft: "0.2rem",
               marginRight: "0.2rem",
-              background: "var(--box-color)",
-              border: "2px solid var(--sidebar-color)",
+              background: "var(--body-color)",
+
+              boxShadow: "0px 0px 7px -4px rgba(0, 0, 0, 1)",
+              border: "1px solid var(--sidebar-color)",
 
               width: "calc(100% / 7)",
               // transition: "all 0.2s",

@@ -89,6 +89,7 @@ const Wrapper = styled.div`
 
   border-radius: var(--border-radius);
   background-color: var(--sidebar-color);
+  box-shadow: 0px 0px 26px -20px rgba(0, 0, 0, 1);
 
   .header-line {
     display: flex;

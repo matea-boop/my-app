@@ -94,8 +94,9 @@ const Wrapper = styled.div`
   height: 100%;
   width: 100%;
 
-  border-radius: 0.3rem;
+  border-radius: var(--border-radius);
   background-color: var(--sidebar-color);
+  box-shadow: 0px 0px 26px -20px rgba(0, 0, 0, 1);
 
   .title-p {
     display: flex;
@@ -131,6 +132,7 @@ const Wrapper = styled.div`
   .buttons-area {
     display: flex;
     justify-content: space-between;
+    color: var(--text-color);
   }
 
   .buttons-area-1 {
@@ -139,6 +141,7 @@ const Wrapper = styled.div`
 
     font-size: var(--text-size);
     font-weight: lighter;
+    color: var(--text-color);
 
     margin-left: 1.5rem;
   }
@@ -160,6 +163,7 @@ const Wrapper = styled.div`
 
     font-size: var(--text-size);
     font-weight: lighter;
+    color: var(--text-color);
 
     gap: 1rem;
     margin-right: 1.5rem;
@@ -189,6 +193,7 @@ const Wrapper = styled.div`
     width: 4.5rem;
 
     border-radius: var(--border-radius);
+    box-shadow: 0px 0px 7px -4px rgba(0, 0, 0, 1);
     background: var(--body-color);
     cursor: pointer;
   }
@@ -202,6 +207,7 @@ const Wrapper = styled.div`
     width: 4.5rem;
 
     border-radius: var(--border-radius);
+    box-shadow: 0px 0px 7px -4px rgba(0, 0, 0, 1);
     cursor: pointer;
     background: var(--body-color);
   }

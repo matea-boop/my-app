@@ -122,8 +122,9 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: row;
 
-  border-radius: 0.3rem;
+  border-radius: var(--border-radius);
   background-color: var(--sidebar-color);
+  color: var(--text-color);
 
   margin: var(--margin-size);
 `;

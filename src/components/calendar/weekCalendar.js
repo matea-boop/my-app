@@ -273,7 +273,7 @@ export const WeekCalendar = ({ getType, type, eventList }) => {
             <div
               className={
                 moment(new Date(day.time).getTime()).format("DD/MM/YYYY") ===
-                dateClicked
+                today
                   ? "day active"
                   : "day"
               }
@@ -292,21 +292,21 @@ export const WeekCalendar = ({ getType, type, eventList }) => {
             >
               <div
                 className="day-name"
-                onClick={() =>
-                  setDateClicked(
-                    moment(new Date(day.time).getTime()).format("DD/MM/YYYY")
-                  )
-                }
+                // onClick={() =>
+                //   setDateClicked(
+                //     moment(new Date(day.time).getTime()).format("DD/MM/YYYY")
+                //   )
+                // }
               >
                 {moment(new Date(day.time).getTime()).format("dddd")}
               </div>
               <div
                 className="day-date"
-                onClick={() =>
-                  setDateClicked(
-                    moment(new Date(day.time).getTime()).format("DD/MM/YYYY")
-                  )
-                }
+                // onClick={() =>
+                //   setDateClicked(
+                //     moment(new Date(day.time).getTime()).format("DD/MM/YYYY")
+                //   )
+                // }
               >
                 {day.date}
               </div>
@@ -350,10 +350,10 @@ export const WeekCalendar = ({ getType, type, eventList }) => {
                   )
                 }
                 style={
-                  moment(new Date(day.time).getTime()).format("DD/MM/YYYY") ===
-                  dateClicked
-                    ? { opacity: "1", zIndex: "3" }
-                    : { opacity: "0.5", zIndex: "2" }
+                  // moment(new Date(day.time).getTime()).format("DD/MM/YYYY") ===
+                  // dateClicked ?
+                  { opacity: "1", zIndex: "3" }
+                  // : { opacity: "0.5", zIndex: "2" }
                 }
               >
                 {selectedList && selectedList.length > 0
@@ -384,12 +384,11 @@ export const WeekCalendar = ({ getType, type, eventList }) => {
                       display: "flex",
                       top: `${topMargin}px`,
                       left: `${leftMargin}%`,
-                      boxShadow: "0px 0px 12px 12px rgba(21, 21, 21, 0.8)",
                     }
                   : {
                       display: "flex",
                       top: `${topMargin}px`,
-                      boxShadow: "0px 0px 12px 12px rgba(21, 21, 21, 0.8)",
+
                       right: `${rightMargin}%`,
                     }
                 : { display: "none" }
@@ -433,8 +432,9 @@ const Wrapper = styled.div`
   height: 100%;
   width: 100%;
 
-  border-radius: 0.3rem;
+  border-radius: var(--border-radius);
   background-color: var(--sidebar-color);
+  box-shadow: 0px 0px 26px -20px rgba(0, 0, 0, 1);
 
   .line {
     position: absolute;
@@ -443,6 +443,7 @@ const Wrapper = styled.div`
     width: 100%;
 
     border: 1px solid var(--text-color);
+    opacity: 0.5;
     border-radius: 30px;
   }
 
@@ -452,8 +453,9 @@ const Wrapper = styled.div`
     flex-direction: column;
     align-items: center;
 
-    background: var(--box-color);
+    background: var(--body-color);
     border-radius: var(--border-radius);
+    box-shadow: 0px 0px 26px -20px rgba(0, 0, 0, 1);
 
     height: 200px;
     width: 200px;
@@ -566,7 +568,7 @@ const Wrapper = styled.div`
   .timeline-lines {
     position: absolute;
     z-index: 1;
-    opacity: 0.2;
+    opacity: 0.3;
     width: 100%;
     margin-top: 6px;
   }
@@ -698,7 +700,7 @@ const Wrapper = styled.div`
 
   .time {
     font-size: 12px;
-    opacity: 0.5;
+    opacity: 0.7;
     height: 60px;
     font-weight: lighter;
   }
@@ -711,6 +713,7 @@ const Wrapper = styled.div`
     top: 23%;
     width: 100%;
     height: 73%;
+    right: 0.1rem;
 
     margin-top: 1rem;
     margin-bottom: 1rem;
@@ -723,12 +726,12 @@ const Wrapper = styled.div`
     }
 
     ::-webkit-scrollbar-track {
-      background: var(--box-color);
+      background: var(--body-color);
       border-radius: 10px;
     }
 
     ::-webkit-scrollbar-thumb {
-      background: var(--body-color);
+      background: var(--box-color);
       border-radius: 10px;
     }
   }

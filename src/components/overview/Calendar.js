@@ -50,8 +50,11 @@ const Wrapper = styled.div`
   min-height: 40rem;
   min-width: 20rem;
 
-  border-radius: 0.3rem;
+  color: var(--text-color);
+
+  border-radius: var(--border-radius);
   background-color: var(--sidebar-color);
+  box-shadow: 0px 0px 26px -20px rgba(0, 0, 0, 1);
 
   .middle {
     display: flex;

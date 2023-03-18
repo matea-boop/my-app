@@ -159,12 +159,12 @@ const Wrapper = styled.div`
   }
 
   ::-webkit-scrollbar-track {
-    background: var(--box-color);
+    background: var(--body-color);
     border-radius: 10px;
   }
 
   ::-webkit-scrollbar-thumb {
-    background: var(--body-color);
+    background: var(--box-color);
     border-radius: 10px;
   }
 
@@ -182,7 +182,7 @@ const Wrapper = styled.div`
 
   .time {
     font-size: 12px;
-    opacity: 0.5;
+    opacity: 0.7;
     height: 60px;
     font-weight: lighter;
   }
@@ -217,6 +217,7 @@ const Wrapper = styled.div`
     width: 100%;
 
     border: 1px solid var(--text-color);
+    opacity: 0.5;
     border-radius: 30px;
   }
 `;

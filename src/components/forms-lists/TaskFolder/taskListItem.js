@@ -279,6 +279,8 @@ const Wrapper = styled.div`
 
   background-color: var(--box-color);
   border-radius: var(--border-radius);
+  color: var(--text-color);
+  box-shadow: 0px 0px 7px -4px rgba(0, 0, 0, 1);
 
   width: 100%;
 

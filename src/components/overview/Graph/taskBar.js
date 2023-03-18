@@ -64,14 +64,15 @@ const Wrapper = styled.div`
     align-items: center;
     justify-content: center;
 
+    color: var(--text-color);
     font-size: 0.7rem;
-    font-weight: normal;
+    font-weight: lighter;
   }
 
   .circle {
     fill: none;
     stroke: var(--text-color);
-    opacity: 0.2;
+    opacity: 0.3;
   }
 
   .circle-task {

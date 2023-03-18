@@ -69,14 +69,16 @@ const Wrapper = styled.div`
   }
 
   .btn {
-    color: var(--box-color);
+    color: var(--text-color);
     transform: scale(0.8);
+    opacity: 0.6;
     cursor: pointer;
   }
 
   .active {
-    color: var(--body-color);
+    color: var(--text-color);
     cursor: pointer;
+    opacity: 1;
     transform: scale(1);
   }
 `;

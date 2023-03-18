@@ -85,7 +85,8 @@ const Wrapper = styled.div`
   flex-direction: column;
 
   // background: var(--box-color);
-  // border-radius: var(--border-radius);
+  border-radius: var(--border-radius);
+  box-shadow: 0px 0px 7px -4px rgba(0, 0, 0, 1);
 
   height: 100%;
 

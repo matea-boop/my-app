@@ -336,8 +336,9 @@ const Wrapper = styled.div`
   height: 100%;
   width: 100%;
 
-  border-radius: 0.3rem;
+  border-radius: var(--border-radius);
   background-color: var(--sidebar-color);
+  box-shadow: 0px 0px 26px -20px rgba(0, 0, 0, 1);
 
   #inactive-line {
     opacity: 0.3;

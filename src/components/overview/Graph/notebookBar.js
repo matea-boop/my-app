@@ -65,7 +65,8 @@ const Wrapper = styled.div`
     justify-content: center;
 
     font-size: var(--text-size);
-    font-weight: normal;
+    color: var(--text-color);
+    font-weight: lighter;
   }
 
   .circle {
