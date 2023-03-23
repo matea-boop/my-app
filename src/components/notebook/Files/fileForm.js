@@ -274,6 +274,7 @@ const Wrapper = styled.div`
     font-weight: lighter;
     border-radius: var(--border-radius);
     background-color: var(--sidebar-color);
+    box-shadow: 0px 0px 7px -4px rgba(0, 0, 0, 1);
 
     margin: 0.5rem;
     padding: 1rem;
@@ -281,5 +282,10 @@ const Wrapper = styled.div`
     &:hover {
       cursor: pointer;
     }
+  }
+
+  .submit-button:active {
+    transform: scale(0.9);
+    box-shadow: 0px 0px 2px -4px rgba(0, 0, 0, 1);
   }
 `;

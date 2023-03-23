@@ -404,8 +404,9 @@ const Wrapper = styled.div`
   .subtask-bar-container {
     position: absolute;
 
+    left: 5%;
     bottom: 0.2rem;
-    width: 100%;
+    width: 90%;
   }
 
   @keyframes fade-in {

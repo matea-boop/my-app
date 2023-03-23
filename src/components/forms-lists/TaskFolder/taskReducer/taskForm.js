@@ -131,7 +131,7 @@ function TaskForm({ type, task, modalOpen, modalClose, isModalOpen }) {
     const ddmmyyyy = /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/;
     let todaysDate = new Date().toLocaleDateString();
 
-    if (ddmmyyyy.test(date) && date <= todaysDate) {
+    if (ddmmyyyy.test(date) && date >= todaysDate) {
       setValid(true);
     } else {
       setValid(false);
@@ -292,7 +292,7 @@ const Wrapper = styled.div`
     max-width: 500px;
     height: fit-content;
 
-    background-color: var(--sidebar-color);
+    background-color: var(--inputback-color);
     border-radius: inherit;
 
     margin: 0 auto;
@@ -301,6 +301,7 @@ const Wrapper = styled.div`
 
   .task-form {
     width: 100%;
+    color: var(--text-color);
 
     label {
       font-size: 1rem;
@@ -315,7 +316,8 @@ const Wrapper = styled.div`
       border: none;
       outline: none;
       border-radius: var(--border-radius);
-      background-color: var(--text-color);
+      background-color: var(--inputbox-color);
+      color: var(--inputtext-color);
 
       padding: 1rem;
       margin-top: 0.5rem;
@@ -334,16 +336,22 @@ const Wrapper = styled.div`
 
       font-size: 1rem;
       font-family: "Nunito", sans-serif;
-      font-weight: bold;
-      color: var(--body-color);
+      font-weight: lighter;
+      color: var(--text-color);
 
-      background-color: var(--mainorange-color);
+      background-color: var(--small-btn-color);
+      box-shadow: 0px 0px 7px -4px rgba(0, 0, 0, 1);
       border: none;
       border-radius: var(--border-radius);
       cursor: pointer;
 
       padding: 1rem 1.5rem 1rem 1.5rem;
       margin: 0.3rem;
+    }
+
+    .task-btn:active {
+      transform: scale(0.9);
+      box-shadow: 0px 0px 2px -4px rgba(0, 0, 0, 1);
     }
 
     .cancel {
@@ -373,11 +381,12 @@ const Wrapper = styled.div`
     height: 2.7rem;
 
     font-family: "Nunito", sans-serif;
-    font-weight: bold;
-    color: var(--body-color);
+    font-weight: lighter;
+    color: var(--text-color);
     cursor: pointer;
 
-    background: var(--mainorange-color);
+    box-shadow: 0px 0px 7px -4px rgba(0, 0, 0, 1);
+    background: var(--small-btn-color);
     border-radius: var(--border-radius);
     border: none;
 
@@ -385,6 +394,11 @@ const Wrapper = styled.div`
     margin-bottom: 2rem;
     margin-left: 0.5rem;
     padding: 0 1rem 0 1rem;
+  }
+
+  .btn-subtask-add:active {
+    transform: scale(0.9);
+    box-shadow: 0px 0px 2px -4px rgba(0, 0, 0, 1);
   }
 
   .icons-subtask {

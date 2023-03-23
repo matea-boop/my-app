@@ -247,7 +247,7 @@ const Wrapper = styled.div`
     max-width: 500px;
     height: fit-content;
 
-    background-color: var(--sidebar-color);
+    background-color: var(--inputback-color);
     border-radius: inherit;
 
     margin: 0 auto;
@@ -273,9 +273,9 @@ const Wrapper = styled.div`
 
       border: none;
       outline: none;
-      color: var(--sidebar-color);
       border-radius: var(--border-radius);
-      background-color: var(--text-color);
+      background-color: var(--inputbox-color);
+      color: var(--inputtext-color);
 
       padding: 1rem;
       margin-top: 0.5rem;
@@ -295,9 +295,9 @@ const Wrapper = styled.div`
       font-size: 1rem;
       font-family: "Nunito", sans-serif;
       font-weight: bold;
-      color: var(--body-color);
+      color: var(--text-color);
 
-      background-color: var(--mainorange-color);
+      background-color: var(--small-btn-color);
       border: none;
       border-radius: var(--border-radius);
       cursor: pointer;
@@ -306,9 +306,17 @@ const Wrapper = styled.div`
       margin: 0.3rem;
     }
 
+    .habit-btn:active {
+      transform: scale(0.9);
+    }
+
     .cancel {
       z-index: 1000;
       opacity: 0.75;
+    }
+
+    .cancel:active {
+      transform: scale(0.9);
     }
   }
 `;

@@ -105,6 +105,8 @@ const Wrapper = styled.div`
   background: var(--sidebar-color);
   border-radius: var(--border-radius);
 
+  color: var(--text-color);
+
   .title-row {
     position: absolute;
     display: flex;

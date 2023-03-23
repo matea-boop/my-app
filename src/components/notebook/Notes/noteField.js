@@ -191,7 +191,7 @@ const Wrapper = styled.div`
     justify-content: center;
     align-items: center;
 
-    width: 20%;
+    // width: 20%;
     height: 100%;
 
     font-size: var(--text-size);
@@ -201,9 +201,15 @@ const Wrapper = styled.div`
     cursor: pointer;
     border-radius: var(--border-radius);
     background-color: var(--sidebar-color);
+    box-shadow: 0px 0px 7px -4px rgba(0, 0, 0, 1);
 
     margin-right: 2rem;
     padding: 0.5rem 0 0.5rem 0;
+  }
+
+  .save-btn:active {
+    transform: scale(0.9);
+    box-shadow: 0px 0px 2px -4px rgba(0, 0, 0, 1);
   }
 
   .top-field-no-content {

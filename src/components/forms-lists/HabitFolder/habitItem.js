@@ -2,9 +2,9 @@ import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { useAllContext } from "../../../context/indexContext";
 import axios from "axios";
-import { FiSquare } from "react-icons/fi";
+import { FiCircle } from "react-icons/fi";
 import { HiEllipsisVertical } from "react-icons/hi2";
-import { FiCheckSquare } from "react-icons/fi";
+import { FiCheckCircle } from "react-icons/fi";
 import HabitForm from "./HabitForm";
 
 const weekDays = [
@@ -248,9 +248,9 @@ function HabitItem({ habit, formOpen }) {
                   <p className="day-name">{check.day}</p>
                   <div className="day-box">
                     {!check.clicked ? (
-                      <FiSquare style={{ strokeWidth: "1" }} />
+                      <FiCircle style={{ strokeWidth: "1" }} />
                     ) : (
-                      <FiCheckSquare style={{ strokeWidth: "1" }} />
+                      <FiCheckCircle style={{ strokeWidth: "1" }} />
                     )}
                   </div>
                 </div>

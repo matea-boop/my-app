@@ -194,8 +194,13 @@ const Wrapper = styled.div`
 
     border-radius: var(--border-radius);
     box-shadow: 0px 0px 7px -4px rgba(0, 0, 0, 1);
-    background: var(--body-color);
+    background: var(--small-btn-color);
     cursor: pointer;
+  }
+
+  .week:active {
+    transform: scale(0.9);
+    box-shadow: 0px 0px 2px -4px rgba(0, 0, 0, 1);
   }
 
   .month {
@@ -209,6 +214,11 @@ const Wrapper = styled.div`
     border-radius: var(--border-radius);
     box-shadow: 0px 0px 7px -4px rgba(0, 0, 0, 1);
     cursor: pointer;
-    background: var(--body-color);
+    background: var(--small-btn-color);
+  }
+
+  .month:active {
+    transform: scale(0.9);
+    box-shadow: 0px 0px 2px -4px rgba(0, 0, 0, 1);
   }
 `;

@@ -23,15 +23,25 @@
   --sidebar-color: rgba(21, 21, 21, 1);
   --box-color: rgba(36, 36, 36, 1);
   --text-color: rgba(232, 244, 250, 1);
-  --textdark-color: rgba(21, 21, 21, 1);
+
   --mainblue-color: rgba(64, 94, 255, 1);
   --mainorange-color: rgba(236, 165, 66, 1);
   --maingreen-color: rgba(55, 142, 74, 1);
   --mainred-color: rgba(235, 85, 112, 1);
+
+  --btn-color: rgba(236, 165, 66, 1);
+  --small-btn-color: rgba(36, 36, 36, 1);
+
+  --toggle-color: rgba(236, 165, 66, 0.3);
+  --slide-color: rgba(236, 165, 66, 1);
+
+  --inputbox-color: rgba(232, 244, 250, 1);
+  --inputtext-color: rgba(21, 21, 21, 1);
+  --inputback-color: rgba(21, 21, 21, 1);
+
   --margin-size: 0.8rem;
   --border-radius: 0.8rem;
   --text-size: 0.7rem;
-
   --right-btn-move: 10.2rem;
   --bottom-btn-move: 4.5rem;
 }
@@ -40,16 +50,26 @@
   --body-color: rgba(244, 245, 252, 1);
   --sidebar-color: rgba(255, 255, 255, 1);
   --box-color: rgba(250, 233, 208, 1);
-  /* --box-color: rgba(36, 36, 36, 0.5); */
   --text-color: rgba(21, 21, 21, 1);
+
   --mainblue-color: rgba(64, 94, 255, 1);
   --mainorange-color: rgba(236, 165, 66, 1);
   --maingreen-color: rgba(55, 142, 74, 1);
   --mainred-color: rgba(235, 85, 112, 1);
+
+  --btn-color: rgba(64, 94, 255, 1);
+  --small-btn-color: rgba(64, 94, 255, 0.5);
+
+  --toggle-color: rgba(64, 94, 255, 0.3);
+  --slide-color: rgba(64, 94, 255, 0.5);
+
+  --inputbox-color: white;
+  --inputtext-color: rgba(21, 21, 21, 1);
+  --inputback-color: rgba(232, 244, 250, 1);
+
   --margin-size: 0.8rem;
   --border-radius: 0.8rem;
   --text-size: 0.7rem;
-
   --right-btn-move: 10.2rem;
   --bottom-btn-move: 4.5rem;
 }

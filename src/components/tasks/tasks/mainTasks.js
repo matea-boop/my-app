@@ -26,23 +26,25 @@ async function getDataFromDB() {
 
 export const MainTasks = () => {
   const { isModalOpen, isDeleted, isTaskChecked } = useAllContext();
-  const [doneType, setDoneType] = useState("all");
+  const [doneType, setDoneType] = useState("left");
   const [formOpen, setFormOpen] = useState(false);
   const [totalPages, setTotalPages] = useState(0);
   let todaysDate = new Date().toLocaleDateString();
   const [page, setPage] = useState(1);
   const [pageActive, setPageActive] = useState(page);
   const [taskList, setTaskList] = useState([]);
+  const mainList =
+    taskList && taskList.length > 0
+      ? taskList.filter((task) => task.date === todaysDate)
+      : [];
+  // const [completedTasksList, setCompletedTasksList] = useState([]);
+  // const [incompletedTasksList, setIncompletedTasksList] = useState([]);
+  // const [mainList, setMainList] = useState([]);
 
   const handleClick = (num) => {
     setPage(num);
     setPageActive(num);
   };
-
-  const mainList =
-    taskList && taskList.length > 0
-      ? taskList.filter((task) => task.date === todaysDate)
-      : [];
 
   const completedTasks =
     mainList && mainList.length > 0
@@ -67,30 +69,34 @@ export const MainTasks = () => {
 
   useEffect(() => {
     getDataFromDB().then((res) => setTaskList(res));
-  }, [isModalOpen, isDeleted, isTaskChecked]);
+  }, [
+    isModalOpen,
+    isDeleted,
+    isTaskChecked,
+    completedTasksList,
+    incompletedTasksList,
+  ]);
+
+  // useEffect(() => {
+  //   setCompletedTasksList(completedTaskList);
+  //   setIncompletedTasksList(incompletedTaskList);
+  // }, [isTaskChecked]);
 
   return (
     <Wrapper>
       <div className="title-row">
         <div className="title">Tasks</div>
+        <TasksSorted
+          type="all"
+          completedTasks={completedTasks}
+          allTasks={allTasks}
+          incompletedTasks={incompletedTasks}
+        />
       </div>
       <div className="progress">
         <TaskPercentBar completedTasks={completedTasks} allTasks={allTasks} />
       </div>
       <div className="finished-left-list">
-        <div
-          className="tasks"
-          onClick={() => setDoneType("all")}
-          style={doneType === "all" ? { opacity: "1" } : { opacity: "0.5" }}
-        >
-          <p>All</p>
-          <TasksSorted
-            type="all"
-            completedTasks={completedTasks}
-            allTasks={allTasks}
-            incompletedTasks={incompletedTasks}
-          />
-        </div>
         <div
           className="tasks"
           onClick={() => setDoneType("left")}
@@ -157,6 +163,8 @@ const Wrapper = styled.div`
   position: relative;
   background: var(--sidebar-color);
   border-radius: var(--border-radius);
+
+  color: var(--text-color);
 
   width: 100%;
 

@@ -2,10 +2,24 @@ import React from "react";
 import { NavLink } from "react-router-dom";
 import styled from "styled-components";
 import { IconContext } from "react-icons";
+import { useState, useEffect } from "react";
+import { BiMoon } from "react-icons/bi";
+import { BiSun } from "react-icons/bi";
 
 import { menuItems } from "../constants/constants.js";
 
-export const Navbar = () => {
+export const Navbar = ({ getToggleTheme }) => {
+  const [theme, setTheme] = useState("dark");
+
+  const toggleTheme = () => {
+    setTheme((curr) => (curr === "light" ? "dark" : "light"));
+  };
+
+  useEffect(() => {
+    getToggleTheme(theme);
+  }, [theme]);
+
+  console.log(theme);
   return (
     <IconContext.Provider
       value={{ color: "var(--text-color)", size: "1.3rem" }}
@@ -30,6 +44,29 @@ export const Navbar = () => {
                 </NavLink>
               );
             })}
+            <li className="theme-switch">
+              <label className="switch">
+                <input type="checkbox" onClick={() => toggleTheme()} />
+                <div className="slider">
+                  <div
+                    className="icon dark"
+                    style={
+                      theme === "light" ? { opacity: "0" } : { opacity: "1" }
+                    }
+                  >
+                    <BiMoon />
+                  </div>
+                  <div
+                    className="icon light"
+                    style={
+                      theme === "dark" ? { opacity: "0" } : { opacity: "1" }
+                    }
+                  >
+                    <BiSun />
+                  </div>
+                </div>
+              </label>
+            </li>
           </ul>
         </div>
       </SidebarMenu>
@@ -53,6 +90,86 @@ const SidebarMenu = styled.div`
     border-radius: 7px;
 
     top: 0;
+  }
+
+  .theme-switch {
+    position: absolute;
+
+    bottom: 3.2rem;
+    left: 0;
+    right: 0;
+    width: 3.4rem;
+
+    margin-left: auto;
+    margin-right: auto;
+
+    &:hover {
+      transform: none;
+    }
+
+    input {
+      display: none;
+    }
+
+    input: checked + .slider::before {
+      transform: translateX(1.8rem);
+    }
+
+    .icon {
+      position: absolute;
+      top: 0.1rem;
+      width: 1.4rem;
+    }
+
+    .light {
+      cursor: pointer;
+
+      left: 0.1rem;
+      right: 0;
+      bottom: 0;
+
+      transition: all 0.4s;
+    }
+
+    .dark {
+      position: absolute;
+      right: 0.1rem;
+      transition: all 0.4s;
+    }
+
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 3.4rem;
+      height: 1.6rem;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+
+      transition: all 0.4s;
+      border-radius: 34px;
+      background-color: var(--toggle-color);
+    }
+
+    .slider::before {
+      content: "";
+      position: absolute;
+
+      height: 1.4rem;
+      width: 1.4rem;
+      top: 0.1rem;
+      left: 0.1rem;
+      border-radius: 50%;
+      transition: all 0.4s;
+      background-color: var(--slide-color);
+    }
   }
 
   .sidebar-header {
@@ -86,12 +203,6 @@ const SidebarMenu = styled.div`
     .text {
       margin: 0.12rem 0 0 0.5rem;
     }
-  }
-
-  a:last-child {
-    position: absolute;
-
-    bottom: 3.2rem;
   }
 
   .active {

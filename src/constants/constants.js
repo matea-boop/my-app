@@ -37,18 +37,12 @@ export const menuItems = [
     icon: <HiChartPie />,
     url: "/Statistics",
   },
-  {
-    id: 6,
-    text: "Settings",
-    icon: <HiCog6Tooth />,
-    url: "/Settings",
-  },
 ];
 
 export const motivationalText = [
   {
     id: 0, //0%
-    text: "No work for today :(",
+    text: "We are just getting started...",
   },
   {
     id: 1, //0-10%

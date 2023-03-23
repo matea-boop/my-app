@@ -120,7 +120,7 @@ function AddButton() {
   return (
     <IconContext.Provider
       value={{
-        color: "var(--mainorange-color)",
+        color: "var(--btn-color)",
         size: "7rem",
         bottom: "3.2rem",
       }}
@@ -206,7 +206,7 @@ const Wrapper = styled.div`
   .menu li {
     position: relative;
 
-    background-color: var(--mainorange-color);
+    background-color: var(--btn-color);
     color: var(--textdark-color);
     transition: 1s;
     opacity: 1;

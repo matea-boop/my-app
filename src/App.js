@@ -14,21 +14,18 @@ import {
   Settings,
 } from "./Pages";
 
-import { BiMoon } from "react-icons/bi";
-import { BiSun } from "react-icons/bi";
-
 export const App = () => {
   const [theme, setTheme] = useState("light");
 
-  const toggleTheme = () => {
-    setTheme((curr) => (curr === "light" ? "dark" : "light"));
+  const getToggleTheme = (value) => {
+    setTheme(value);
   };
   return (
     <AddBtnProvider>
       <div className="app" id={theme}>
         <div className="main-container">
           <Router>
-            <Navbar />
+            <Navbar getToggleTheme={getToggleTheme} />
             <AddButton />
 
             <Routes>

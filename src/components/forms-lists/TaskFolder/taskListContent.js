@@ -100,19 +100,63 @@ function TaskListContent({
           })
         ) : (
           <div
-            style={{
-              fontSize: " 0.9rem",
-              fontWeight: "normal",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              marginTop: "1rem",
-              color: "var(--text-color)",
-            }}
+            style={
+              ovType === "overviewTasks"
+                ? {
+                    fontSize: " 0.9rem",
+                    fontWeight: "normal",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    marginTop: "1rem",
+                    color: "var(--text-color)",
+                  }
+                : { display: "none" }
+            }
           >
             No tasks assigned for today
           </div>
         )}
+      </div>
+      <div
+        style={
+          doneType === "left" && incompletedTasksList.length === 0
+            ? {
+                fontSize: " 0.9rem",
+                position: "absolute",
+                fontWeight: "normal",
+                width: "fit-content",
+                left: "0",
+                right: "20%",
+                marginRight: "auto",
+                marginLeft: "auto",
+                marginTop: "1rem",
+                color: "var(--text-color)",
+              }
+            : { display: "none" }
+        }
+      >
+        No tasks left to do
+      </div>
+      <div
+        style={
+          doneType === "done" && completedTasksList.length === 0
+            ? {
+                fontSize: " 0.9rem",
+                position: "absolute",
+                fontWeight: "normal",
+                width: "fit-content",
+                left: "0",
+                right: "20%",
+                marginRight: "auto",
+                marginLeft: "auto",
+                marginTop: "1rem",
+                color: "var(--text-color)",
+              }
+            : { display: "none" }
+        }
+      >
+        No tasks done
       </div>
     </div>
   );

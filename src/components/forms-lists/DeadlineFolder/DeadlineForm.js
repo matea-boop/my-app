@@ -303,7 +303,7 @@ const Wrapper = styled.div`
     max-width: 500px;
     min-width: 300px;
 
-    background-color: var(--sidebar-color);
+    background-color: var(--inputback-color);
     border-radius: inherit;
 
     margin: 0 auto;
@@ -324,7 +324,8 @@ const Wrapper = styled.div`
       border: none;
       outline: none;
       border-radius: var(--border-radius);
-      background-color: var(--text-color);
+      background-color: var(--inputbox-color);
+      color: var(--inputtext-color);
 
       margin-top: 0.5rem;
       margin-bottom: 1.8rem;
@@ -349,13 +350,21 @@ const Wrapper = styled.div`
       color: var(--body-color);
       z-index: 1000;
 
-      background-color: var(--mainorange-color);
+      color: var(--text-color);
+
+      box-shadow: 0px 0px 7px -4px rgba(0, 0, 0, 1);
+      background-color: var(--small-btn-color);
       border: none;
       border-radius: var(--border-radius);
       cursor: pointer;
 
       margin: 0.3rem;
       padding: 1rem 1.5rem 1rem 1.5rem;
+    }
+
+    .task-btn:active {
+      transform: scale(0.9);
+      box-shadow: 0px 0px 2px -4px rgba(0, 0, 0, 1);
     }
 
     .cancel {
