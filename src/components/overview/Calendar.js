@@ -7,12 +7,10 @@ import VerticalTimeline from "./Calendar/verticalTimeline";
 import moment from "moment/moment";
 
 export const Calendar = () => {
-  const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
-  const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
-  const [currentDay, setCurrentDay] = useState(new Date().getDate());
+  const currentMonth = new Date().getMonth();
+  const currentYear = new Date().getFullYear();
+  const currentDay = new Date().getDate();
   const currDate = new Date(currentYear, currentMonth, currentDay);
-
-  const [list, setList] = useState([]);
   const [date, setDate] = useState(moment(currDate).format("DD/MM/YYYY"));
   const chosenDate = moment(date, "DD/MM/YYYY").format("dddd Do MMMM");
 
@@ -23,17 +21,12 @@ export const Calendar = () => {
   return (
     <Wrapper>
       <div className="items">
-        <SmallCalendar
-          className="small-calendar"
-          getDate={getDate}
-          list={list}
-        />
+        <SmallCalendar getDate={getDate} />
         <div className="middle">
           <Link to="/Calendar">View Calendar</Link>
           <div className="header-date">{chosenDate}</div>
         </div>
-
-        <VerticalTimeline className="item" date={date} />
+        <VerticalTimeline date={date} />
       </div>
     </Wrapper>
   );

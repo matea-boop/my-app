@@ -6,6 +6,7 @@ import styled from "styled-components";
 export const NotePercentBar = ({ wordCount, date }) => {
   const goal = 70;
   const [percentage, setPercentage] = useState((wordCount / goal) * 100);
+
   useEffect(() => {
     if (wordCount >= 70) {
       setPercentage(100);

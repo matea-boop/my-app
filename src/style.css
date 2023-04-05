@@ -24,10 +24,16 @@
   --box-color: rgba(36, 36, 36, 1);
   --text-color: rgba(232, 244, 250, 1);
 
+  --calendar-text-color: rgba(232, 244, 250, 0.5);
+
   --mainblue-color: rgba(64, 94, 255, 1);
   --mainorange-color: rgba(236, 165, 66, 1);
   --maingreen-color: rgba(55, 142, 74, 1);
   --mainred-color: rgba(235, 85, 112, 1);
+
+  --eventbox-color: rgba(86, 65, 35, 255);
+  --taskbox-color: rgba(64, 94, 255, 0.3);
+  --subtaskbox-color: rgba(27, 32, 56, 255);
 
   --btn-color: rgba(236, 165, 66, 1);
   --small-btn-color: rgba(36, 36, 36, 1);
@@ -39,6 +45,9 @@
   --inputtext-color: rgba(21, 21, 21, 1);
   --inputback-color: rgba(21, 21, 21, 1);
 
+  --tasks-color: rgba(236, 165, 66, 1);
+  --notes-color: rgba(64, 94, 255, 1);
+  --all-color: rgba(232, 244, 250, 1);
   --margin-size: 0.8rem;
   --border-radius: 0.8rem;
   --text-size: 0.7rem;
@@ -52,10 +61,16 @@
   --box-color: rgba(250, 233, 208, 1);
   --text-color: rgba(21, 21, 21, 1);
 
+  --calendar-text-color: rgba(21, 21, 21, 1);
+
   --mainblue-color: rgba(64, 94, 255, 1);
   --mainorange-color: rgba(236, 165, 66, 1);
   --maingreen-color: rgba(55, 142, 74, 1);
   --mainred-color: rgba(235, 85, 112, 1);
+
+  --eventbox-color: rgba(197, 206, 255, 255);
+  --taskbox-color: rgba(236, 165, 66, 0.3);
+  --subtaskbox-color: rgba(252, 241, 226, 255);
 
   --btn-color: rgba(64, 94, 255, 1);
   --small-btn-color: rgba(64, 94, 255, 0.5);
@@ -66,6 +81,10 @@
   --inputbox-color: white;
   --inputtext-color: rgba(21, 21, 21, 1);
   --inputback-color: rgba(232, 244, 250, 1);
+
+  --tasks-color: rgba(236, 165, 66, 1);
+  --notes-color: rgba(64, 94, 255, 1);
+  --all-color: rgba(21, 21, 21, 1);
 
   --margin-size: 0.8rem;
   --border-radius: 0.8rem;

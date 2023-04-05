@@ -1,16 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import styled from "styled-components";
 import moment from "moment/moment";
-import axios from "axios";
 
 export const NoteItem = ({
   note,
   date,
   getNumberOfWords,
   getText,
-  text,
-  wordCount,
-  notesList,
   onClick,
 }) => {
   const today = moment(new Date()).format("DD/MM/YYYY");

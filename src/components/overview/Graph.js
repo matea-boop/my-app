@@ -1,40 +1,12 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import axios from "axios";
-import CircuralProgress from "./Graph/circuralProgress";
-import TaskBar from "./Graph/taskBar";
-import NotebookBar from "./Graph/notebookBar";
+import CircuralGraph from "./Graph/circularGraph";
 import { motivationalText } from "../../constants/constants";
 import { useAllContext } from "../../context/indexContext";
+import { BsFillCircleFill } from "react-icons/bs";
 import moment from "moment/moment";
-
-async function getDataFromDB() {
-  const url = "http://localhost:3001/api/tasks";
-  try {
-    const {
-      data: { tasks },
-    } = await axios.get(url);
-
-    return tasks;
-  } catch (error) {
-    console.log("error", error);
-    return error;
-  }
-}
-
-async function getNotesDataFromDB() {
-  const url = "http://localhost:3001/api/notes";
-  try {
-    const {
-      data: { notes },
-    } = await axios.get(url);
-
-    return notes;
-  } catch (error) {
-    console.log("error", error);
-    return error;
-  }
-}
+import getNotesDataFromDB from "../../constants/dataFunctions/noteData";
+import getTaskDataFromDB from "../../constants/dataFunctions/taskData";
 
 export const Graph = () => {
   let todaysDate = new Date().toLocaleDateString();
@@ -42,21 +14,15 @@ export const Graph = () => {
   const [taskList, setTaskList] = useState([]);
   const [notesList, setNotesList] = useState([]);
   const [index, setIndex] = useState(0);
-
-  const mainList = [];
-
   const currentDate = moment().format("dddd Do MMMM");
-  const check =
+
+  const taskToday =
     taskList.length > 0
-      ? taskList.forEach((task) => {
-          if (task.date === todaysDate) {
-            mainList.push(task);
-          }
-        })
-      : null;
+      ? taskList.filter((task) => task.date === todaysDate)
+      : [];
 
   useEffect(() => {
-    getDataFromDB().then((res) => setTaskList(res));
+    getTaskDataFromDB().then((res) => setTaskList(res));
     getNotesDataFromDB().then((res) => setNotesList(res));
   }, [isModalOpen, isDeleted, isTaskChecked]);
 
@@ -64,19 +30,21 @@ export const Graph = () => {
     notesList.length > 0
       ? notesList.filter((note) => note.date === todaysDate)
       : null;
+
   const notesDoneToday = noteToday
     ? noteToday.map((x) => x.numberOfWords)
     : null;
+
   const notesDone = notesDoneToday ? notesDoneToday[0] : 0;
   const notes = notesDone > 69 ? 100 : ((notesDone / 70) * 100).toFixed();
 
-  const listOfcompletedTasks = mainList.filter((task) => task.status === true);
+  const listOfcompletedTasks = taskToday.filter((task) => task.status === true);
 
-  const listOfUncompletedTasks = mainList.filter(
+  const listOfUncompletedTasks = taskToday.filter(
     (task) => task.status === false
   );
 
-  const mainListLength = mainList.length;
+  const mainListLength = taskToday.length;
   const uncompletedTasks = listOfUncompletedTasks.length;
   const completedTasks = listOfcompletedTasks.length;
   const tasksDone =
@@ -122,14 +90,26 @@ export const Graph = () => {
         </div>
 
         <div className="circle">
-          <CircuralProgress percentage={all} circleWidth="160" />
+          <CircuralGraph
+            taskPercentage={tasksDone}
+            notebookPercentage={notesDone}
+            allPercentage={all}
+            circleWidth="160"
+          />
         </div>
-        <div className="bars">
-          <div className="task-bar">
-            <TaskBar completedTasks={tasksDone} circleWidth="27" />
+
+        <div className="circle-labels">
+          <div className="item">
+            <BsFillCircleFill className="task-circle" />
+            <p>Tasks</p>
           </div>
-          <div className="notebook-bar">
-            <NotebookBar notesDone={notesDone} circleWidth="27" />
+          <div className="item">
+            <BsFillCircleFill className="notebook-circle" />
+            <p>Notebook</p>
+          </div>
+          <div className="item">
+            <BsFillCircleFill className="all-circle" />
+            <p>All</p>
           </div>
         </div>
       </div>
@@ -141,6 +121,7 @@ export default Graph;
 const Wrapper = styled.div`
   display: grid;
   grid-area: graph;
+  position: relative;
 
   height: auto;
   min-height: 20rem;
@@ -148,6 +129,54 @@ const Wrapper = styled.div`
   border-radius: var(--border-radius);
   background-color: var(--sidebar-color);
   box-shadow: 0px 0px 26px -20px rgba(0, 0, 0, 1);
+
+  .circle {
+    position: absolute;
+
+    top: 25%;
+    height: 55%;
+  }
+
+  .circle-labels {
+    position: absolute;
+    display: flex;
+    justify-content: space-between;
+
+    font-size: var(--text-size);
+    font-weight: lighter;
+    color: var(--text-color);
+
+    top: 85%;
+    height: 15%;
+
+    margin-left: 1.5rem;
+  }
+
+  .item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    cursor: pointer;
+
+    padding-right: 1rem;
+    gap: 0.5rem;
+  }
+
+  .task-circle {
+    color: var(--mainorange-color);
+    font-size: 0.5rem;
+  }
+
+  .notebook-circle {
+    color: var(--mainblue-color);
+    font-size: 0.5rem;
+  }
+
+  .all-circle {
+    color: var(--text-color);
+    font-size: 0.5rem;
+  }
 
   .items {
     display: flex;
@@ -157,10 +186,13 @@ const Wrapper = styled.div`
   }
 
   .headers {
+    position: absolute;
     display: flex;
     align-items: center;
     flex-direction: column;
     justify-content: space-between;
+
+    height: 20%;
   }
 
   .header {

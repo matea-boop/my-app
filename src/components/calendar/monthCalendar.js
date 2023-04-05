@@ -5,10 +5,10 @@ import { TfiAngleRight } from "react-icons/tfi";
 import { MdCalendarViewWeek } from "react-icons/md";
 import { MdCalendarViewMonth } from "react-icons/md";
 import { useState } from "react";
-import axios from "axios";
 import moment from "moment/moment";
 import { useAllContext } from "../../context/indexContext";
 import TodayDay from "./todayDay";
+import getEventDataFromDB from "../../constants/dataFunctions/eventData";
 
 const daysOfWeek = [
   "Sunday",
@@ -56,20 +56,6 @@ function range(start, end) {
     { result: [], current: start }
   );
   return result;
-}
-
-async function getEventDataFromDB() {
-  const url = "http://localhost:3001/api/events";
-  try {
-    const {
-      data: { events },
-    } = await axios.get(url);
-
-    return events;
-  } catch (error) {
-    console.log("error", error);
-    return error;
-  }
 }
 
 export const MonthCalendar = ({

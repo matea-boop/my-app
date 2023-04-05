@@ -2,7 +2,6 @@ import React from "react";
 import styled from "styled-components";
 import { FiCircle } from "react-icons/fi";
 import { FiCheckCircle } from "react-icons/fi";
-import { useAllContext } from "../../../context/indexContext";
 
 function Checkbox({ checked, handleCheck }) {
   return (

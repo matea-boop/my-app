@@ -5,7 +5,6 @@ import { IconContext } from "react-icons";
 import { useState, useEffect } from "react";
 import { BiMoon } from "react-icons/bi";
 import { BiSun } from "react-icons/bi";
-
 import { menuItems } from "../constants/constants.js";
 
 export const Navbar = ({ getToggleTheme }) => {
@@ -19,7 +18,6 @@ export const Navbar = ({ getToggleTheme }) => {
     getToggleTheme(theme);
   }, [theme]);
 
-  console.log(theme);
   return (
     <IconContext.Provider
       value={{ color: "var(--text-color)", size: "1.3rem" }}
@@ -124,8 +122,8 @@ const SidebarMenu = styled.div`
     .light {
       cursor: pointer;
 
-      left: 0.1rem;
-      right: 0;
+      right: 0.1rem;
+
       bottom: 0;
 
       transition: all 0.4s;
@@ -133,7 +131,7 @@ const SidebarMenu = styled.div`
 
     .dark {
       position: absolute;
-      right: 0.1rem;
+      left: 0.1rem;
       transition: all 0.4s;
     }
 

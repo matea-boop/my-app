@@ -4,8 +4,6 @@ const tasks = require("./routes/tasks");
 const events = require("./routes/events");
 const notes = require("./routes/notes");
 const files = require("./routes/files");
-const habits = require("./routes/habits");
-const deadlines = require("./routes/deadlines");
 const connectDB = require("./db/connect");
 const cors = require("cors");
 require("dotenv").config();
@@ -24,8 +22,6 @@ app.use("/api/tasks", tasks);
 app.use("/api/events", events);
 app.use("/api/notes", notes);
 app.use("/api/files", files);
-app.use("/api/habits", habits);
-app.use("/api/deadlines", deadlines);
 
 const start = async () => {
   try {

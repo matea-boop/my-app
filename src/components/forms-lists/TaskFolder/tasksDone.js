@@ -1,22 +1,8 @@
 import React from "react";
 import styled from "styled-components";
-import axios from "axios";
 import { useAllContext } from "../../../context/indexContext";
 import { useState, useEffect } from "react";
-
-async function getDataFromDB() {
-  const url = "http://localhost:3001/api/tasks";
-  try {
-    const {
-      data: { tasks },
-    } = await axios.get(url);
-
-    return tasks;
-  } catch (error) {
-    console.log("error", error);
-    return error;
-  }
-}
+import getDataFromDB from "../../../constants/dataFunctions/taskData";
 
 export const TasksDone = () => {
   let todaysDate = new Date().toLocaleDateString();

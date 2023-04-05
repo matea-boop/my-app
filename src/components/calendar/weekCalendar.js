@@ -572,6 +572,7 @@ const Wrapper = styled.div`
     width: 100%;
     margin-top: 6px;
   }
+
   .timeline-line {
     opacity: 0.2;
     height: 60px;
@@ -582,6 +583,7 @@ const Wrapper = styled.div`
     stroke-width: 1;
     stroke: var(--sidebar-color);
   }
+
   .top-container {
     position: aboslute;
     display: flex;
@@ -630,8 +632,6 @@ const Wrapper = styled.div`
     display: grid;
     grid-template-columns: repeat(7, minmax(0, 1fr));
 
-    // background: red;
-
     height: 5%;
     width: 95%;
     top: 18%;
@@ -668,14 +668,6 @@ const Wrapper = styled.div`
     font-weight: lighter;
     text-transform: uppercase;
   }
-
-  // .day-column {
-  //   display: flex;
-  //   flex-direction: column;
-  //   align-items: center;
-
-  //   height: 100%;
-  // }
 
   .event-column {
     z-index: 2;

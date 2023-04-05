@@ -2,9 +2,6 @@ import React from "react";
 import { HiDocumentText } from "react-icons/hi";
 import { HiViewGrid } from "react-icons/hi";
 import { HiCalendar } from "react-icons/hi";
-import { HiCheckCircle } from "react-icons/hi";
-import { HiChartPie } from "react-icons/hi2";
-import { HiCog6Tooth } from "react-icons/hi2";
 
 export const menuItems = [
   {
@@ -24,18 +21,6 @@ export const menuItems = [
     text: "Notebook",
     icon: <HiDocumentText />,
     url: "/Notebook",
-  },
-  {
-    id: 4,
-    text: "Tasks",
-    icon: <HiCheckCircle />,
-    url: "/Tasks",
-  },
-  {
-    id: 5,
-    text: "Statisics",
-    icon: <HiChartPie />,
-    url: "/Statistics",
   },
 ];
 
@@ -76,4 +61,27 @@ export const motivationalText = [
     id: 8, // 100%
     text: "Congrats! All done!",
   },
+];
+
+export const activityType = [
+  { id: 0, color: "var(--mainorange-color)", actName: "personal" },
+  { id: 1, color: "var(--mainred-color)", actName: "work/study" },
+  { id: 2, color: "var(--maingreen-color)", actName: "meeting" },
+  { id: 2, color: "var(--mainblue-color)", actName: "appointment" },
+];
+
+export const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+export const monthsOfYear = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
 ];

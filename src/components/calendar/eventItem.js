@@ -18,7 +18,6 @@ const activityType = [
 export const EventItem = ({
   event,
   timeLine,
-  type,
   getHover,
   getEvent,
   getTopMargin,
@@ -34,7 +33,6 @@ export const EventItem = ({
     .utc(moment(event.endTime, "HH:mm").diff(moment(event.startTime, "HH:mm")))
     .format("HH:mm");
   const timeInPixels = moment.duration(timeDifference).asMinutes();
-
   const choiceRef = useRef();
 
   useEffect(() => {
@@ -93,40 +91,19 @@ export const EventItem = ({
     <Wrapper
       onMouseOver={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
-      style={
-        type === "week-calendar"
-          ? {
-              position: "absolute",
-              minHeight: "40px",
-              height: `${timeInPixels}px`,
-              marginTop: `${pixel + 6}px`,
-              marginLeft: "0.2rem",
-              marginRight: "0.2rem",
-              background: "var(--body-color)",
-
-              boxShadow: "0px 0px 7px -4px rgba(0, 0, 0, 1)",
-              border: "1px solid var(--sidebar-color)",
-
-              width: "calc(100% / 7)",
-              // transition: "all 0.2s",
-            }
-          : {
-              position: "absolute",
-              height: "20%",
-              width: "100%",
-              marginBottom: "0.3rem",
-              background: "rgba(236, 165, 66, 0.2)",
-            }
-      }
+      style={{
+        position: "absolute",
+        minHeight: "40px",
+        height: `${timeInPixels}px`,
+        marginTop: `${pixel + 6}px`,
+        marginLeft: "0.2rem",
+        marginRight: "0.2rem",
+        background: "var(--eventbox-color)",
+        boxShadow: "0px 0px 7px -4px rgba(0, 0, 0, 1)",
+        width: "calc(100% / 7)",
+      }}
     >
-      <div
-        className="type-line"
-        style={
-          type === "week-calendar"
-            ? { border: `2px solid ${color}` }
-            : { border: `2px solid var(--text-color)` }
-        }
-      ></div>
+      <div className="type-line" style={{ border: `2px solid ${color}` }}></div>
       <div className="event-content">
         <div className="shorter">
           <div className="event-time">
@@ -263,7 +240,8 @@ const Wrapper = styled.div`
     height: 1rem;
     font-size: 1rem;
 
-    right: 1rem;
+    right: 0.1rem;
+    top: 0.7rem;
 
     opacity: 1;
 

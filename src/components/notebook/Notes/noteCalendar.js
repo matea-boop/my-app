@@ -7,9 +7,9 @@ import { TfiAngleRight } from "react-icons/tfi";
 export const NoteCalendar = ({ getDate }) => {
   const today = moment(new Date()).format("DD/MM/YYYY");
   const [dateClicked, setDateClicked] = useState(today);
-  const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
-  const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
-  const [currentDate, setCurrentDate] = useState(new Date().getDate());
+  const currentMonth = new Date().getMonth();
+  const currentYear = new Date().getFullYear();
+  const currentDate = new Date().getDate();
   const curr = new Date();
   const firstD = new Date(curr.setDate(curr.getDate() - curr.getDay()));
   const lastD = new Date(curr.setDate(curr.getDate() - curr.getDay() + 6));
@@ -81,7 +81,6 @@ export const NoteCalendar = ({ getDate }) => {
 
   useEffect(() => {
     getDate(dateClicked);
-    console.log(dateClicked);
   }, [dateClicked]);
 
   return (

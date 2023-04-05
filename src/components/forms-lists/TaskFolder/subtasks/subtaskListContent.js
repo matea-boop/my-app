@@ -7,15 +7,15 @@ function SubtaskListContent({
   taskCheck,
   setTaskChecked,
   taskList,
-  setListBoolean,
+  getListBoolean,
 }) {
   return (
-    <Wrapper className="links">
+    <Wrapper>
       {taskList && taskList.length > 0
         ? taskList.map((task) => {
             {
               return (
-                <div key={task._id}>
+                <div key={task._id} className="container">
                   {task.subtasks && clicked === task._id
                     ? task.subtasks.map((subtask, index) => (
                         <SubtaskItem
@@ -24,7 +24,7 @@ function SubtaskListContent({
                           subtaskIndex={index}
                           setTaskChecked={setTaskChecked}
                           subtaskList={task.subtasks}
-                          setListBoolean={setListBoolean}
+                          getListBoolean={getListBoolean}
                           key={subtask.id}
                           subtask={subtask}
                           subtaskStatus={subtask.subtaskStatus}
@@ -49,17 +49,13 @@ const Wrapper = styled.div`
 
   width: 100%;
   overflow: hidden;
+  border-radius: var(--border-radius);
 
-  .links {
-    position: relative;
+  margin-top: 0.3rem;
+  animation: move 0.1s forwards;
 
+  .container {
     width: 100%;
-
-    animation: move 0.1s forwards;
-  }
-
-  &:last-child {
-    border-radius: 0 0 var(--border-radius) var(--border-radius);
   }
 
   @keyframes move {

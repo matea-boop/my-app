@@ -9,53 +9,38 @@ import SubtaskListContent from "./subtasks/subtaskListContent";
 import { useAllContext } from "../../../context/indexContext";
 import SubtaskBar from "./subtasks/subtaskBar";
 import axios from "axios";
+import getDataFromDB from "../../../constants/dataFunctions/taskData";
 
-async function getDataFromDB() {
-  const url = "http://localhost:3001/api/tasks";
-  try {
-    const {
-      data: { tasks },
-    } = await axios.get(url);
-
-    return tasks;
-  } catch (error) {
-    console.log("error", error);
-    return error;
-  }
-}
-
-function TaskItem({ task, type }) {
+function TaskItem({ task }) {
   const {
-    isDeleted,
-    isSubtaskStatusChanged,
     taskDeleted,
     taskNotd,
     isTaskChecked,
     taskChecked,
     taskUnchecked,
+    isSubtaskStatusChanged,
   } = useAllContext();
+  // let list = [];
+  // task.subtasks.map((sub) => list.push(sub.subtaskStatus));
   const [subtasks, setSubtasks] = useState(task ? task.subtasks : []);
+  const list = subtasks.map((sub) => sub.subtaskStatus);
+  const [listBooleanSubtasks, setListBooleanSubtasks] = useState([...list]);
   const [taskList, setTaskList] = useState([]);
   const [openMenu, setOpenMenu] = useState(false);
   const [checked, setChecked] = useState(false);
   const [clicked, setClicked] = useState("");
   const [subtaskArrow, setSubtaskArrow] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
-
+  const itemHeight = 17;
+  const itemOpacity = checked ? 0.5 : 1;
   let choiceRef = useRef();
   let divRef = useRef();
   let subtaskRef = useRef();
   let arrowRef = useRef();
-  let list = [];
-  task.subtasks.forEach((sub) => list.push(sub.subtaskStatus));
-  const [listBooleanSubtasks, setListBooleanSubtasks] = useState([...list]);
-
-  const itemHeight = type === "mainTask" ? 8.5 : 17;
-  const itemOpacity = checked ? 0.5 : 1;
 
   useEffect(() => {
     getDataFromDB().then((res) => setTaskList(res));
-  }, [openMenu, isTaskChecked, clicked, subtaskArrow]);
+  }, [openMenu, isTaskChecked, clicked, checked, task.status]);
 
   useEffect(() => {
     let handler = (event) => {
@@ -93,13 +78,23 @@ function TaskItem({ task, type }) {
   }, []);
 
   useEffect(() => {
-    if (task.status === true) {
-      setChecked(true);
-      taskChecked();
+    if (listBooleanSubtasks.length > 0) {
+      if (!listBooleanSubtasks.includes(false)) {
+        taskChecked();
+        setChecked(true);
+      } else {
+        taskUnchecked();
+        setChecked(false);
+      }
     } else {
-      setChecked(false);
-      taskUnchecked();
+      if (task.status === true) {
+        setChecked(true);
+      } else {
+        setChecked(false);
+      }
     }
+    console.log(task.status);
+    console.log(listBooleanSubtasks);
   }, [task.status]);
 
   const handleCheck = async () => {
@@ -113,6 +108,29 @@ function TaskItem({ task, type }) {
       status: !checked,
     });
   };
+
+  useEffect(() => {
+    const changeSubtasks = async () => {
+      for (let i = 0; i < subtasks.length; i++) {
+        subtasks[i] = { ...subtasks[i], subtaskStatus: checked };
+      }
+      await axios.patch(`http://localhost:3001/api/tasks/${task._id}`, {
+        subtasks: subtasks,
+      });
+    };
+
+    if (checked) {
+      changeSubtasks();
+      let list = subtasks.map((sub) => sub.subtaskStatus);
+      setListBooleanSubtasks([...list]);
+    } else {
+      if (!list.includes(false)) {
+        changeSubtasks();
+        let list = subtasks.map((sub) => sub.subtaskStatus);
+        setListBooleanSubtasks([...list]);
+      }
+    }
+  }, [checked, isTaskChecked]);
 
   const deleteFromDB = async (idToDelete) => {
     taskDeleted();
@@ -144,41 +162,33 @@ function TaskItem({ task, type }) {
     setSubtaskArrow(!subtaskArrow);
   };
 
+  const getListBoolean = (value) => {
+    setListBooleanSubtasks(value);
+  };
+
   return (
     <Wrapper
-      id={type === "mainTask" ? "main" : "task"}
-      style={
-        type === "main-calendar"
-          ? {
-              backgroundColor: "rgba(64, 94, 255, 0.2)",
-              height: "50%",
-              opacity: `${itemOpacity}`,
-            }
-          : {
-              backgroundColor: "var(--box-color)",
-              height: `${itemHeight}%`,
-              opacity: `${itemOpacity}`,
-            }
-      }
+      id="task"
+      style={{
+        backgroundColor: "var(--taskbox-color)",
+        height: `${itemHeight}%`,
+        opacity: `${itemOpacity}`,
+      }}
       ref={divRef}
     >
       <div className="task-details">
-        {/* CHECKBOX */}
-
         <Checkbox
           className="checkbox"
           checked={checked}
           handleCheck={handleCheck}
         />
         <p className="task-title">{task.title}</p>
-
         <div
           className="icon-container"
           style={
             checked ? { pointerEvents: "none" } : { pointerEvents: "auto" }
           }
         >
-          {/* SUBTASK ARROW */}
           <div ref={arrowRef}>
             <TfiArrowCircleDown
               style={
@@ -194,8 +204,6 @@ function TaskItem({ task, type }) {
               onClick={arrowClick}
             />
           </div>
-
-          {/* MENU EDIT / DELETE */}
           <div ref={choiceRef} className="relat">
             <div className="icon">
               {" "}
@@ -226,9 +234,6 @@ function TaskItem({ task, type }) {
           </div>
         </div>
       </div>
-
-      {/* SUBTASK BAR */}
-
       <div
         className="subtask-bar-container"
         style={
@@ -239,21 +244,14 @@ function TaskItem({ task, type }) {
       >
         <SubtaskBar listBoolean={listBooleanSubtasks} checked={checked} />
       </div>
-
-      {/* SUBTASK LIST */}
-
       <div className="links-menu" ref={subtaskRef}>
         {subtaskArrow ? (
           <SubtaskListContent
             taskList={taskList}
             taskCheck={checked}
-            listBoolean={listBooleanSubtasks}
-            setListBoolean={setListBooleanSubtasks}
+            getListBoolean={getListBoolean}
             setTaskChecked={setChecked}
-            dropdownOpen={subtaskArrow}
-            task={task}
             clicked={clicked}
-            setClicked={setClicked}
           />
         ) : null}
       </div>
@@ -277,7 +275,7 @@ const Wrapper = styled.div`
   align-items: flex-start;
   justify-content: space-between;
 
-  background-color: var(--box-color);
+  background-color: var(--taskbox-color);
   border-radius: var(--border-radius);
   color: var(--text-color);
   box-shadow: 0px 0px 7px -4px rgba(0, 0, 0, 1);
@@ -285,10 +283,6 @@ const Wrapper = styled.div`
   width: 100%;
 
   margin-bottom: 3%;
-
-  #main-calendar {
-    background-color: var(--sidebar-color);
-  }
 
   .task-details {
     display: flex;

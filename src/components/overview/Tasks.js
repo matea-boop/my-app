@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
 import styled from "styled-components";
 import TaskPagination from "../forms-lists/TaskFolder/taskPagination";
 import TaskListContent from "../forms-lists/TaskFolder/taskListContent";
@@ -19,17 +18,13 @@ export const Tasks = () => {
   return (
     <Wrapper>
       <div className="title">
-        <div className="title-tasks">
-          <h1>Tasks</h1>
-          <div className="tasks-done">
-            <TasksDone />
-          </div>
+        <h1>Tasks</h1>
+        <div className="tasks-done">
+          <TasksDone />
         </div>
-        <Link to="/Tasks">View Tasks</Link>
       </div>
       <div className="task-list">
         <TaskListContent
-          ovType="overviewTasks"
           page={page}
           totalPages={totalPages}
           setTotalPages={setTotalPages}
@@ -64,19 +59,11 @@ const Wrapper = styled.div`
   .title {
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
 
     height: 20%;
     color: var(--text-color);
-
-    .title-tasks {
-      display: flex;
-      align-items: center;
-      flex-direction: row;
-      justify-content: space-between;
-      margin: 1.5rem 0.5rem 1.3rem 1.5rem;
-    }
 
     h1 {
       display: flex;

@@ -5,8 +5,6 @@ import { IconContext } from "react-icons";
 import { useAllContext } from "../context/indexContext";
 import TaskForm from "../components/forms-lists/TaskFolder/taskReducer/taskForm";
 import EventForm from "./forms-lists/EventFolder/EventForm";
-import HabitForm from "./forms-lists/HabitFolder/HabitForm";
-import DeadlineForm from "./forms-lists/DeadlineFolder/DeadlineForm";
 
 function AddButton() {
   const {
@@ -19,12 +17,6 @@ function AddButton() {
     isEventModalOpen,
     eventModalOpen,
     eventModalClose,
-    isHabitModalOpen,
-    habitModalOpen,
-    habitModalClose,
-    isDeadlineModalOpen,
-    deadlineModalOpen,
-    deadlineModalClose,
   } = useAllContext();
   const [getId, setGetId] = useState("");
 
@@ -56,33 +48,7 @@ function AddButton() {
       ),
     },
     {
-      id: 3,
-      text: "Habit",
-      url: "/AddHabit",
-      element: (
-        <HabitForm
-          type="add"
-          isHabitModalOpen={isHabitModalOpen}
-          habitModalClose={habitModalClose}
-          habitModalOpen={habitModalOpen}
-        />
-      ),
-    },
-    {
       id: 4,
-      text: "Deadline",
-      url: "AddDeadline",
-      element: (
-        <DeadlineForm
-          type="add"
-          isDeadlineModalOpen={isDeadlineModalOpen}
-          deadlineModalOpen={deadlineModalOpen}
-          deadlineModalClose={deadlineModalClose}
-        />
-      ),
-    },
-    {
-      id: 5,
       text: "Notebook",
       url: "/Notebook",
       element: null,
@@ -142,8 +108,6 @@ function AddButton() {
                   addBtnClose();
                   modalOpen();
                   eventModalOpen();
-                  habitModalOpen();
-                  deadlineModalOpen();
                 }}
                 style={
                   getId !== "" ? { opacity: "0", transition: " 0s" } : null
@@ -155,10 +119,7 @@ function AddButton() {
           })}
         </ul>
 
-        {isModalOpen ||
-        isEventModalOpen ||
-        isHabitModalOpen ||
-        deadlineModalOpen ? (
+        {isModalOpen || isEventModalOpen ? (
           <div>
             {linksAddBtn.map(({ id, element }) => {
               if (getId === id) {

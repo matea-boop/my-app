@@ -2,22 +2,8 @@ import React from "react";
 import { BsFillCircleFill } from "react-icons/bs";
 import styled from "styled-components";
 import { useState, useEffect } from "react";
-import axios from "axios";
 import { useAllContext } from "../../../context/indexContext";
-
-async function getDataFromDB() {
-  const url = "http://localhost:3001/api/tasks";
-  try {
-    const {
-      data: { tasks },
-    } = await axios.get(url);
-
-    return tasks;
-  } catch (error) {
-    console.log("error", error);
-    return error;
-  }
-}
+import getTaskDataFromDB from "../../../constants/dataFunctions/taskData";
 
 export const TaskPagination = ({ totalPages, handleClick, pageActive }) => {
   const { isModalOpen, isDeleted, isTaskChecked } = useAllContext();
@@ -25,7 +11,7 @@ export const TaskPagination = ({ totalPages, handleClick, pageActive }) => {
   const pages = [...Array(totalPages).keys()].map((num) => num + 1);
 
   useEffect(() => {
-    getDataFromDB().then((res) => setTaskList(res));
+    getTaskDataFromDB().then((res) => setTaskList(res));
   }, [isModalOpen, isDeleted, isTaskChecked]);
 
   return (

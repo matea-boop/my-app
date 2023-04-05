@@ -15,18 +15,6 @@ import {
   FILE_NOT_DELETED,
   FILE_MODAL_CLOSE,
   FILE_MODAL_OPEN,
-  HABIT_MODAL_CLOSE,
-  HABIT_MODAL_OPEN,
-  HABIT_CLICKED,
-  HABIT_UNCLICKED,
-  HABIT_DELETED,
-  HABIT_NOT_DELETED,
-  DEADLINE_MODAL_OPEN,
-  DEADLINE_MODAL_CLOSE,
-  DEADLINE_DELETED,
-  DEADLINE_NOT_DELETED,
-  DEADLINE_EDITED,
-  DEADLINE_NOT_EDITED,
   EVENT_DELETED,
   EVENT_NOT_DELETED,
   EVENT_EDITED,
@@ -93,42 +81,6 @@ const reducer = (state, action) => {
   }
   if (action.type === FILE_MODAL_OPEN) {
     return { ...state, isFileModalOpen: true };
-  }
-  if (action.type === HABIT_MODAL_CLOSE) {
-    return { ...state, isHabitModalOpen: false };
-  }
-  if (action.type === HABIT_MODAL_OPEN) {
-    return { ...state, isHabitModalOpen: true };
-  }
-  if (action.type === HABIT_CLICKED) {
-    return { ...state, isHabitClicked: true };
-  }
-  if (action.type === HABIT_UNCLICKED) {
-    return { ...state, isHabitClicked: false };
-  }
-  if (action.type === HABIT_DELETED) {
-    return { ...state, isHabitDeleted: true };
-  }
-  if (action.type === HABIT_NOT_DELETED) {
-    return { ...state, isHabitDeleted: false };
-  }
-  if (action.type === DEADLINE_MODAL_OPEN) {
-    return { ...state, isDeadlineModalOpen: true };
-  }
-  if (action.type === DEADLINE_MODAL_CLOSE) {
-    return { ...state, isDeadlineModalOpen: false };
-  }
-  if (action.type === DEADLINE_DELETED) {
-    return { ...state, isDeadlineDeleted: true };
-  }
-  if (action.type === DEADLINE_NOT_DELETED) {
-    return { ...state, isDeadlineDeleted: false };
-  }
-  if (action.type === DEADLINE_EDITED) {
-    return { ...state, isDeadlineChanged: true };
-  }
-  if (action.type === DEADLINE_NOT_EDITED) {
-    return { ...state, isDeadlineChanged: false };
   }
 };
 

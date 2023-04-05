@@ -10,23 +10,10 @@ import { useEffect, useState, useRef } from "react";
 import { useAllContext } from "../../../context/indexContext";
 import FileForm from "./fileForm";
 
-export const FileItem = ({ file, fileList, clicked }) => {
+export const FileItem = ({ file, clicked }) => {
   const { fileDeleted, fileNotDeleted } = useAllContext();
   const divRef = useRef();
   const [editModalOpen, setEditModalOpen] = useState(false);
-
-  // useEffect(() => {
-  //   let handler = (event) => {
-  //     if (divRef.current.contains(event.target)) {
-  //       setClicked("active");
-  //     }
-  //   };
-  //   document.addEventListener("mousedown", handler);
-  //   return () => {
-  //     setClicked("");
-  //     document.removeEventListener("mousedown", handler);
-  //   };
-  // }, []);
 
   const deleteFromDB = async (idToDelete) => {
     fileDeleted();

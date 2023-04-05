@@ -1,14 +1,5 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { RxUnderline } from "react-icons/rx";
-import { RxFontBold } from "react-icons/rx";
-import { RxStrikethrough } from "react-icons/rx";
-import { RxFontItalic } from "react-icons/rx";
-import { RxTextAlignLeft } from "react-icons/rx";
-import { RxTextAlignCenter } from "react-icons/rx";
-import { RxTextAlignJustify } from "react-icons/rx";
-import { RxTextAlignRight } from "react-icons/rx";
-import { RxListBullet } from "react-icons/rx";
 import axios from "axios";
 import moment from "moment/moment";
 import NoteItem from "./noteItem";
@@ -21,22 +12,17 @@ export const NoteField = ({ date, notesList, getWords }) => {
   const today = moment(new Date()).format("DD/MM/YYYY");
   const url = "http://localhost:3001/api/notes";
 
-  const dateList = [];
-
-  const x =
-    notesList.length > 0
-      ? notesList.map((note) => {
-          dateList.push(note.date);
-        })
-      : null;
+  const dateList =
+    notesList.length > 0 ? notesList.map((note) => note.date) : [];
 
   useEffect(() => {
-    const y =
-      notesList.length > 0
-        ? notesList.map((note) => {
-            return note.date === today ? setNoteIndex(note._id) : null;
-          })
-        : null;
+    if (notesList.length > 0) {
+      for (let i = 0; i < notesList.length; i++) {
+        if (notesList[i].date === today) {
+          setNoteIndex(notesList[i]._id);
+        }
+      }
+    }
   });
 
   const getText = (value) => {
@@ -70,26 +56,29 @@ export const NoteField = ({ date, notesList, getWords }) => {
 
   const onClick = () => {
     setChange(!change);
-    const updateText = async () => {
+
+    var updateText = async () => {
       await axios.patch(`http://localhost:3001/api/notes/${noteIndex}`, {
         content: text,
         numberOfWords: wordCount,
       });
     };
+
     if (dateList.length > 0 && notesList.length > 0) {
       if (dateList.includes(date)) {
-        if (date === today) {
+        if (date === today && text !== "") {
           updateText();
         }
-        console.log("ne moze");
         return;
       } else {
-        console.log("moze");
-        putDataToDB();
+        if (text !== "" && text.trim()) {
+          putDataToDB();
+        }
       }
     } else {
-      console.log("jes");
-      putDataToDB();
+      if (text !== "" && text.trim) {
+        putDataToDB();
+      }
     }
   };
 
@@ -110,9 +99,6 @@ export const NoteField = ({ date, notesList, getWords }) => {
                     date={date}
                     getNumberOfWords={getNumberOfWords}
                     getText={getText}
-                    text={text}
-                    notesList={notesList}
-                    wordCount={wordCount}
                   />
                 );
               }
@@ -191,7 +177,7 @@ const Wrapper = styled.div`
     justify-content: center;
     align-items: center;
 
-    // width: 20%;
+    width: 20%;
     height: 100%;
 
     font-size: var(--text-size);
@@ -278,6 +264,7 @@ const Wrapper = styled.div`
     font-weight: lighter;
     opacity: 0.5;
 
+    width: 80%;
     padding: 0 2rem 0 2rem;
   }
 

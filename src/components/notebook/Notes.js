@@ -4,22 +4,8 @@ import NoteField from "./Notes/noteField";
 import NotePercentBar from "./Notes/notePercentBar";
 import NoteCalendar from "./Notes/noteCalendar";
 import { useEffect } from "react";
-import axios from "axios";
 import moment from "moment";
-
-async function getDataFromDB() {
-  const url = "http://localhost:3001/api/notes";
-  try {
-    const {
-      data: { notes },
-    } = await axios.get(url);
-
-    return notes;
-  } catch (error) {
-    console.log("error", error);
-    return error;
-  }
-}
+import getNotesDataFromDB from "../../constants/dataFunctions/noteData";
 
 export const Notes = () => {
   const [date, setDate] = useState("");
@@ -30,23 +16,23 @@ export const Notes = () => {
   const getDate = (value) => {
     setDate(value);
   };
+
   const getWords = (value) => {
     setWords(value);
   };
 
   useEffect(() => {
-    getDataFromDB().then((res) => setNotesList(res));
+    getNotesDataFromDB().then((res) => setNotesList(res));
   }, [date, notesList]);
 
   useEffect(() => {
-    const x =
-      notesList.length > 0
-        ? notesList.map((note) => {
-            if (note.date === today) {
-              return setWords(note.numberOfWords);
-            }
-          })
-        : null;
+    if (notesList.length > 0) {
+      for (let i = 0; i < notesList.length; i++) {
+        if (notesList[i].date === today) {
+          setWords(notesList[i].numberOfWords);
+        }
+      }
+    }
   }, [notesList]);
 
   return (

@@ -2,9 +2,6 @@ import React from "react";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import FileItem from "./fileItem";
-import FileForm from "./fileForm";
-
-const colors = [{ orange: "background-color: rgba(236, 165, 66, 0.5);" }];
 
 export const FileList = ({ fileList, page, setTotalPages }) => {
   const filesPerPage = 4;
@@ -39,7 +36,7 @@ export const FileList = ({ fileList, page, setTotalPages }) => {
               onClick={() => setClicked(file._id)}
               id={file._id === clicked ? "active" : "inactive"}
             >
-              <FileItem file={file} fileList={fileList} clicked={clicked} />
+              <FileItem file={file} clicked={clicked} />
             </div>
           );
         })

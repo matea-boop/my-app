@@ -1,22 +1,14 @@
 import React from "react";
 import styled from "styled-components";
 import { v4 as uuid } from "uuid";
-import { toast } from "react-hot-toast";
 import moment from "moment/moment";
 import axios from "axios";
 import { useState, useEffect, useRef } from "react";
-import { useAllContext } from "../../../context/indexContext";
 
-export const FileForm = ({
-  type,
-  file,
-  isFileModalOpen,
-  fileModalOpen,
-  fileModalClose,
-}) => {
+export const FileForm = ({ type, file, isFileModalOpen, fileModalClose }) => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const [date, setDate] = useState(moment().format("DD/MM/YYYY"));
+  const date = moment().format("DD/MM/YYYY");
   const url = "http://localhost:3001/api/files";
   const formRef = useRef();
 

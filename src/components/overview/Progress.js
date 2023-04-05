@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import AreaChartProgress from "./Progress/areaChart";
-import { Link } from "react-router-dom";
 import { BsFillCircleFill } from "react-icons/bs";
 
 export const Progress = () => {
@@ -35,7 +34,6 @@ export const Progress = () => {
     <Wrapper>
       <div className="title-p">
         <div className="title-progress">Progress</div>
-        <Link to="/Statistics">View Statistics</Link>
       </div>
       <div className="buttons-area">
         <div className="buttons-area-1">

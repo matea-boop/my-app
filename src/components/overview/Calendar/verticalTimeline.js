@@ -1,33 +1,19 @@
 import moment from "moment/moment";
 import React from "react";
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect } from "react";
 import styled from "styled-components";
-import axios from "axios";
 import EventList from "../../forms-lists/EventFolder/eventList";
 import Loading from "../../Loading";
 import { useAllContext } from "../../../context/indexContext";
-
-async function getEventDataFromDB() {
-  const url = "http://localhost:3001/api/events";
-  try {
-    const {
-      data: { events },
-    } = await axios.get(url);
-
-    return events;
-  } catch (error) {
-    console.log("error", error);
-    return error;
-  }
-}
+import getEventDataFromDB from "../../../constants/dataFunctions/eventData";
 
 export const VerticalTimeline = ({ date }) => {
   const { isEventModalOpen, isEventDeleted, isEventChanged } = useAllContext();
   const timeLine = [];
-  const selectedList = [];
+
   const [loading, setLoading] = useState(true);
   const [eventList, setEventList] = useState([]);
-  const [timePixel, setTimePixel] = useState(0);
+  const [timeHeightInPixels, setTimeHeightInPixels] = useState(0);
   const [timeLinePosition, setTimeLinePosition] = useState(6);
 
   useEffect(() => {
@@ -38,21 +24,18 @@ export const VerticalTimeline = ({ date }) => {
     });
   }, [date, isEventModalOpen, isEventDeleted, isEventChanged]);
 
-  const x =
-    eventList && eventList.length > 0
-      ? eventList.map((event) =>
-          event.date === date ? selectedList.push(event) : null
-        )
-      : null;
-  const sortedTimeList =
-    selectedList && selectedList.length > 0
-      ? selectedList.sort((a, b) => {
-          return (
-            new Date(...a.startTime.split(":").reverse()) -
-            new Date(...b.startTime.split(":").reverse())
-          );
-        })
-      : null;
+  const selectedList =
+    eventList.length > 0
+      ? eventList
+          .filter((event) => event.date === date)
+          .sort((a, b) => {
+            return (
+              new Date(...a.startTime.split(":").reverse()) -
+              new Date(...b.startTime.split(":").reverse())
+            );
+          })
+      : [];
+
   const firstTime = selectedList.length > 0 ? selectedList[0].startTime : null;
 
   for (var i = 0; i <= 23; i++) {
@@ -77,20 +60,20 @@ export const VerticalTimeline = ({ date }) => {
     timeLine.map((time, index) => {
       if (time === firstTime) {
         const i = index + 6;
-        setTimePixel(i);
+        setTimeHeightInPixels(i);
       }
     });
   }, [firstTime]);
 
   useEffect(() => {
-    const x = timePixel - 20;
+    const x = timeHeightInPixels - 20;
     const y = timeLinePosition - 20;
     if (selectedList.length > 0) {
       document.getElementById("scroll").scrollTop = x;
     } else {
       document.getElementById("scroll").scrollTop = y;
     }
-  }, [timePixel, date, firstTime, timeLinePosition]);
+  }, [timeHeightInPixels, date, firstTime, timeLinePosition]);
 
   useEffect(() => {
     const intervalTime = setInterval(() => {

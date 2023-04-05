@@ -14,6 +14,7 @@ import moment from "moment/moment";
 import axios from "axios";
 import { useAllContext } from "../../../context/indexContext";
 import { da } from "date-fns/locale";
+import getNotesDataFromDB from "../../../constants/dataFunctions/noteData";
 
 async function getDataProgressFromDB() {
   const url = "http://localhost:3001/api/tasks/ProgressStatistics";
@@ -26,19 +27,7 @@ async function getDataProgressFromDB() {
     return error;
   }
 }
-async function getNoteDataFromDB() {
-  const url = "http://localhost:3001/api/notes";
-  try {
-    const {
-      data: { notes },
-    } = await axios.get(url);
 
-    return notes;
-  } catch (error) {
-    console.log("error", error);
-    return error;
-  }
-}
 export const AreaChartProgress = ({
   button1Clicked,
   button2Clicked,
@@ -63,7 +52,7 @@ export const AreaChartProgress = ({
 
   useEffect(() => {
     getDataProgressFromDB().then((res) => setProgressList(res));
-    getNoteDataFromDB().then((res) => setNoteList(res));
+    getNotesDataFromDB().then((res) => setNoteList(res));
   }, [isModalOpen, isDeleted, isTaskChecked]);
 
   const current = moment();

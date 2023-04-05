@@ -6,6 +6,7 @@ export const NotebookBar = ({ circleWidth, notesDone }) => {
   const notes = notesDone > 69 ? 100 : ((notesDone / 70) * 100).toFixed();
   const dashArray = radius * Math.PI * 2;
   const dashOffset = dashArray - (dashArray * notes) / 100;
+
   return (
     <Wrapper>
       <div className="svg">

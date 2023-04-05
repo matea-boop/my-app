@@ -1,28 +1,12 @@
-import React, { useRef } from "react";
+import React from "react";
 import { useEffect } from "react";
 import { useState } from "react";
 import styled from "styled-components";
 import FileList from "./Files/fileList";
-import axios from "axios";
-import moment from "moment/moment";
 import FilePagination from "./Files/filePagination";
 import { useAllContext } from "../../context/indexContext";
 import FileForm from "./Files/fileForm";
-
-async function getFileDataFromDB() {
-  const url = "http://localhost:3001/api/files";
-
-  try {
-    const {
-      data: { files },
-    } = await axios.get(url);
-
-    return files;
-  } catch (error) {
-    console.log("error", error);
-    return error;
-  }
-}
+import getFileDataFromDB from "../../constants/dataFunctions/fileData";
 
 export const NoteFiles = () => {
   const {

@@ -7,20 +7,54 @@ import { useAllContext } from "../../../../context/indexContext";
 
 function SubtaskItem({
   subtaskTitle,
-  subtaskStatus,
   subtask,
   subtaskIndex,
   taskCheck,
   setTaskChecked,
-  subtaskList,
-  setListBoolean,
+  getListBoolean,
   task,
 }) {
-  const { isTaskChecked, taskUnchecked, taskChecked } = useAllContext();
-  const [subtasks, setSubtasks] = useState(task ? task.subtasks : []);
+  const {
+    isTaskChecked,
+    taskChecked,
+    taskUnchecked,
+    isSubtaskStatusChanged,
+    subtaskStatusChangedFalse,
+    subtaskStatusChangedTrue,
+  } = useAllContext();
+  const subtasks = task ? task.subtasks : [];
   const [subtaskChecked, setSubtaskChecked] = useState(false);
-  let listBoolean = [];
-  subtasks.forEach((sub) => listBoolean.push(sub.subtaskStatus));
+  const listBool = subtasks.map((sub) => sub.subtaskStatus);
+
+  useEffect(() => {
+    getListBoolean([...listBool]);
+  }, []);
+
+  useEffect(() => {
+    const changeSubtasks = async () => {
+      for (let i = 0; i < subtasks.length; i++) {
+        subtasks[i] = { ...subtasks[i], subtaskStatus: taskCheck };
+      }
+      await axios.patch(`http://localhost:3001/api/tasks/${task._id}`, {
+        subtasks: subtasks,
+      });
+    };
+
+    if (taskCheck) {
+      changeSubtasks();
+    } else {
+      if (!listBool.includes(false)) {
+        changeSubtasks();
+      } else {
+        if (subtask.subtaskStatus === true) {
+          setSubtaskChecked(true);
+        } else {
+          setSubtaskChecked(false);
+        }
+      }
+    }
+    getListBoolean([...listBool]);
+  }, [taskCheck, isTaskChecked]);
 
   const subtaskStatusUpdate = async () => {
     if (subtasks) {
@@ -34,61 +68,35 @@ function SubtaskItem({
   const subtaskHandleCheck = async () => {
     setSubtaskChecked(!subtaskChecked);
     subtaskStatusUpdate();
-    setListBoolean([...listBoolean]);
-  };
-
-  useEffect(() => {
-    // subtaskStatusUpdate();
-    if (listBoolean.length > 0 && !listBoolean.includes(false)) {
-      setTaskChecked(true);
-      const taskCompleted = async () => {
-        await axios.patch(`http://localhost:3001/api/tasks/${task._id}`, {
-          status: !taskCheck,
-        });
-      };
-      taskCompleted();
+    if (isSubtaskStatusChanged) {
+      subtaskStatusChangedFalse();
     } else {
-      setTaskChecked(false);
-      const taskCompleted = async () => {
-        await axios.patch(`http://localhost:3001/api/tasks/${task._id}`, {
-          status: !taskCheck,
-        });
-      };
-      taskCompleted();
+      subtaskStatusChangedTrue();
     }
-    setListBoolean([...listBoolean]);
-  }, [subtaskChecked]);
-
+    getListBoolean([...listBool]);
+  };
+  console.log(listBool);
   useEffect(() => {
-    const changeSubtasks = async () => {
-      subtasks.forEach(
-        (sub, i) => (subtasks[i] = { ...sub, subtaskStatus: !taskCheck })
-      );
+    getListBoolean([...listBool]);
+    const taskCompleted = async () => {
       await axios.patch(`http://localhost:3001/api/tasks/${task._id}`, {
-        subtasks: subtasks,
+        status: !taskCheck,
       });
     };
-
-    if (taskCheck) {
-      changeSubtasks();
-      setListBoolean([...listBoolean]);
-    } else {
-      if (!listBoolean.includes(false)) {
-        changeSubtasks();
-        setListBoolean([...listBoolean]);
+    if (listBool.length > 0) {
+      if (!listBool.includes(false)) {
+        setTaskChecked(true);
+        taskChecked();
+        console.log(taskCheck);
+        console.log("mjau");
+        taskCompleted();
       } else {
-        if (subtaskStatus === true) {
-          setSubtaskChecked(true);
-        } else {
-          setSubtaskChecked(false);
-        }
+        setTaskChecked(false);
+        taskUnchecked();
+        taskCompleted();
       }
     }
-  }, [taskCheck]);
-
-  useEffect(() => {
-    setListBoolean([...listBoolean]);
-  }, [isTaskChecked, task.status]);
+  }, [subtaskChecked]);
 
   return (
     <Wrapper style={taskCheck ? { display: "none" } : { display: "flex" }}>
@@ -118,7 +126,9 @@ const Wrapper = styled.div`
     align-items: center;
     justify-content: flex-start;
 
-    background-color: var(--body-color);
+    width: 100%;
+
+    background-color: var(--subtaskbox-color);
     animation: close 0.1s forwards;
 
     padding: 0.2rem 0rem 0.2rem 2rem;

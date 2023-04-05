@@ -5,36 +5,9 @@ import TodayDay from "../components/calendar/todayDay";
 import WeekCalendar from "../components/calendar/weekCalendar";
 import moment from "moment/moment";
 import { useAllContext } from "../context/indexContext";
-import axios from "axios";
 import { useEffect } from "react";
-
-async function getDataFromDB() {
-  const url = "http://localhost:3001/api/tasks";
-  try {
-    const {
-      data: { tasks },
-    } = await axios.get(url);
-
-    return tasks;
-  } catch (error) {
-    console.log("error", error);
-    return error;
-  }
-}
-
-async function getEventDataFromDB() {
-  const url = "http://localhost:3001/api/events";
-  try {
-    const {
-      data: { events },
-    } = await axios.get(url);
-
-    return events;
-  } catch (error) {
-    console.log("error", error);
-    return error;
-  }
-}
+import getTaskDataFromDB from "../constants/dataFunctions/taskData";
+import getEventDataFromDB from "../constants/dataFunctions/eventData";
 
 export const Calendar = () => {
   const {
@@ -49,7 +22,7 @@ export const Calendar = () => {
   const [taskList, setTaskList] = useState([]);
 
   useEffect(() => {
-    getDataFromDB().then((res) => setTaskList(res));
+    getTaskDataFromDB().then((res) => setTaskList(res));
 
     getEventDataFromDB().then((res) => {
       setEventList(res);

@@ -4,45 +4,12 @@ import { TfiAngleLeft } from "react-icons/tfi";
 import { TfiAngleRight } from "react-icons/tfi";
 import { useEffect, useState } from "react";
 import moment from "moment/moment";
-import axios from "axios";
 import { useAllContext } from "../../../context/indexContext";
+import getEventDataFromDB from "../../../constants/dataFunctions/eventData";
+import { activityType } from "../../../constants/constants";
+import { daysOfWeek } from "../../../constants/constants";
+import { monthsOfYear } from "../../../constants/constants";
 
-const activityType = [
-  { id: 0, color: "var(--mainorange-color)", actName: "personal" },
-  { id: 1, color: "var(--mainred-color)", actName: "work/study" },
-  { id: 2, color: "var(--maingreen-color)", actName: "meeting" },
-  { id: 2, color: "var(--mainblue-color)", actName: "appointment" },
-];
-
-async function getEventDataFromDB() {
-  const url = "http://localhost:3001/api/events";
-  try {
-    const {
-      data: { events },
-    } = await axios.get(url);
-
-    return events;
-  } catch (error) {
-    console.log("error", error);
-    return error;
-  }
-}
-
-const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-const monthsOfYear = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-];
 function getNumberOfDaysInMonth(year, month) {
   return new Date(year, month + 1, 0).getDate();
 }
@@ -70,7 +37,7 @@ export const SmallCalendar = ({ getDate }) => {
   const { isEventModalOpen } = useAllContext();
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
-  const [currentDay, setCurrentDay] = useState(new Date().getDate());
+  const currentDay = new Date().getDate();
   const currDate = new Date(currentYear, currentMonth, currentDay);
   const [selectedDate, setSelectedDate] = useState(
     new Date(currDate).getTime()
@@ -294,6 +261,8 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
 
+  color: var(--calendar-text-color);
+
   .container {
     display: flex;
     flex-direction: column;
@@ -324,7 +293,6 @@ const Wrapper = styled.div`
 
     width: 2.2rem;
 
-    opacity: 0.5;
     font-weight: lighter;
     font-size: var(--text-size);
     text-transform: uppercase;
@@ -344,7 +312,7 @@ const Wrapper = styled.div`
     font-size: var(--text-size);
 
     width: 2.2rem;
-    opacity: 0.7;
+
     cursor: pointer;
   }
 
