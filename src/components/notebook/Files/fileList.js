@@ -33,6 +33,7 @@ export const FileList = ({ fileList, page, setTotalPages }) => {
           return (
             <div
               key={file._id}
+              className="file-item"
               onClick={() => setClicked(file._id)}
               id={file._id === clicked ? "active" : "inactive"}
             >
@@ -41,14 +42,22 @@ export const FileList = ({ fileList, page, setTotalPages }) => {
           );
         })
       ) : (
-        <div className="no-files">No files</div>
+        <div
+          className="no-files"
+          style={{
+            fontSize: " 0.9rem",
+            fontWeight: "normal",
+            color: "var(--text-color)",
+          }}
+        >
+          No files
+        </div>
       )}
     </Wrapper>
   );
 };
 export default FileList;
 const Wrapper = styled.div`
-  // position: relative;
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-template-rows: 1fr 1fr;
@@ -58,8 +67,14 @@ const Wrapper = styled.div`
   gap: 0.5rem;
   margin: 0.3rem 2rem 1rem 2rem;
 
+  .file-item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
   #inactive {
-    background: var(--box-color);
+    background: var(--inactive-file-color);
     border-radius: var(--border-radius);
   }
 
@@ -67,7 +82,7 @@ const Wrapper = styled.div`
     border-radius: var(--border-radius);
 
     :nth-child(1) {
-      background: rgba(236, 165, 66, 0.2);
+      background: var(--orange-file-color);
 
       .icon {
         opacity: 1;
@@ -76,7 +91,7 @@ const Wrapper = styled.div`
     }
 
     :nth-child(2) {
-      background: rgba(64, 94, 255, 0.2);
+      background: var(--blue-file-color);
 
       .icon {
         color: var(--mainblue-color);
@@ -99,7 +114,7 @@ const Wrapper = styled.div`
     }
 
     :nth-child(3) {
-      background: rgba(55, 142, 74, 0.2);
+      background: var(--green-file-color);
 
       .icon {
         color: var(--maingreen-color);
@@ -122,7 +137,7 @@ const Wrapper = styled.div`
     }
 
     :nth-child(4) {
-      background: rgba(235, 85, 112, 0.2);
+      background: var(--red-file-color);
 
       .icon {
         color: var(--mainred-color);

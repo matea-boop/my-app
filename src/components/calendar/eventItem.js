@@ -22,6 +22,7 @@ export const EventItem = ({
   getEvent,
   getTopMargin,
   getColor,
+  type,
 }) => {
   const { eventDeleted, eventNotDeleted } = useAllContext();
   const [openMenu, setOpenMenu] = useState(false);
@@ -63,10 +64,12 @@ export const EventItem = ({
 
   useEffect(() => {
     const top = pixel - 100 + 6 + timeInPixels / 2;
-    getEvent(event);
-    getHover(hover);
-    getTopMargin(top);
-    getColor(color);
+    if (type === "week-calendar") {
+      getEvent(event);
+      getHover(hover);
+      getTopMargin(top);
+      getColor(color);
+    }
   }, [hover]);
 
   useEffect(() => {
@@ -91,17 +94,30 @@ export const EventItem = ({
     <Wrapper
       onMouseOver={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
-      style={{
-        position: "absolute",
-        minHeight: "40px",
-        height: `${timeInPixels}px`,
-        marginTop: `${pixel + 6}px`,
-        marginLeft: "0.2rem",
-        marginRight: "0.2rem",
-        background: "var(--eventbox-color)",
-        boxShadow: "0px 0px 7px -4px rgba(0, 0, 0, 1)",
-        width: "calc(100% / 7)",
-      }}
+      style={
+        type === "week-calendar"
+          ? {
+              position: "absolute",
+              minHeight: "40px",
+              height: `${timeInPixels}px`,
+              marginTop: `${pixel + 6}px`,
+              marginLeft: "0.2rem",
+              marginRight: "0.2rem",
+              background: "var(--eventbox-color)",
+              boxShadow: "0px 0px 7px -4px rgba(0, 0, 0, 1)",
+              width: "calc(100% / 7)",
+            }
+          : {
+              width: "100%;",
+              background: "var(--eventbox-color)",
+              height: "20%",
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+              boxShadow: "0px 0px 7px -4px rgba(0, 0, 0, 1)",
+            }
+      }
     >
       <div className="type-line" style={{ border: `2px solid ${color}` }}></div>
       <div className="event-content">
@@ -109,11 +125,19 @@ export const EventItem = ({
           <div className="event-time">
             {event.startTime} - {event.endTime}
           </div>
-          <div className="event-title">{event.title}</div>
+          <div className="event-tit">{event.title}</div>
         </div>
       </div>
 
-      <div className="icon-box" ref={choiceRef}>
+      <div
+        className="icon-box"
+        ref={choiceRef}
+        style={
+          type === "week-calendar"
+            ? { position: "absolute" }
+            : { marginRight: "1rem" }
+        }
+      >
         <div className="icon">
           {" "}
           <HiEllipsisVertical
@@ -169,6 +193,7 @@ const Wrapper = styled.div`
   align-items: center;
 
   border-radius: var(--border-radius);
+  margin-bottom: 0.3rem;
 
   .event-desc {
     display: none;
@@ -207,6 +232,7 @@ const Wrapper = styled.div`
     align-items: left;
     justify-content: center;
 
+    width: 70%;
     margin: 0.8rem 0.8rem 0.8rem 0;
   }
 
@@ -216,7 +242,9 @@ const Wrapper = styled.div`
     opacity: 0.5;
   }
 
-  .event-title {
+  .event-tit {
+    display: flex;
+    align-items: center;
     font-size: var(--text-size);
 
     padding-left: 0.6rem;
@@ -231,7 +259,6 @@ const Wrapper = styled.div`
 
   .icon-box {
     z-index: 8;
-    position: absolute;
     display: flex;
 
     align-items: center;

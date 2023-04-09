@@ -6,13 +6,12 @@ import { BsArrowRightShort } from "react-icons/bs";
 import { IoTrashOutline } from "react-icons/io5";
 import axios from "axios";
 import { toast } from "react-hot-toast";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { useAllContext } from "../../../context/indexContext";
 import FileForm from "./fileForm";
 
 export const FileItem = ({ file, clicked }) => {
   const { fileDeleted, fileNotDeleted } = useAllContext();
-  const divRef = useRef();
   const [editModalOpen, setEditModalOpen] = useState(false);
 
   const deleteFromDB = async (idToDelete) => {
@@ -39,7 +38,7 @@ export const FileItem = ({ file, clicked }) => {
   }, [clicked]);
 
   return (
-    <Wrapper ref={divRef}>
+    <Wrapper>
       <div className="top-row">
         <div className="icon">
           {" "}
@@ -71,11 +70,12 @@ const Wrapper = styled.div`
   justify-content: center;
   flex-direction: column;
 
-  // background: var(--box-color);
   border-radius: var(--border-radius);
   box-shadow: 0px 0px 7px -4px rgba(0, 0, 0, 1);
+  cursor: pointer;
 
   height: 100%;
+  width: 100%;
 
   .icon {
     color: var(--text-color);

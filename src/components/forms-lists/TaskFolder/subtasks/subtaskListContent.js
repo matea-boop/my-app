@@ -23,12 +23,8 @@ function SubtaskListContent({
                           taskCheck={taskCheck}
                           subtaskIndex={index}
                           setTaskChecked={setTaskChecked}
-                          subtaskList={task.subtasks}
                           getListBoolean={getListBoolean}
-                          key={subtask.id}
                           subtask={subtask}
-                          subtaskStatus={subtask.subtaskStatus}
-                          subtaskTitle={subtask.subtaskTitle}
                         />
                       ))
                     : null}

@@ -2,7 +2,7 @@ import React from "react";
 import TaskItem from "./taskListItem";
 import { useEffect, useState } from "react";
 import { useAllContext } from "../../../context/indexContext";
-import getDataFromDB from "../../../constants/dataFunctions/taskData";
+import getTaskDataFromDB from "../../../constants/dataFunctions/taskData";
 
 function TaskListContent({ page, setTotalPages }) {
   const { isModalOpen, isDeleted, isTaskChecked } = useAllContext();
@@ -13,7 +13,7 @@ function TaskListContent({ page, setTotalPages }) {
   const listHeight = 70;
 
   useEffect(() => {
-    getDataFromDB().then((res) => {
+    getTaskDataFromDB().then((res) => {
       setTaskList(res);
     });
   }, [isModalOpen, isDeleted, isTaskChecked]);

@@ -6,7 +6,6 @@ import axios from "axios";
 import { useAllContext } from "../../../../context/indexContext";
 
 function SubtaskItem({
-  subtaskTitle,
   subtask,
   subtaskIndex,
   taskCheck,
@@ -110,7 +109,7 @@ function SubtaskItem({
           style={subtaskChecked ? { opacity: "0.5" } : { opacity: "1" }}
           className="subtask-title"
         >
-          {subtaskTitle}
+          {subtask.subtaskTitle}
         </div>
       </div>
     </Wrapper>

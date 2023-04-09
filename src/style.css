@@ -48,6 +48,17 @@
   --tasks-color: rgba(236, 165, 66, 1);
   --notes-color: rgba(64, 94, 255, 1);
   --all-color: rgba(232, 244, 250, 1);
+
+  --blue-file-color: rgba(64, 94, 255, 0.2);
+  --red-file-color: rgba(235, 85, 112, 0.2);
+  --green-file-color: rgba(55, 142, 74, 0.2);
+  --orange-file-color: rgba(236, 165, 66, 0.2);
+  --inactive-file-color: rgba(36, 36, 36, 1);
+
+  --scroll-color: rgba(232, 244, 250, 0.5);
+
+  --month-cell-color: rgba(36, 36, 36, 1);
+
   --margin-size: 0.8rem;
   --border-radius: 0.8rem;
   --text-size: 0.7rem;
@@ -85,6 +96,16 @@
   --tasks-color: rgba(236, 165, 66, 1);
   --notes-color: rgba(64, 94, 255, 1);
   --all-color: rgba(21, 21, 21, 1);
+
+  --blue-file-color: rgba(197, 206, 255, 255);
+  --red-file-color: rgba(235, 85, 112, 0.2);
+  --green-file-color: rgba(55, 142, 74, 0.2);
+  --orange-file-color: rgba(250, 233, 208, 1);
+  --inactive-file-color: rgba(36, 36, 36, 0.2);
+
+  --scroll-color: rgba(21, 21, 21, 0.5);
+
+  --month-cell-color: rgba(36, 36, 36, 0.1);
 
   --margin-size: 0.8rem;
   --border-radius: 0.8rem;

@@ -19,6 +19,7 @@ export const NoteFiles = () => {
   const [totalPages, setTotalPages] = useState(0);
   const [page, setPage] = useState(1);
   const [pageActive, setPageActive] = useState(page);
+  const [fileOpen, setFileOpen] = useState(false);
 
   useEffect(() => {
     getFileDataFromDB().then((res) => setFileList(res));
@@ -33,7 +34,13 @@ export const NoteFiles = () => {
     <Wrapper>
       <div className="header-line">
         <div className="header">Files</div>
-        <button className="add-btn" onClick={() => fileModalOpen()}>
+        <button
+          className="add-btn"
+          onClick={() => {
+            setFileOpen(!fileOpen);
+            fileModalOpen();
+          }}
+        >
           Add new
         </button>
       </div>
@@ -45,7 +52,13 @@ export const NoteFiles = () => {
           setTotalPages={setTotalPages}
         />
       </div>
-      <div style={isFileModalOpen ? { display: "block" } : { display: "none" }}>
+      <div
+        style={
+          isFileModalOpen && fileOpen
+            ? { display: "block" }
+            : { display: "none" }
+        }
+      >
         <FileForm
           type="add"
           isFileModalOpen={isFileModalOpen}

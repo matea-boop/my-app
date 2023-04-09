@@ -16,7 +16,7 @@ export const Calendar = () => {
     isTaskChecked,
     isEventModalOpen,
   } = useAllContext();
-  const [type, setType] = useState("week");
+  const [type, setType] = useState("month");
   const [date, setDate] = useState(moment().format("DD/MM/YYYY"));
   const [eventList, setEventList] = useState([]);
   const [taskList, setTaskList] = useState([]);

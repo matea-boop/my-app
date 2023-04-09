@@ -11,18 +11,15 @@ import SubtaskBar from "./subtasks/subtaskBar";
 import axios from "axios";
 import getDataFromDB from "../../../constants/dataFunctions/taskData";
 
-function TaskItem({ task }) {
+function TaskItem({ task, type }) {
   const {
     taskDeleted,
     taskNotd,
     isTaskChecked,
     taskChecked,
     taskUnchecked,
-    isSubtaskStatusChanged,
   } = useAllContext();
-  // let list = [];
-  // task.subtasks.map((sub) => list.push(sub.subtaskStatus));
-  const [subtasks, setSubtasks] = useState(task ? task.subtasks : []);
+  const subtasks = task ? task.subtasks : [];
   const list = subtasks.map((sub) => sub.subtaskStatus);
   const [listBooleanSubtasks, setListBooleanSubtasks] = useState([...list]);
   const [taskList, setTaskList] = useState([]);
@@ -31,7 +28,7 @@ function TaskItem({ task }) {
   const [clicked, setClicked] = useState("");
   const [subtaskArrow, setSubtaskArrow] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
-  const itemHeight = 17;
+  const itemHeight = type === "main-calendar" ? 50 : 17;
   const itemOpacity = checked ? 0.5 : 1;
   let choiceRef = useRef();
   let divRef = useRef();

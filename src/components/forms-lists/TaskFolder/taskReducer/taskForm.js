@@ -5,9 +5,13 @@ import { toast } from "react-hot-toast";
 import { HiOutlineXMark } from "react-icons/hi2";
 import { IconContext } from "react-icons";
 import axios from "axios";
+import getTaskDataFromDB from "../../../../constants/dataFunctions/taskData";
+import { useAllContext } from "../../../../context/indexContext";
 
 function TaskForm({ type, task, modalOpen, modalClose, isModalOpen }) {
+  const { isTaskChecked, isDeleted } = useAllContext();
   const [title, setTitle] = useState("");
+  const [taskList, setTaskList] = useState([]);
   const [subtasks, setSubtasks] = useState(task ? task.subtasks : []);
   const [currentSubtask, setCurrentSubtask] = useState("");
   const [status, setStatus] = useState(false);
@@ -16,6 +20,17 @@ function TaskForm({ type, task, modalOpen, modalClose, isModalOpen }) {
   const [valid, setValid] = useState(true);
   const url = "http://localhost:3001/api/tasks";
   const formRef = useRef();
+
+  useEffect(() => {
+    getTaskDataFromDB().then((res) => {
+      setTaskList(res);
+    });
+  }, [isModalOpen, isDeleted, isTaskChecked]);
+
+  const todayTasks =
+    taskList && taskList.length > 0
+      ? taskList.filter((task) => task.date === date)
+      : [];
 
   useEffect(() => {
     const handler = (event) => {
@@ -79,9 +94,15 @@ function TaskForm({ type, task, modalOpen, modalClose, isModalOpen }) {
       return;
     }
     if (title && valid && type === "add") {
-      putDataToDB();
-      toast.success("Task added successfully!");
-      modalClose();
+      if (todayTasks.length > 8) {
+        toast.error("Maximum tasks added already!");
+        modalClose();
+        return;
+      } else {
+        putDataToDB();
+        toast.success("Task added successfully!");
+        modalClose();
+      }
     }
     if (type === "edit") {
       if (task.title !== title) {

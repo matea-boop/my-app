@@ -13,7 +13,6 @@ import styled from "styled-components";
 import moment from "moment/moment";
 import axios from "axios";
 import { useAllContext } from "../../../context/indexContext";
-import { da } from "date-fns/locale";
 import getNotesDataFromDB from "../../../constants/dataFunctions/noteData";
 
 async function getDataProgressFromDB() {
@@ -31,108 +30,85 @@ async function getDataProgressFromDB() {
 export const AreaChartProgress = ({
   button1Clicked,
   button2Clicked,
-  button3Clicked,
   weekButton,
   monthButton,
 }) => {
   const { isModalOpen, isDeleted, isTaskChecked } = useAllContext();
   const [progressList, setProgressList] = useState([]);
   const [noteList, setNoteList] = useState([]);
-  const [data, setData] = useState([]);
-  let todaysDate = new Date().toLocaleDateString();
-  const mainList = [];
-
   const weekDates = [];
-  const wtest = [];
-  const wtestData = [];
-
+  const weeklyData = [];
   const monthDates = [];
-  const mtestData = [];
-  const mtest = [];
+  const monthlyData = [];
 
   useEffect(() => {
     getDataProgressFromDB().then((res) => setProgressList(res));
     getNotesDataFromDB().then((res) => setNoteList(res));
   }, [isModalOpen, isDeleted, isTaskChecked]);
 
-  const current = moment();
+  const currentDateWeek = moment();
   let n = 7;
   let x = 30;
   while (n > 0) {
     weekDates.push({
       id: n,
-      dateFormat: current.format("DD/MM/YYYY"),
-      dateName: current.format("ddd"),
+      dateFormat: currentDateWeek.format("DD/MM/YYYY"),
+      dateName: currentDateWeek.format("ddd"),
     });
-    current.subtract(1, "day");
+    currentDateWeek.subtract(1, "day");
     n--;
   }
 
-  const mcurrent = moment();
+  const currentDateMonth = moment();
   while (x > 0) {
     monthDates.push({
       id: x,
-      dateFormat: mcurrent.format("DD/MM/YYYY"),
-      dateName: mcurrent.format("ddd"),
+      dateFormat: currentDateMonth.format("DD/MM/YYYY"),
+      dateName: currentDateMonth.format("ddd"),
     });
-    mcurrent.subtract(1, "day");
+    currentDateMonth.subtract(1, "day");
     x--;
   }
 
-  const check =
+  const weekArray =
     weekDates.length > 0
-      ? weekDates.reverse().forEach((i) => {
-          wtest.push({
-            id: i.id,
-            dateName: i.dateName,
-            dateFormat: i.dateFormat,
-            value: "100",
-          });
-        })
-      : null;
+      ? weekDates.reverse().map((day) => ({
+          id: day.id,
+          dateName: day.dateName,
+          dateFormat: day.dateFormat,
+        }))
+      : [];
 
-  const mckeck =
+  const monthArray =
     monthDates.length > 0
-      ? monthDates.reverse().forEach((i) => {
-          mtest.push({
-            id: i.id,
-            dateName: i.dateName,
-            dateFormat: i.dateFormat,
-            value: "100",
-          });
-        })
-      : null;
+      ? monthDates.reverse().map((day) => ({
+          id: day.id,
+          dateName: day.dateName,
+          dateFormat: day.dateFormat,
+        }))
+      : [];
 
-  const check1 =
-    progressList.length > 0
-      ? progressList.forEach((task) => {
-          mainList.push(task);
-        })
-      : null;
-
-  const mcheck2 =
-    mtest.length > 0
-      ? mtest.forEach((i) => {
-          mtestData.push({
+  const combineMonth =
+    monthArray.length > 0
+      ? monthArray.forEach((i) => {
+          monthlyData.push({
             id: i.id,
             name: i.dateName,
             date: i.dateFormat,
             percent: 0,
             all: "No",
             notebook: 0,
-            allProgress: 100,
           });
           if (progressList.length > 0) {
             progressList.map((x) => {
               if (i.dateFormat === x.date) {
-                mtestData.push({
+                monthlyData.push({
                   id: i.id,
                   name: i.dateName,
                   date: i.dateFormat,
                   percent: x.percent,
                   all: x.all,
                   notebook: 0,
-                  allProgress: 100,
                 });
               }
             });
@@ -140,29 +116,27 @@ export const AreaChartProgress = ({
         })
       : null;
 
-  const check2 =
-    wtest.length > 0
-      ? wtest.forEach((i) => {
-          wtestData.push({
+  const combineWeek =
+    weekArray.length > 0
+      ? weekArray.forEach((i) => {
+          weeklyData.push({
             id: i.id,
             name: i.dateName,
             date: i.dateFormat,
             percent: 0,
             all: "No",
             notebook: 0,
-            allProgress: 100,
           });
           if (progressList.length > 0) {
             progressList.map((x) => {
               if (i.dateFormat === x.date) {
-                wtestData.push({
+                weeklyData.push({
                   id: i.id,
                   name: i.dateName,
                   date: i.dateFormat,
                   percent: x.percent,
                   all: x.all,
                   notebook: 0,
-                  allProgress: 100,
                 });
               }
             });
@@ -170,14 +144,16 @@ export const AreaChartProgress = ({
         })
       : null;
 
-  const weekData = [...new Map(wtestData.map((m) => [m.id, m])).values()];
-  const monthData = [...new Map(mtestData.map((m) => [m.id, m])).values()];
+  const orderedWeekData = [
+    ...new Map(weeklyData.map((m) => [m.id, m])).values(),
+  ];
+  const orderedMonthData = [
+    ...new Map(monthlyData.map((m) => [m.id, m])).values(),
+  ];
 
-  const finalWeekData = [];
-  const indexList = [];
-  const b =
-    weekData && weekData.length > 0
-      ? weekData.map((week) => {
+  const weekData =
+    orderedWeekData && orderedWeekData.length > 0
+      ? orderedWeekData.map((week) => {
           const exists =
             noteList.length > 0
               ? noteList.find((note, i) => note.date === week.date)
@@ -199,11 +175,11 @@ export const AreaChartProgress = ({
             return { ...week, notebook: [0] };
           }
         })
-      : null;
+      : [];
 
-  const a =
-    monthData && monthData.length > 0
-      ? monthData.map((month) => {
+  const monthData =
+    orderedMonthData && orderedMonthData.length > 0
+      ? orderedMonthData.map((month) => {
           const exists =
             noteList.length > 0
               ? noteList.find((note, i) => note.date === month.date)
@@ -225,11 +201,15 @@ export const AreaChartProgress = ({
             return { ...month, notebook: [0] };
           }
         })
-      : null;
+      : [];
+
   return (
     <Wrapper>
       <ResponsiveContainer width="99%" height={200}>
-        <AreaChart data={monthButton ? a : b} margin={{ right: 30, top: 30 }}>
+        <AreaChart
+          data={monthButton ? monthData : weekData}
+          margin={{ right: 30, top: 30 }}
+        >
           <defs>
             <linearGradient id="colorblue" x1="0" y1="0" x2="0" y2="1">
               <stop offset="10%" stopColor="#405eff" stopOpacity={0.9} />

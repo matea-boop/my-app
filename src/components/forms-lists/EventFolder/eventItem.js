@@ -7,40 +7,17 @@ import { useAllContext } from "../../../context/indexContext";
 import axios from "axios";
 import EventForm from "./EventForm";
 import { useRef } from "react";
+import { activityType } from "../../../constants/constants";
 
-const activityType = [
-  { id: 0, color: "var(--mainorange-color)", actName: "personal" },
-  { id: 1, color: "var(--mainred-color)", actName: "work/study" },
-  { id: 2, color: "var(--maingreen-color)", actName: "meeting" },
-  { id: 2, color: "var(--mainblue-color)", actName: "appointment" },
-];
-
-export const EventItem = ({
-  title,
-  date,
-  event,
-  startTime,
-  endTime,
-  actType,
-  description,
-  timeLine,
-}) => {
-  const {
-    eventModalClose,
-    isEventDeleted,
-    eventDeleted,
-    eventNotDeleted,
-    isEventChanged,
-    eventChanged,
-    eventNotChanged,
-  } = useAllContext();
+export const EventItem = ({ event, timeLine }) => {
+  const { eventDeleted, eventNotDeleted } = useAllContext();
   const [openMenu, setOpenMenu] = useState(false);
   const [editEventModalOpen, setEditEventModalOpen] = useState(false);
   const [color, setColor] = useState("");
   const [hover, setHover] = useState(false);
   const [pixel, setPixel] = useState(0);
   const timeDifference = moment
-    .utc(moment(endTime, "HH:mm").diff(moment(startTime, "HH:mm")))
+    .utc(moment(event.endTime, "HH:mm").diff(moment(event.startTime, "HH:mm")))
     .format("HH:mm");
   const timeInPixels = moment.duration(timeDifference).asMinutes();
 
@@ -61,11 +38,11 @@ export const EventItem = ({
 
   useEffect(() => {
     activityType.map((type) =>
-      type.actName === actType ? setColor(type.color) : null
+      type.actName === event.actType ? setColor(type.color) : null
     );
     if (timeLine && timeLine.length > 0) {
       timeLine.map((time, index) => {
-        if (time === startTime) {
+        if (time === event.startTime) {
           setPixel(index);
         }
       });
@@ -89,7 +66,7 @@ export const EventItem = ({
       onMouseOver={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
       style={
-        hover && description !== "" && timeInPixels < 80
+        hover && event.description !== "" && timeInPixels < 80
           ? {
               minHeight: "40px",
               height: `${timeInPixels + 30}px`,
@@ -114,12 +91,12 @@ export const EventItem = ({
           }
         >
           <div className="event-time">
-            {startTime} - {endTime}
+            {event.startTime} - {event.endTime}
           </div>
-          <div className="event-title">{title}</div>
+          <div className="event-title">{event.title}</div>
         </div>
-        <div className={description !== "" ? "event-desc" : ""}>
-          {description}
+        <div className={event.description !== "" ? "event-desc" : ""}>
+          {event.description}
         </div>
       </div>
       <div className="icon-box" ref={choiceRef}>

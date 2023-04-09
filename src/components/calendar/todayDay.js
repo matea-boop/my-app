@@ -13,30 +13,34 @@ export const TodayDay = ({ date, incompletedTasks, selectedEventList }) => {
       <div className="top-contain">
         <div className="title">{today}</div>
       </div>
-      <div className="tasks">
+      <div
+        className="tasks"
+        style={date === currDate ? { display: "flex" } : { display: "none" }}
+      >
         <div className="task-title">Tasks remaining</div>
         <div className="task-list">
-          {incompletedTasks &&
-          incompletedTasks.length > 0 &&
-          date === currDate ? (
+          {incompletedTasks && incompletedTasks.length > 0 ? (
             incompletedTasks.map((task) => {
               return <TaskItem type="main-calendar" task={task} />;
             })
           ) : (
-            <div className="no">No tasks on days that are not today</div>
+            <div className="no">No tasks left to do today</div>
           )}
         </div>
       </div>
 
-      <div className="events">
+      <div
+        className="events"
+        style={date === currDate ? { top: "37%" } : { top: "15%" }}
+      >
         <div className="event-title">Events scheduled</div>
-        <div className="event-list">
+        <div className="event-lista">
           {selectedEventList && selectedEventList.length > 0 ? (
             selectedEventList.map((event) => {
-              return <EventItem event={event} />;
+              return <EventItem event={event} type="month-calendar" />;
             })
           ) : (
-            <div className="no">No events on this day</div>
+            <div className="no">No events scheduled for this day</div>
           )}
         </div>
       </div>
@@ -54,6 +58,55 @@ const Wrapper = styled.div`
 
   border-radius: var(--border-radius);
   background-color: var(--box-color);
+
+  .events {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    height: 50%;
+    width: 80%;
+
+    top: 37%;
+
+    overflow: hidden;
+  }
+
+  .event-title {
+    font-weight: lighter;
+    font-size: var(--text-size);
+    margin-bottom: 0.5rem;
+  }
+
+  .event-lista {
+    display: flex;
+    flex-direction: column;
+    font-size: var(--text-size);
+    font-weight: lighter;
+    overflow-y: auto;
+
+    width: 100%;
+    height: 80%;
+    padding-right: 0.2rem;
+
+    ::-webkit-scrollbar {
+      width: 3px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--box-color);
+      border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--scroll-color);
+      border-radius: 10px;
+    }
+  }
+
+  .no {
+    font-weight: lighter;
+    font-size: 0.6rem;
+  }
 
   .top-contain {
     display: flex;
@@ -76,6 +129,8 @@ const Wrapper = styled.div`
   }
 
   .tasks {
+    position: aboslute;
+    top: 15%;
     display: flex;
     flex-direction: column;
     height: 20%;
@@ -95,7 +150,7 @@ const Wrapper = styled.div`
     overflow-y: auto;
 
     background-color: var(--box-color);
-    border-radius: var(--border-radius);
+    // border-radius: var(--border-radius);
 
     width: 100%;
     height: 80%;
@@ -111,60 +166,7 @@ const Wrapper = styled.div`
     }
 
     ::-webkit-scrollbar-thumb {
-      background: rgba(232, 244, 250, 0.5);
-      border-radius: 10px;
-    }
-  }
-
-  .events {
-    position: absolute;
-
-    position: absolute;
-    display: flex;
-    flex-direction: column;
-
-    height: 50%;
-    width: 80%;
-    overflow: hidden;
-
-    top: 37%;
-    left: 10%;
-  }
-
-  .event-title {
-    font-weight: lighter;
-    font-size: var(--text-size);
-    margin-bottom: 0.5rem;
-    height: 20%;
-  }
-
-  .no {
-    font-weight: lighter;
-    font-size: 0.6rem;
-  }
-
-  .event-list {
-    display: flex;
-    flex-direction: column;
-
-    width: 100%;
-    height: 80%;
-
-    padding-right: 0.2rem;
-
-    overflow-y: auto;
-
-    ::-webkit-scrollbar {
-      width: 3px;
-    }
-
-    ::-webkit-scrollbar-track {
-      background: var(--box-color);
-      border-radius: 10px;
-    }
-
-    ::-webkit-scrollbar-thumb {
-      background: rgba(232, 244, 250, 0.5);
+      background: var(--scroll-color);
       border-radius: 10px;
     }
   }

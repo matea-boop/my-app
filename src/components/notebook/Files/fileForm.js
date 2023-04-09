@@ -162,7 +162,7 @@ const Wrapper = styled.div`
     left: 0;
     right: 0;
 
-    background: var(--box-color);
+    background: var(--inactive-file-color);
     border-radius: var(--border-radius);
 
     margin: 0 2rem 1rem 2rem;

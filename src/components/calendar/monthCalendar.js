@@ -9,31 +9,8 @@ import moment from "moment/moment";
 import { useAllContext } from "../../context/indexContext";
 import TodayDay from "./todayDay";
 import getEventDataFromDB from "../../constants/dataFunctions/eventData";
-
-const daysOfWeek = [
-  "Sunday",
-  "Monday",
-  "Tuesday",
-  "Wednesday",
-  "Thursday",
-  "Friday",
-  "Saturday",
-];
-
-const monthsOfYear = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-];
+import { daysOfWeek } from "../../constants/constants";
+import { monthsOfYear } from "../../constants/constants";
 
 function getNumberOfDaysInMonth(year, month) {
   return new Date(year, month + 1, 0).getDate();
@@ -173,34 +150,34 @@ export const MonthCalendar = ({
           />
         </div>
       </div>
+      <div className="month-today">
+        <div className="main-container">
+          <div className="days">
+            {getSortedDays().map((day, i) => (
+              <p
+                className="day"
+                id={i === new Date().getDay() ? "week-today-day" : ""}
+              >
+                {day}
+              </p>
+            ))}
+          </div>
 
-      {/* <div className="motnh-today-container"> */}
-      <div className="main-container">
-        <div className="days">
-          {getSortedDays().map((day, i) => (
-            <p
-              className="day"
-              id={i === new Date().getDay() ? "week-today-day" : ""}
-            >
-              {day}
-            </p>
-          ))}
-        </div>
-
-        <div
-          className="days-month"
-          onClick={(e) => {
-            handleSelect(e);
-          }}
-        >
-          {prevMonthDates.map((day) => (
-            <div className="day-dot" id="inactive-line" onClick={prevMonth}>
-              <div className="day-month inactive">{day}</div>
-              {/* <div className="dots"></div> */}
-            </div>
-          ))}
-          {range(1, getNumberOfDaysInMonth(currentYear, currentMonth) + 1).map(
-            (day) => (
+          <div
+            className="days-month"
+            onClick={(e) => {
+              handleSelect(e);
+            }}
+          >
+            {prevMonthDates.map((day) => (
+              <div className="day-dot" id="inactive-line" onClick={prevMonth}>
+                <div className="day-month inactive">{day}</div>
+              </div>
+            ))}
+            {range(
+              1,
+              getNumberOfDaysInMonth(currentYear, currentMonth) + 1
+            ).map((day) => (
               <div
                 id="day"
                 data-day={day}
@@ -286,32 +263,39 @@ export const MonthCalendar = ({
                     : null}
                 </div>
               </div>
-            )
-          )}
+            ))}
 
-          {lengthSum > 35
-            ? nextMonthDates.map((day) => (
-                <div className="day-dot" id="inactive-line" onClick={nextMonth}>
-                  <div className="day-month inactive">{day}</div>
-                  {/* <div className="dots"></div> */}
-                </div>
-              ))
-            : strecthArray.map((day) => (
-                <div className="day-dot" id="inactive-line" onClick={nextMonth}>
-                  <div className="day-month inactive">{day}</div>
-                  <div className="dots"></div>
-                </div>
-              ))}
+            {lengthSum > 35
+              ? nextMonthDates.map((day) => (
+                  <div
+                    className="day-dot"
+                    id="inactive-line"
+                    onClick={nextMonth}
+                  >
+                    <div className="day-month inactive">{day}</div>
+                    {/* <div className="dots"></div> */}
+                  </div>
+                ))
+              : strecthArray.map((day) => (
+                  <div
+                    className="day-dot"
+                    id="inactive-line"
+                    onClick={nextMonth}
+                  >
+                    <div className="day-month inactive">{day}</div>
+                    <div className="dots"></div>
+                  </div>
+                ))}
+          </div>
         </div>
-      </div>
-      {/* <div className="today-day">
+        <div className="today-day">
           <TodayDay
             date={dateClicked}
             incompletedTasks={incompletedTasks}
             selectedEventList={selectedEventList}
           />
-        </div> */}
-      {/* </div> */}
+        </div>
+      </div>
     </Wrapper>
   );
 };
@@ -422,7 +406,7 @@ const Wrapper = styled.div`
     margin-right: 1rem;
   }
 
-  .motnh-today-container {
+  .month-today {
     position: absolute;
     display: flex;
     flex-direction: row;
@@ -430,13 +414,16 @@ const Wrapper = styled.div`
 
     width: 98%;
     height: 80%;
-    left: 2%;
+    left: 1%;
+    right: 1%;
     top: 18%;
   }
+
   .today-day {
     position: absolute;
     width: 30%;
     height: 100%;
+    z-index: 10;
     right: 0;
   }
 
@@ -446,10 +433,8 @@ const Wrapper = styled.div`
     flex-direction: column;
     align-items: space-between;
 
-    width: 98%;
-    height: 80%;
-    left: 2%;
-    top: 18%;
+    width: 70%;
+    height: 100%;
 
     background-color: var(--sidebar-color);
 
@@ -461,8 +446,6 @@ const Wrapper = styled.div`
     grid-template-columns: repeat(7, 1fr);
 
     height: 5%;
-
-    // background: red;
   }
 
   .day {
@@ -477,15 +460,13 @@ const Wrapper = styled.div`
     font-weight: lighter;
     text-transform: uppercase;
   }
+
   .days-month {
     position: relative;
     display: grid;
     grid-template-columns: repeat(7, 1fr);
 
     height: 95%;
-
-    // background: blue;
-
     margin-top: 1rem;
   }
 
@@ -498,7 +479,6 @@ const Wrapper = styled.div`
 
     right: 3%;
     top: 5%;
-    // background: purple;
 
     opacity: 0.7;
     cursor: pointer;
@@ -554,7 +534,7 @@ const Wrapper = styled.div`
     height: 95%;
     width: 90%;
     border-radius: var(--border-radius);
-    background-color: var(--box-color);
+    background-color: var(--month-cell-color);
 
     cursor: pointer;
   }
